@@ -1,0 +1,36 @@
+﻿<Window x:Class="TerraMap.TileSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		  xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        Title="Select Tile" Height="300" Width="300"
+		  Loaded="OnLoaded">
+	<Window.Resources>
+		<CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}" Filter="OnFilter">
+			<CollectionViewSource.SortDescriptions>
+				<ComponentModel:SortDescription Direction="Ascending" PropertyName="Name"/>
+			</CollectionViewSource.SortDescriptions>
+		</CollectionViewSource>
+	</Window.Resources>
+	<DockPanel>
+		<Grid DockPanel.Dock="Top">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<TextBlock Grid.Column="0" Margin="2">Tile Name:</TextBlock>
+			<TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
+		</Grid>
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+			<Button Margin="2" MinWidth="75" IsDefault="True" Click="OnAccept">_OK</Button>
+			<Button Margin="2" MinWidth="75" IsCancel="True" Click="OnCancel">_Cancel</Button>
+		</StackPanel>
+		<ListBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
+					TextSearch.TextPath="Name">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</DockPanel>
+</Window>

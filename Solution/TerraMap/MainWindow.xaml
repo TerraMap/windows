@@ -1,0 +1,286 @@
+﻿<Window x:Class="TerraMap.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+		  xmlns:imaging="clr-namespace:System.Windows.Media.Imaging;assembly=PresentationCore"
+		  xmlns:ext="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
+		  xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+		  xmlns:local="clr-namespace:TerraMap"
+		  xmlns:data="clr-namespace:TerraMap.Data;assembly=TerraMap.Data"
+		  WindowState="Maximized" Loaded="OnLoaded"
+        Title="TerraMap" Height="480" Width="640">
+	<Window.DataContext>
+		<local:MainWindowViewModel TileName="Gold Chest" Status="Status" Position="3, 300" ProgressValue="100" ProgressMaximum="100" IsLoading="True">
+			<local:MainWindowViewModel.World>
+				<data:World Status="Status">
+					<data:World.NPCs>
+						<data:NPC Type="Merchant" Name="Bob" />
+						<data:NPC Type="Plumber" Name="Alice" />
+					</data:World.NPCs>
+				</data:World>
+			</local:MainWindowViewModel.World>
+			<local:MainWindowViewModel.CurrentChestItemNames>
+				<x:Array Type="sys:String">
+					<sys:String>Wooden Arrow</sys:String>
+					<sys:String>Iron Sword</sys:String>
+					<sys:String>Torch</sys:String>
+				</x:Array>
+			</local:MainWindowViewModel.CurrentChestItemNames>
+		</local:MainWindowViewModel>
+	</Window.DataContext>
+
+	<Window.Resources>
+		<local:InvertedBooleanConverter x:Key="InvertedBooleanConverter" />
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+		<CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}">
+			<CollectionViewSource.SortDescriptions>
+				<ComponentModel:SortDescription Direction="Ascending" PropertyName="Name"/>
+			</CollectionViewSource.SortDescriptions>
+		</CollectionViewSource>
+
+
+		<CollectionViewSource x:Key="npcViewSource" Source="{Binding World.NPCs, IsAsync=True}">
+			<CollectionViewSource.SortDescriptions>
+				<ComponentModel:SortDescription Direction="Ascending" PropertyName="Type"/>
+			</CollectionViewSource.SortDescriptions>
+		</CollectionViewSource>
+
+		<Storyboard x:Key="indicatorStoryboard" RepeatBehavior="2.0x" Duration="0:0:0.1" AutoReverse="True">
+			<DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="(Rectangle.RenderTransform).(ScaleTransform.ScaleX)"
+								  From="1.0" To="100.0" />
+			<DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="(Rectangle.RenderTransform).(ScaleTransform.ScaleY)"
+								  From="1.0" To="100.0" />
+		</Storyboard>
+
+		<ContextMenu x:Key="chestContextMenu" ItemsSource="{Binding CurrentChestItemNames}">
+			<ContextMenu.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding}" />
+				</DataTemplate>
+			</ContextMenu.ItemTemplate>
+		</ContextMenu>
+
+	</Window.Resources>
+	<Window.CommandBindings>
+		<CommandBinding Command="ApplicationCommands.Open" CanExecute="OnOpenCanExecute" Executed="OnOpenExecuted" />
+		<CommandBinding Command="ApplicationCommands.Save" CanExecute="OnSaveCanExecute" Executed="OnSaveExecuted" />
+		<CommandBinding Command="NavigationCommands.Refresh" CanExecute="OnRefreshCanExecute" Executed="OnRefreshExecuted" />
+		<CommandBinding Command="local:Commands.ZoomToOriginal" CanExecute="OnZoomToOriginalCanExecute" Executed="OnZoomToOriginalExecuted" />
+		<CommandBinding Command="local:Commands.ZoomToFit" CanExecute="OnZoomToFitCanExecute" Executed="OnZoomToFitExecuted" />
+		<CommandBinding Command="NavigationCommands.DecreaseZoom" CanExecute="OnDecreaseZoomCanExecute" Executed="OnDecreaseZoomExecuted" />
+		<CommandBinding Command="NavigationCommands.IncreaseZoom" CanExecute="OnIncreaseZoomCanExecute" Executed="OnIncreaseZoomExecuted" />
+		<CommandBinding Command="ApplicationCommands.Find" CanExecute="OnFindCanExecute" Executed="OnFindExecuted" />
+		<CommandBinding Command="NavigationCommands.PreviousPage" CanExecute="OnPreviousPageCanExecute" Executed="OnPreviousPageExecuted" />
+		<CommandBinding Command="NavigationCommands.BrowseStop" CanExecute="OnBrowseStopCanExecute" Executed="OnBrowseStopExecuted" />
+		<CommandBinding Command="NavigationCommands.NextPage" CanExecute="OnNextPageCanExecute" Executed="OnNextPageExecuted" />
+		<CommandBinding Command="local:Commands.NavigateToSpawn" CanExecute="OnNavigateToSpawnCanExecute" Executed="OnNavigateToSpawnExecuted" />
+		<CommandBinding Command="local:Commands.NavigateToDungeon" CanExecute="OnNavigateToDungeonCanExecute" Executed="OnNavigateToDungeonExecuted" />
+		<CommandBinding Command="ApplicationCommands.Close" CanExecute="OnCloseCanExecute" Executed="OnCloseExecuted" />
+	</Window.CommandBindings>
+	<Window.InputBindings>
+		<KeyBinding Gesture="Ctrl+O" Command="ApplicationCommands.Open" />
+		<KeyBinding Gesture="Ctrl+S" Command="ApplicationCommands.Save" />
+		<KeyBinding Key="F5" Command="NavigationCommands.Refresh" />
+		<KeyBinding Key="OemMinus" Command="NavigationCommands.DecreaseZoom" />
+		<KeyBinding Key="Subtract" Command="NavigationCommands.DecreaseZoom" />
+		<KeyBinding Key="OemPlus" Command="NavigationCommands.IncreaseZoom" />
+		<KeyBinding Key="Add" Command="NavigationCommands.IncreaseZoom" />
+		<KeyBinding Gesture="Ctrl+F" Command="ApplicationCommands.Find" />
+		<KeyBinding Key="F3" Command="NavigationCommands.NextPage" />
+		<KeyBinding Gesture="Shift+F3" Command="NavigationCommands.PreviousPage" />
+		<KeyBinding Key="Home" Command="local:Commands.NavigateToSpawn" />
+		<KeyBinding Key="End" Command="local:Commands.NavigateToSpawn" />
+	</Window.InputBindings>
+	<DockPanel>
+		<Menu DockPanel.Dock="Top" IsMainMenu="True">
+			<MenuItem Header="_File">
+				<MenuItem Header="Open World" ItemsSource="{Binding WorldFiles}" SubmenuOpened="OnWorldsDropDownOpened">
+					<MenuItem.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" ToolTip="{Binding FullName}" />
+						</DataTemplate>
+					</MenuItem.ItemTemplate>
+					<MenuItem.Resources>
+						<Style TargetType="MenuItem">
+							<EventSetter Event="Click" Handler="OnOpenWorldFile" />
+						</Style>
+					</MenuItem.Resources>
+				</MenuItem>
+				<MenuItem Command="ApplicationCommands.Open" Header="_Open...">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="ApplicationCommands.Save" Header="_Save...">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem Command="ApplicationCommands.Close" Header="E_xit" InputGestureText="Alt+F4" />
+			</MenuItem>
+			<MenuItem Header="_View">
+				<MenuItem Command="local:Commands.ZoomToOriginal" Header="Zoom to 100%">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="local:Commands.ZoomToFit" Header="Zoom to _Fit">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomFit.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem Command="NavigationCommands.DecreaseZoom" Header="Zoom _Out" InputGestureText="-">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomOut.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="NavigationCommands.IncreaseZoom" Header="Zoom _In" InputGestureText="+">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomIn.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged" Header="Highlight All" />
+				<Separator />
+				<MenuItem Command="NavigationCommands.Refresh">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Width="16" Source="Resources/Refresh.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="_Navigate">
+				<MenuItem Command="ApplicationCommands.Find" Header="Select Block/Item..." InputGestureText="Ctrl+F" />
+				<MenuItem Command="NavigationCommands.PreviousPage" Header="Previous Match" InputGestureText="Shift+F3">
+					<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
+				</MenuItem>
+				<MenuItem Command="NavigationCommands.BrowseStop" Header="Clear Match">
+					<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+				</MenuItem>
+				<MenuItem Command="NavigationCommands.NextPage" Header="Next Match" InputGestureText="F3">
+					<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
+				</MenuItem>
+				<Separator />
+				<MenuItem Command="local:Commands.NavigateToSpawn" Header="_Spawn" InputGestureText="Home" />
+				<MenuItem Command="local:Commands.NavigateToDungeon" Header="_Dungeon" InputGestureText="End" />
+				<MenuItem Header="_NPCs" ItemsSource="{Binding Source={StaticResource npcViewSource}}">
+					<MenuItem.ItemTemplate>
+						<DataTemplate>
+							<TextBlock>
+								<Run Text="{Binding Name}" />
+								<Run Text="the" />
+								<Run Text="{Binding Type}" />
+							</TextBlock>
+						</DataTemplate>
+					</MenuItem.ItemTemplate>
+					<MenuItem.Resources>
+						<Style TargetType="MenuItem">
+							<EventSetter Event="Click" Handler="OnNavigateToNpc" />
+						</Style>
+					</MenuItem.Resources>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+		<ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+			<TextBlock VerticalAlignment="Center">Worlds:</TextBlock>
+			<ComboBox ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
+				SelectionChanged="OnSelectedWorldFileChanged" DropDownOpened="OnWorldsDropDownOpened">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Name}" ToolTip="{Binding FullName}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+			<Button Command="ApplicationCommands.Open" ToolTip="Open">
+				<local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
+			</Button>
+			<Button Command="ApplicationCommands.Save" ToolTip="Save Image">
+				<local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
+			</Button>
+			<Button Command="NavigationCommands.Refresh" ToolTip="Refresh">
+				<local:AutoGreyableImage Width="16" Source="Resources/Refresh.png" />
+			</Button>
+			<Separator />
+			<Button Command="local:Commands.ZoomToOriginal" ToolTip="Zoom to 100%">
+				<local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
+			</Button>
+			<Button Command="local:Commands.ZoomToFit" ToolTip="Zoom to fit">
+				<local:AutoGreyableImage Source="Resources/zoomFit.png" Width="16" />
+			</Button>
+			<Separator />
+			<Button Command="NavigationCommands.DecreaseZoom" ToolTip="Zoom out">
+				<local:AutoGreyableImage Source="Resources/zoomOut.png" Width="16" />
+			</Button>
+			<Button Command="NavigationCommands.IncreaseZoom" ToolTip="Zoom in">
+				<local:AutoGreyableImage Source="Resources/zoomIn.png" Width="16" />
+			</Button>
+			<Separator />
+			<TextBlock VerticalAlignment="Center">Blocks:</TextBlock>
+			<ComboBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
+				SelectionChanged="OnSelectedTileInfoChanged" TextSearch.TextPath="Name" VirtualizingPanel.IsVirtualizing="True">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+			<Button Command="ApplicationCommands.Find" ToolTip="Select Block...">...</Button>
+			<Button Command="NavigationCommands.PreviousPage" ToolTip="Previous">
+				<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
+			</Button>
+			<Button Command="NavigationCommands.BrowseStop" ToolTip="Clear">
+				<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+			</Button>
+			<Button Command="NavigationCommands.NextPage" ToolTip="Next">
+				<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
+			</Button>
+			<CheckBox IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged">Highlight All</CheckBox>
+		</ToolBar>
+		<StatusBar DockPanel.Dock="Bottom">
+			<StatusBarItem DockPanel.Dock="Left">
+				<TextBlock Text="{Binding Position}" />
+			</StatusBarItem>
+			<StatusBarItem DockPanel.Dock="Left">
+				<TextBlock Text="{Binding TileName}" />
+			</StatusBarItem>
+			<StatusBarItem DockPanel.Dock="Right">
+				<TextBlock Text="{Binding World.Status}" HorizontalAlignment="Right" />
+			</StatusBarItem>
+			<StatusBarItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+				<ProgressBar Minimum="0" Maximum="{Binding ProgressMaximum}" Value="{Binding ProgressValue}"
+					Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" IsIndeterminate="{Binding IsProgressIndeterminate}"/>
+			</StatusBarItem>
+		</StatusBar>
+
+		<Popup x:Name="popup" StaysOpen="False" Placement="Mouse">
+			<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}">
+				<StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+					<TextBlock Text="{Binding TileName}" FontWeight="Bold" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+					<Separator />
+					<ItemsControl ItemsSource="{Binding CurrentChestItemNames}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding}" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
+		</Popup>
+
+		<ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
+			<Grid x:Name="Grid">
+				<Image x:Name="Map" Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" Source="{Binding WriteableBitmap}" />
+				<Canvas x:Name="Canvas" Width="360" Height="240">
+					<Rectangle x:Name="Indicator" Fill="Transparent" Stroke="Red" StrokeThickness="1" Width="3" Height="3" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+						<Rectangle.RenderTransform>
+							<ScaleTransform />
+						</Rectangle.RenderTransform>
+					</Rectangle>
+				</Canvas>
+			</Grid>
+		</ext:ZoomControl>
+	</DockPanel>
+</Window>
