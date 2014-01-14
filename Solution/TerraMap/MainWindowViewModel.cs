@@ -9,20 +9,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using TerraMap.Data;
 
 namespace TerraMap
 {
 	public class MainWindowViewModel : INotifyPropertyChanged
 	{
-		private TileInfos tileInfos;
+		private StaticData staticData;
 
-		public TileInfos TileInfos
+		public StaticData StaticData
 		{
-			get { return tileInfos; }
+			get { return staticData; }
 			set
 			{
-				tileInfos = value;
+				staticData = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -143,6 +144,30 @@ namespace TerraMap
 			set
 			{
 				progressMaximum = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private int totalTileCount;
+
+		public int TotalTileCount
+		{
+			get { return totalTileCount; }
+			set
+			{
+				totalTileCount = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private int highlightedTileCount;
+
+		public int HighlightedTileCount
+		{
+			get { return highlightedTileCount; }
+			set
+			{
+				highlightedTileCount = value;
 				RaisePropertyChanged();
 			}
 		}

@@ -38,9 +38,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -69,7 +66,6 @@
     <Compile Include="Commands.cs" />
     <Compile Include="InvertedBooleanConverter.cs" />
     <Compile Include="ObjectInfoTemplateSelector.cs" />
-    <Compile Include="Options.cs" />
     <Compile Include="SearchDirection.cs" />
     <Compile Include="TileSelectionWindow.xaml.cs">
       <DependentUpon>TileSelectionWindow.xaml</DependentUpon>
@@ -110,7 +106,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -155,6 +150,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="WPFExtensions.dll" />
+    <None Include="WPFExtensions.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

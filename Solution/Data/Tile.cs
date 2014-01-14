@@ -11,65 +11,28 @@ namespace TerraMap.Data
 	public class Tile
 	{
 		public Boolean IsActive { get; set; }
-
 		public Byte Type { get; set; }
-
 		public Int16 TextureU { get; set; }
 		public Int16 TextureV { get; set; }
-
-		[PropertyInfo(48)]
 		public Boolean IsColorPresent { get; set; }
-
-		[PropertyInfo(48)]
 		public Byte ColorValue { get; set; }
-
-		[PropertyInfo(maximumVersion: 25)]
 		public Boolean DummyField { get; set; }
-
 		public Boolean IsWallPresent { get; set; }
-
 		public Byte WallType { get; set; }
-
-		[PropertyInfo(48)]
 		public Boolean IsWallColorPresent { get; set; }
-
-		[PropertyInfo(48)]
 		public byte WallColor { get; set; }
-
 		public bool IsLiquidPresent { get; set; }
-
 		public byte LiquidAmount { get; set; }
-
 		public bool IsLiquidLava { get; set; }
-
-		[PropertyInfo(51)]
 		public bool IsLiquidHoney { get; set; }
-
-		[PropertyInfo(33)]
 		public bool IsRedWirePresent { get; set; }
-
-		[PropertyInfo(43)]
 		public bool IsGreenWirePresent { get; set; }
-
-		[PropertyInfo(43)]
 		public bool IsBlueWirePresent { get; set; }
-
-		[PropertyInfo(41)]
 		public bool IsHalfTile { get; set; }
-
-		[PropertyInfo(49)]
 		public byte Slope { get; set; }
-
-		[PropertyInfo(42)]
 		public bool IsActuatorPresent { get; set; }
-
-		[PropertyInfo(42)]
 		public bool IsInactive { get; set; }
-
-		[PropertyInfo(25)]
 		public Int16 RleLength { get; set; }
-
-		[PropertyInfo(ignore: true)]
 		public Color Color { get; set; }
 
 		public static Tile Read(BinaryReader reader, World world)
@@ -81,9 +44,9 @@ namespace TerraMap.Data
 			{
 				tile.Type = reader.ReadByte();
 
-				var tileInfo = world.TileInfos[tile.Type];
+				var tileInfo = world.StaticData.TileInfos[tile.Type];
 
-				if (tileInfo.hasExtra || (world.Version < 72 && tile.Type == 170))
+				if (tileInfo.HasExtra || (world.Version < 72 && tile.Type == 170))
 				{
 					// torches and platforms didn't have extra in older versions
 					if ((world.Version < 28 && tile.Type == 4) || (world.Version < 40 && tile.Type == 19))

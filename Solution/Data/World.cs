@@ -19,13 +19,11 @@ namespace TerraMap.Data
 {
 	public class World : INotifyPropertyChanged
 	{
-		//public event EventHandler<ProgressEventArgs> ProgressChanged;
-
 		public World()
 		{
 		}
 
-		#region Properties
+		#region Dynamically read properties
 
 		public Int32 Version { get; set; }
 		public String Name { get; set; }
@@ -156,6 +154,10 @@ namespace TerraMap.Data
 		[PropertyInfo(62)]
 		public Single WindSpeed { get; set; }
 
+		#endregion
+
+		#region Other properties
+
 		private string status;
 
 		[PropertyInfo(ignore: true)]
@@ -175,15 +177,15 @@ namespace TerraMap.Data
 		[PropertyInfo(ignore: true)]
 		public List<Chest> Chests { get; set; }
 
-		private TileInfos tileInfos;
+		private StaticData staticData;
 
 		[PropertyInfo(ignore: true)]
-		public TileInfos TileInfos
+		public StaticData StaticData
 		{
-			get { return tileInfos; }
+			get { return staticData; }
 			set
 			{
-				tileInfos = value;
+				staticData = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -223,6 +225,32 @@ namespace TerraMap.Data
 			set
 			{
 				progressMaximum = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private int totalTileCount;
+
+		[PropertyInfo(ignore: true)]
+		public int TotalTileCount
+		{
+			get { return totalTileCount; }
+			set
+			{
+				totalTileCount = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private int highlightedTileCount;
+
+		[PropertyInfo(ignore: true)]
+		public int HighlightedTileCount
+		{
+			get { return highlightedTileCount; }
+			set
+			{
+				highlightedTileCount = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -288,8 +316,8 @@ namespace TerraMap.Data
 					this.Status = "Reading NPCs";
 					this.ReadNPCs(reader);
 
-					this.Status = "Reading Verification";
-					this.ReadVerification(reader);
+					//this.Status = "Reading Verification";
+					//this.ReadVerification(reader);
 				}
 			}
 
@@ -363,11 +391,11 @@ namespace TerraMap.Data
 		{
 			this.Tiles = new Tile[this.WorldWidthinTiles, this.WorldHeightinTiles];
 
-			var totalTileCount = this.WorldHeightinTiles * this.WorldWidthinTiles;
+			this.totalTileCount = this.WorldHeightinTiles * this.WorldWidthinTiles;
 
 			var tilesProcessed = 0;
 
-			this.ProgressMaximum = totalTileCount;
+			this.ProgressMaximum = this.totalTileCount;
 			this.ProgressValue = tilesProcessed;
 
 			//this.OnProgressChanged(new ProgressEventArgs(tilesProcessed, totalTileCount));
@@ -380,39 +408,39 @@ namespace TerraMap.Data
 
 					Color color = Color.Transparent;
 
-					var tileInfo = this.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+					var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
 					if (tile.IsActive)
 					{
-						if (tileInfo.colorSet)
+						if (tileInfo.IsColorSet)
 							color = tileInfo.Color;
 						else
 						{
 							color = tileInfo.Color = ColorTranslator.FromHtml(tileInfo.ColorName);
 
-							tileInfo.colorSet = true;
+							tileInfo.IsColorSet = true;
 						}
 					}
 					else if (tile.IsLiquidPresent)
 					{
 						if (tile.IsLiquidLava)
-							color = this.TileInfos.lavaColor;
+							color = this.staticData.GlobalColors.LavaColor;
 						else if (tile.IsLiquidHoney)
-							color = this.TileInfos.honeyColor;
+							color = this.staticData.GlobalColors.HoneyColor;
 						else
-							color = this.TileInfos.waterColor;
+							color = this.staticData.GlobalColors.WaterColor;
 					}
 					else if (tile.IsWallPresent)
 					{
-						color = this.TileInfos.WallInfos[tile.WallType].Color;
+						color = this.staticData.WallInfos[tile.WallType].Color;
 					}
 					else if (y < this.WorldSurfaceY)
 					{
-						color = this.TileInfos.skyColor;
+						color = this.staticData.GlobalColors.SkyColor;
 					}
 					else // if (y < this.RockLayerY)
 					{
-						color = this.TileInfos.earthColor;
+						color = this.staticData.GlobalColors.EarthColor;
 					}
 					//else
 					//{
@@ -432,7 +460,7 @@ namespace TerraMap.Data
 
 				tilesProcessed += this.WorldHeightinTiles;
 
-				this.ProgressMaximum = totalTileCount;
+				this.ProgressMaximum = this.totalTileCount;
 				this.ProgressValue = tilesProcessed;
 
 				//this.OnProgressChanged(new ProgressEventArgs(tilesProcessed, totalTileCount));
@@ -511,7 +539,7 @@ namespace TerraMap.Data
 			if (this.Version >= 34)
 				this.ReadNpcName(reader, "Mechanic");
 
-			if (this.Version >= 65)
+			if (this.Version >= 65 && this.NPCs.Count > 0)
 			{
 				this.ReadNpcName(reader, "Truffle");
 				this.ReadNpcName(reader, "Steampunker");
@@ -645,6 +673,7 @@ namespace TerraMap.Data
 
 			this.ProgressMaximum = totalTileCount;
 			this.ProgressValue = tilesProcessed;
+			this.HighlightedTileCount = 0;
 
 			//this.OnProgressChanged(new ProgressEventArgs(tilesProcessed, totalTileCount));
 
@@ -661,8 +690,15 @@ namespace TerraMap.Data
 
 					var tileMatches = IsTileMatch(objectTypeToHighlight, x, y, tile);
 
-					if (!tileMatches)
+					if (tileMatches)
+					{
+						if(objectTypeToHighlight != null)
+							this.HighlightedTileCount++;
+					}
+					else
+					{
 						color = Blend(Color.Black, color, 0.8);
+					}
 
 					var pixelIndex = y * this.WorldWidthinTiles * 4 + (x * 4);
 
@@ -691,7 +727,7 @@ namespace TerraMap.Data
 
 			if (objectTypeToHighlight.TileInfo != null)
 			{
-				var tileInfo = this.tileInfos[tile.Type, tile.TextureU, tile.TextureV];
+				var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
 				if (tileInfo == objectTypeToHighlight.TileInfo)
 					return true;
@@ -699,9 +735,9 @@ namespace TerraMap.Data
 
 			if (objectTypeToHighlight.ItemInfo != null)
 			{
-				var tileInfo = this.tileInfos[tile.Type];
+				var tileInfo = this.StaticData.TileInfos[tile.Type];
 
-				var variantTileInfo = this.tileInfos[tile.Type, tile.TextureU, tile.TextureV];
+				var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
 				if (tileInfo.Name != "Chest")
 					return false;
@@ -762,7 +798,7 @@ namespace TerraMap.Data
 
 				if (tile.IsActive)
 				{
-					name = this.TileInfos[tile.Type, tile.TextureU, tile.TextureV].Name;
+					name = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV].Name;
 				}
 				else if (tile.IsLiquidPresent)
 				{
@@ -775,7 +811,7 @@ namespace TerraMap.Data
 				}
 				else if (tile.IsWallPresent)
 				{
-					name = this.TileInfos.WallInfos[tile.WallType].Name;
+					name = this.staticData.WallInfos[tile.WallType].Name;
 				}
 			}
 			else

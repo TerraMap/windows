@@ -16,8 +16,14 @@ namespace TerraMap
 		[Option('o', "output", Required = true, HelpText = "Output png file to be created/overwritten.")]
 		public string OutputFile { get; set; }
 
-		[Option('n', "nogui", DefaultValue = false, HelpText = "Do not display any user interface.")]
-		public bool NoGui { get; set; }
+		[Option('t', "tileId", MutuallyExclusiveSet = "highlight", Required = false, HelpText = "ID (number) of a tile to highlight.")]
+		public int? TileId { get; set; }
+
+		[Option('m', "itemId", MutuallyExclusiveSet = "highlight", Required = false, HelpText = "ID (number) of an item to highlight.")]
+		public int? ItemId { get; set; }
+
+		[Option('n', "name", MutuallyExclusiveSet = "highlight", Required = false, HelpText = "Name of a tile and/or item to highlight.")]
+		public string Name { get; set; }
 
 		[ParserState]
 		public IParserState LastParserState { get; set; }

@@ -48,14 +48,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chest.cs" />
+    <Compile Include="GlobalColors.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="ItemInfo.cs" />
+    <Compile Include="ItemPrefix.cs" />
     <Compile Include="NPC.cs" />
     <Compile Include="ObjectInfo.cs" />
     <Compile Include="ObjectInfoViewModel.cs" />
     <Compile Include="ProgressEventArgs.cs" />
     <Compile Include="PropertyInfoAttribute.cs" />
     <Compile Include="Sign.cs" />
+    <Compile Include="StaticData.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileHitTestInfo.cs" />
     <Compile Include="TileInfo.cs" />

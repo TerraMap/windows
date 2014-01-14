@@ -19,6 +19,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using System.Xml;
 using TerraMap.Data;
 using WPFExtensions.Controls;
 
@@ -52,14 +53,20 @@ namespace TerraMap
 		{
 			this.LoadWorldFiles();
 
-			await this.LoadTileInfosAsync();
+			var staticDataFileInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
+
+			string staticDataFilename = Path.Combine(staticDataFileInfo.DirectoryName, "tiles.xml");
+
+			var staticData = await StaticData.ReadAsync(staticDataFilename);
+
+			this.viewModel.StaticData = staticData;
 
 			this.viewModel.ObjectInfoViewModels = new ObservableCollection<ObjectInfoViewModel>();
 
-			foreach (var itemInfo in this.viewModel.TileInfos.ItemInfos.Values.Where(i => !string.IsNullOrEmpty(i.Name)))
+			foreach (var itemInfo in staticData.ItemInfos.Values.Where(i => !string.IsNullOrEmpty(i.Name)))
 				this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { ItemInfo = itemInfo, Name = itemInfo.Name });
 
-			foreach (var tileInfo in this.viewModel.TileInfos)
+			foreach (var tileInfo in staticData.TileInfos)
 			{
 				var existingTileInfo = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == tileInfo.Name);
 
@@ -75,7 +82,7 @@ namespace TerraMap
 					existingTileInfo.TileInfo = tileInfo;
 				}
 
-				foreach (var variant in tileInfo.variants)
+				foreach (var variant in tileInfo.Variants)
 				{
 					var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name);
 
@@ -94,6 +101,17 @@ namespace TerraMap
 			}
 
 			this.viewModel.SelectedObjectInfoViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == "Sand");
+
+			var args = App.Current.Properties["Args"] as string[];
+			if (args != null && args.Length > 0)
+			{
+				string filename = args[0];
+
+				var uri = new Uri(filename);
+				filename = uri.LocalPath;
+
+				await this.Open(filename);
+			}
 		}
 
 		private void LoadWorldFiles()
@@ -124,23 +142,6 @@ namespace TerraMap
 			{
 				ignoreSelectedWorldFileChanges = false;
 			}
-		}
-
-		private Task LoadTileInfosAsync()
-		{
-			return Task.Run(() =>
-			{
-				this.LoadTileInfos();
-			});
-		}
-
-		private void LoadTileInfos()
-		{
-			string path = Assembly.GetExecutingAssembly().Location;
-
-			path = Path.Combine("tiles.xml");
-
-			this.viewModel.TileInfos = TileInfos.Read(path);
 		}
 
 		private void OnWorldProgressChanged(object sender, ProgressEventArgs e)
@@ -206,48 +207,54 @@ namespace TerraMap
 
 			var world = new World();
 
-			world.TileInfos = this.viewModel.TileInfos;
+			world.StaticData = this.viewModel.StaticData;
 
 			this.viewModel.World = world;
 
 			this.viewModel.BeginLoading("Reading world...");
+			try
+			{
+				var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
+				timer.Start();
 
-			var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
-			timer.Start();
+				await world.ReadAsync(filename);
 
-			await world.ReadAsync(filename);
+				this.viewModel.TotalTileCount = world.TotalTileCount;
 
-			this.Grid.Width = world.WorldWidthinTiles;
-			this.Grid.Height = world.WorldHeightinTiles;
+				this.Grid.Width = world.WorldWidthinTiles;
+				this.Grid.Height = world.WorldHeightinTiles;
 
-			this.Canvas.Width = world.WorldWidthinTiles;
-			this.Canvas.Height = world.WorldHeightinTiles;
+				this.Canvas.Width = world.WorldWidthinTiles;
+				this.Canvas.Height = world.WorldHeightinTiles;
 
-			world.Status = "Drawing map";
+				world.Status = "Drawing map";
 
-			width = world.WorldWidthinTiles;
-			height = world.WorldHeightinTiles;
-			stride = (width * pixelFormat.BitsPerPixel + 7) / 8;
-			pixels = new byte[stride * height];
+				width = world.WorldWidthinTiles;
+				height = world.WorldHeightinTiles;
+				stride = (width * pixelFormat.BitsPerPixel + 7) / 8;
+				pixels = new byte[stride * height];
 
-			viewModel.WriteableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+				viewModel.WriteableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
 
-			if (this.viewModel.IsHighlighting)
-				await world.WritePixelDataAsync(pixels, stride, this.viewModel.SelectedObjectInfoViewModel);
-			else
-				await world.WritePixelDataAsync(pixels, stride);
+				if (this.viewModel.IsHighlighting)
+					await world.WritePixelDataAsync(pixels, stride, this.viewModel.SelectedObjectInfoViewModel);
+				else
+					await world.WritePixelDataAsync(pixels, stride);
 
-			timer.Stop();
+				timer.Stop();
 
-			this.Update();
+				this.Update();
 
-			world.Status = "";
+				world.Status = "";
 
-			this.viewModel.EndLoading();
+				var elapsed = DateTime.Now - start;
 
-			var elapsed = DateTime.Now - start;
-
-			world.Status = "Loaded in " + elapsed;
+				world.Status = "Loaded in " + elapsed;
+			}
+			finally
+			{
+				this.viewModel.EndLoading();
+			}
 		}
 
 		private async Task Refresh()
@@ -289,7 +296,10 @@ namespace TerraMap
 
 			var elapsed = DateTime.Now - start;
 
-			world.Status = "Highlighted in " + elapsed;
+			if (this.viewModel.IsHighlighting)
+				world.Status = string.Format("Highlighted {0:N0} out of {1:N0} blocks in {2:N1} seconds", this.viewModel.HighlightedTileCount, this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+			else
+				world.Status = string.Format("Updated {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
 		}
 
 		private void Update()
@@ -297,6 +307,7 @@ namespace TerraMap
 			this.viewModel.Status = viewModel.World.Status;
 			this.viewModel.ProgressMaximum = viewModel.World.ProgressMaximum;
 			this.viewModel.ProgressValue = viewModel.World.ProgressValue;
+			this.viewModel.HighlightedTileCount = viewModel.World.HighlightedTileCount;
 
 			Int32Rect rect;
 
@@ -614,7 +625,7 @@ namespace TerraMap
 			//if (!tile.IsActive)
 			//	return;
 
-			//var tileInfo = this.viewModel.World.TileInfos[tile.Type];
+			//var tileInfo = this.viewModel.World.TileInfoList[tile.Type];
 
 			//if (tileInfo.Name != "Chest")
 			//	return;

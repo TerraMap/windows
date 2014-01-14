@@ -55,14 +55,14 @@ namespace TerraMap.Data
 				if(world.Version >= 36)
 					item.PrefixId = reader.ReadByte();
 
-				if (item.Id != 0 && world.TileInfos.ItemInfos.ContainsKey(item.Id))
+				if (item.Id != 0 && world.StaticData.ItemInfos.ContainsKey(item.Id))
 				{
-					var itemInfo = world.TileInfos.ItemInfos[item.Id];
+					var itemInfo = world.StaticData.ItemInfos[item.Id];
 					item.Name = itemInfo.Name;
 				}
 
-				if (item.PrefixId > 0 && world.TileInfos.Prefixes.Length > item.PrefixId)
-					item.Name = world.TileInfos.Prefixes[item.PrefixId] + " " + item.Name;
+				if (item.PrefixId > 0 && world.StaticData.ItemPrefixes.Count > item.PrefixId)
+					item.Name = world.StaticData.ItemPrefixes[item.PrefixId] + " " + item.Name;
 
 				chest.Items.Add(item);
 			}

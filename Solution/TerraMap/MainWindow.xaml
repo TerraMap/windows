@@ -53,14 +53,6 @@
 								  From="1.0" To="100.0" />
 		</Storyboard>
 
-		<ContextMenu x:Key="chestContextMenu" ItemsSource="{Binding CurrentChestItemNames}">
-			<ContextMenu.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding}" />
-				</DataTemplate>
-			</ContextMenu.ItemTemplate>
-		</ContextMenu>
-
 	</Window.Resources>
 	<Window.CommandBindings>
 		<CommandBinding Command="ApplicationCommands.Open" CanExecute="OnOpenCanExecute" Executed="OnOpenExecuted" />
@@ -257,12 +249,12 @@
 		<Popup x:Name="popup" StaysOpen="False" Placement="Mouse">
 			<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}">
 				<StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
-					<TextBlock Text="{Binding TileName}" FontWeight="Bold" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+					<TextBlock Text="{Binding TileName}" FontWeight="Bold" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="2" />
 					<Separator />
-					<ItemsControl ItemsSource="{Binding CurrentChestItemNames}">
+					<ItemsControl ItemsSource="{Binding CurrentChestItemNames}" Padding="2">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<TextBlock Text="{Binding}" />
+								<TextBlock Text="{Binding}" Margin="2" />
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
