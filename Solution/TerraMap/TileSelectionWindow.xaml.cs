@@ -15,7 +15,7 @@ using TerraMap.Data;
 
 namespace TerraMap
 {
-	public partial class TileSelectionWindow : Window
+	public partial class TileSelectionWindow : OwnedWindow
 	{
 		CollectionViewSource tileInfoViewSource;
 

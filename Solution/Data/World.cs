@@ -334,7 +334,21 @@ namespace TerraMap.Data
 			}
 		}
 
-		private void ReadHeader(BinaryReader reader)
+		public Task ReadHeaderAsync(string filename)
+		{
+			return Task.Run(() =>
+			{
+				using (Stream stream = File.OpenRead(filename))
+				{
+					using (BinaryReader reader = new BinaryReader(stream))
+					{
+						this.ReadHeader(reader);
+					}
+				}
+			});
+		}
+
+		public void ReadHeader(BinaryReader reader)
 		{
 			var properties = typeof(World).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
@@ -387,7 +401,7 @@ namespace TerraMap.Data
 			}
 		}
 
-		private void ReadTiles(BinaryReader reader)
+		public void ReadTiles(BinaryReader reader)
 		{
 			this.Tiles = new Tile[this.WorldWidthinTiles, this.WorldHeightinTiles];
 
@@ -692,7 +706,7 @@ namespace TerraMap.Data
 
 					if (tileMatches)
 					{
-						if(objectTypeToHighlight != null)
+						if (objectTypeToHighlight != null)
 							this.HighlightedTileCount++;
 					}
 					else

@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Xml;
 using TerraMap.Data;
 
 namespace TerraMap
 {
-	public class MainWindowViewModel : INotifyPropertyChanged
+	public class MainWindowViewModel : ViewModelBase
 	{
 		private StaticData staticData;
 
@@ -76,9 +68,9 @@ namespace TerraMap
 			}
 		}
 
-		private FileInfo selectedWorldFile;
+		private WorldFileViewModel selectedWorldFile;
 
-		public FileInfo SelectedWorldFile
+		public WorldFileViewModel SelectedWorldFile
 		{
 			get { return selectedWorldFile; }
 			set
@@ -88,9 +80,9 @@ namespace TerraMap
 			}
 		}
 
-		private ObservableCollection<FileInfo> worldFiles = new ObservableCollection<FileInfo>();
+		private ObservableCollection<WorldFileViewModel> worldFiles = new ObservableCollection<WorldFileViewModel>();
 
-		public ObservableCollection<FileInfo> WorldFiles
+		public ObservableCollection<WorldFileViewModel> WorldFiles
 		{
 			get { return worldFiles; }
 			set
@@ -256,15 +248,43 @@ namespace TerraMap
 			}
 		}
 
-		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+		public string Filename { get; set; }
+
+		private Visibility updateVisibility = Visibility.Collapsed;
+
+		public Visibility UpdateVisibility
 		{
-			if (this.PropertyChanged != null)
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			get { return updateVisibility; }
+			set
+			{
+				updateVisibility = value;
+				RaisePropertyChanged();
+			}
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		private ReleaseInfo newRelease;
 
-		public string Filename { get; set; }
+		public ReleaseInfo NewRelease
+		{
+			get { return newRelease; }
+			set
+			{
+				newRelease = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private bool isCheckingForUpdate;
+
+		public bool IsCheckingForUpdate
+		{
+			get { return isCheckingForUpdate; }
+			set
+			{
+				isCheckingForUpdate = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public void BeginLoading(string status, bool isProgressIndeterminate = false)
 		{

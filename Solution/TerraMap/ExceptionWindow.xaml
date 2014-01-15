@@ -1,0 +1,21 @@
+﻿<local:OwnedWindow x:Class="TerraMap.ExceptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:TerraMap"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d"
+        Width="480" Height="320" Title="TerraMap"
+        PreviewKeyDown="Window_PreviewKeyDown" KeyDown="Window_KeyDown"
+        FocusManager.FocusedElement="{Binding ElementName=exceptionControl}"
+        d:DataContext="{d:DesignInstance sys:Exception, IsDesignTimeCreatable=True}" Icon="Resources/App.ico">
+    <local:OwnedWindow.CommandBindings>
+		<CommandBinding Command="ApplicationCommands.Close" CanExecute="OnCloseCommandCanExecute" Executed="OnCloseCommandExecuted" />
+    </local:OwnedWindow.CommandBindings>
+    <local:OwnedWindow.InputBindings>
+		<KeyBinding Command="ApplicationCommands.Close" Key="Enter" />
+		<KeyBinding Command="ApplicationCommands.Close" Key="Escape" />
+    </local:OwnedWindow.InputBindings>
+	<local:ExceptionControl x:Name="exceptionControl" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" CancelButtonVisibility="Visible" />
+</local:OwnedWindow>

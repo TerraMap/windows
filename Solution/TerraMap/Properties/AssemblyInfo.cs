@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TerraMap")]
-[assembly: AssemblyDescription("Interactive Terraria world map viewer that quickly displays your worlds, lets you pan and zoom, find blocks, ores, items in chests, NPCs, dungeons, orbs, etc.")]
+[assembly: AssemblyDescription("TerraMap is an interactive Terraria world map viewer that loads quickly and lets you pan and zoom, find blocks, ores, items in chests, dungeons, NPCs, etc.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jason Coon")]
 [assembly: AssemblyProduct("TerraMap")]
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.0.*")]
+//[assembly: AssemblyFileVersion("1.0.0.0")]

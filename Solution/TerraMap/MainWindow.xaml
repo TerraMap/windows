@@ -8,7 +8,8 @@
 		  xmlns:local="clr-namespace:TerraMap"
 		  xmlns:data="clr-namespace:TerraMap.Data;assembly=TerraMap.Data"
 		  WindowState="Maximized" Loaded="OnLoaded"
-        Title="TerraMap" Height="480" Width="640">
+        Title="TerraMap" Height="480" Width="640" 
+		  Icon="Resources/App.ico">
 	<Window.DataContext>
 		<local:MainWindowViewModel TileName="Gold Chest" Status="Status" Position="3, 300" ProgressValue="100" ProgressMaximum="100" IsLoading="True">
 			<local:MainWindowViewModel.World>
@@ -146,13 +147,19 @@
 			<MenuItem Header="_Navigate">
 				<MenuItem Command="ApplicationCommands.Find" Header="Select Block/Item..." InputGestureText="Ctrl+F" />
 				<MenuItem Command="NavigationCommands.PreviousPage" Header="Previous Match" InputGestureText="Shift+F3">
-					<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
+					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem Command="NavigationCommands.BrowseStop" Header="Clear Match">
-					<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+					</MenuItem.Icon>
 				</MenuItem>
 				<MenuItem Command="NavigationCommands.NextPage" Header="Next Match" InputGestureText="F3">
-					<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
+					</MenuItem.Icon>
 				</MenuItem>
 				<Separator />
 				<MenuItem Command="local:Commands.NavigateToSpawn" Header="_Spawn" InputGestureText="Home" />
@@ -174,62 +181,86 @@
 					</MenuItem.Resources>
 				</MenuItem>
 			</MenuItem>
+			<MenuItem Header="_Help">
+				<MenuItem Header="_Check for updates" Click="OnCheckForUpdates" IsEnabled="{Binding IsCheckingForUpdate, Converter={StaticResource InvertedBooleanConverter}}" />
+				<Separator />
+				<MenuItem Header="_About" Click="OnShowAboutWindow">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Width="16" Source="Resources/information-white.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Click="OnUpdateClicked" Visibility="{Binding UpdateVisibility}" ToolTip="A new version of TerraMap is available" Padding="0">
+				<MenuItem.Header>
+					<Label Padding="0" VerticalAlignment="Center" VerticalContentAlignment="Center">_Update</Label>
+				</MenuItem.Header>
+				<MenuItem.Icon>
+					<local:AutoGreyableImage Width="16" Source="Resources/information-white.png" VerticalAlignment="Center" />
+				</MenuItem.Icon>
+			</MenuItem>
 		</Menu>
-		<ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
-			<TextBlock VerticalAlignment="Center">Worlds:</TextBlock>
-			<ComboBox ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
+		<ToolBarTray DockPanel.Dock="Top">
+			<ToolBar Band="0" BandIndex="0" Name="File" ToolTip="File"
+						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+				<TextBlock VerticalAlignment="Center">Worlds:</TextBlock>
+				<ComboBox ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
 				SelectionChanged="OnSelectedWorldFileChanged" DropDownOpened="OnWorldsDropDownOpened">
-				<ComboBox.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding Name}" ToolTip="{Binding FullName}" />
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
-			</ComboBox>
-			<Button Command="ApplicationCommands.Open" ToolTip="Open">
-				<local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
-			</Button>
-			<Button Command="ApplicationCommands.Save" ToolTip="Save Image">
-				<local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
-			</Button>
-			<Button Command="NavigationCommands.Refresh" ToolTip="Refresh">
-				<local:AutoGreyableImage Width="16" Source="Resources/Refresh.png" />
-			</Button>
-			<Separator />
-			<Button Command="local:Commands.ZoomToOriginal" ToolTip="Zoom to 100%">
-				<local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
-			</Button>
-			<Button Command="local:Commands.ZoomToFit" ToolTip="Zoom to fit">
-				<local:AutoGreyableImage Source="Resources/zoomFit.png" Width="16" />
-			</Button>
-			<Separator />
-			<Button Command="NavigationCommands.DecreaseZoom" ToolTip="Zoom out">
-				<local:AutoGreyableImage Source="Resources/zoomOut.png" Width="16" />
-			</Button>
-			<Button Command="NavigationCommands.IncreaseZoom" ToolTip="Zoom in">
-				<local:AutoGreyableImage Source="Resources/zoomIn.png" Width="16" />
-			</Button>
-			<Separator />
-			<TextBlock VerticalAlignment="Center">Blocks:</TextBlock>
-			<ComboBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				<Button Command="ApplicationCommands.Open" ToolTip="Open">
+					<local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
+				</Button>
+				<Button Command="ApplicationCommands.Save" ToolTip="Save Image">
+					<local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
+				</Button>
+				<Button Command="NavigationCommands.Refresh" ToolTip="Refresh">
+					<local:AutoGreyableImage Width="16" Source="Resources/Refresh.png" />
+				</Button>
+			</ToolBar>
+			<ToolBar Band="0" BandIndex="1" Name="View" ToolTip="View"
+						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+				<Button Command="local:Commands.ZoomToOriginal" ToolTip="Zoom to 100%">
+					<local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
+				</Button>
+				<Button Command="local:Commands.ZoomToFit" ToolTip="Zoom to fit">
+					<local:AutoGreyableImage Source="Resources/zoomFit.png" Width="16" />
+				</Button>
+				<Separator />
+				<Button Command="NavigationCommands.DecreaseZoom" ToolTip="Zoom out">
+					<local:AutoGreyableImage Source="Resources/zoomOut.png" Width="16" />
+				</Button>
+				<Button Command="NavigationCommands.IncreaseZoom" ToolTip="Zoom in">
+					<local:AutoGreyableImage Source="Resources/zoomIn.png" Width="16" />
+				</Button>
+			</ToolBar>
+			<ToolBar Band="0" BandIndex="2" Name="Search" ToolTip="Search"
+						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+				<TextBlock VerticalAlignment="Center">Blocks:</TextBlock>
+				<ComboBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
 				SelectionChanged="OnSelectedTileInfoChanged" TextSearch.TextPath="Name" VirtualizingPanel.IsVirtualizing="True">
-				<ComboBox.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding Name}" />
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
-			</ComboBox>
-			<Button Command="ApplicationCommands.Find" ToolTip="Select Block...">...</Button>
-			<Button Command="NavigationCommands.PreviousPage" ToolTip="Previous">
-				<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
-			</Button>
-			<Button Command="NavigationCommands.BrowseStop" ToolTip="Clear">
-				<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
-			</Button>
-			<Button Command="NavigationCommands.NextPage" ToolTip="Next">
-				<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
-			</Button>
-			<CheckBox IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged">Highlight All</CheckBox>
-		</ToolBar>
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				<Button Command="ApplicationCommands.Find" ToolTip="Select Block...">...</Button>
+				<Button Command="NavigationCommands.PreviousPage" ToolTip="Previous">
+					<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
+				</Button>
+				<Button Command="NavigationCommands.BrowseStop" ToolTip="Clear">
+					<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+				</Button>
+				<Button Command="NavigationCommands.NextPage" ToolTip="Next">
+					<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
+				</Button>
+				<CheckBox IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged">Highlight All</CheckBox>
+			</ToolBar>
+		</ToolBarTray>
 		<StatusBar DockPanel.Dock="Bottom">
 			<StatusBarItem DockPanel.Dock="Left">
 				<TextBlock Text="{Binding Position}" />

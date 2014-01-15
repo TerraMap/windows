@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -21,7 +15,7 @@ namespace TerraMap
 
 		private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
 		{
-			MessageBox.Show(e.Exception.ToString());
+			ExceptionWindow.ShowDialog(e.Exception);
 			e.Handled = true;
 		}
 	}

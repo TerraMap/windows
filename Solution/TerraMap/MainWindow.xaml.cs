@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +29,8 @@ namespace TerraMap
 {
 	public partial class MainWindow : Window
 	{
+		#region Variables
+
 		MainWindowViewModel viewModel = new MainWindowViewModel();
 		private bool ignoreSelectedWorldFileChanges;
 
@@ -35,6 +39,10 @@ namespace TerraMap
 		int width, height, stride;
 		byte[] pixels;
 		PixelFormat pixelFormat = PixelFormats.Bgr32;
+
+		#endregion
+
+		#region Constructors
 
 		public MainWindow()
 		{
@@ -49,78 +57,20 @@ namespace TerraMap
 			indicatorStoryboard = (Storyboard)this.FindResource("indicatorStoryboard");
 		}
 
-		private async void OnLoaded(object sender, RoutedEventArgs e)
+		#endregion
+
+		private void HandleException(Exception ex)
 		{
-			this.LoadWorldFiles();
-
-			var staticDataFileInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
-
-			string staticDataFilename = Path.Combine(staticDataFileInfo.DirectoryName, "tiles.xml");
-
-			var staticData = await StaticData.ReadAsync(staticDataFilename);
-
-			this.viewModel.StaticData = staticData;
-
-			this.viewModel.ObjectInfoViewModels = new ObservableCollection<ObjectInfoViewModel>();
-
-			foreach (var itemInfo in staticData.ItemInfos.Values.Where(i => !string.IsNullOrEmpty(i.Name)))
-				this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { ItemInfo = itemInfo, Name = itemInfo.Name });
-
-			foreach (var tileInfo in staticData.TileInfos)
-			{
-				var existingTileInfo = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == tileInfo.Name);
-
-				if (existingTileInfo == null)
-				{
-					if (!string.IsNullOrEmpty(tileInfo.Name))
-					{
-						this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = tileInfo, Name = tileInfo.Name });
-					}
-				}
-				else
-				{
-					existingTileInfo.TileInfo = tileInfo;
-				}
-
-				foreach (var variant in tileInfo.Variants)
-				{
-					var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name);
-
-					if (existingVariantViewModel == null)
-					{
-						if (!string.IsNullOrEmpty(variant.Name))
-						{
-							this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = variant, Name = variant.Name });
-						}
-					}
-					else
-					{
-						existingVariantViewModel.TileInfo = variant;
-					}
-				}
-			}
-
-			this.viewModel.SelectedObjectInfoViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == "Sand");
-
-			var args = App.Current.Properties["Args"] as string[];
-			if (args != null && args.Length > 0)
-			{
-				string filename = args[0];
-
-				var uri = new Uri(filename);
-				filename = uri.LocalPath;
-
-				await this.Open(filename);
-			}
+			ExceptionWindow.ShowDialog(ex, this);
 		}
 
-		private void LoadWorldFiles()
+		private async Task LoadWorldFiles()
 		{
 			try
 			{
 				ignoreSelectedWorldFileChanges = true;
 
-				FileInfo worldFile = this.viewModel.SelectedWorldFile;
+				var currentWorldFile = this.viewModel.SelectedWorldFile;
 
 				this.viewModel.WorldFiles.Clear();
 
@@ -128,37 +78,22 @@ namespace TerraMap
 
 				foreach (var filename in Directory.GetFiles(path, "*.wld"))
 				{
-					this.viewModel.WorldFiles.Add(new FileInfo(filename));
+					var world = new World();
+					await world.ReadHeaderAsync(filename);
+					this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = world.Name });
 				}
 
-				if (worldFile != null)
+				if (currentWorldFile != null)
 				{
-					worldFile = this.viewModel.WorldFiles.FirstOrDefault(f => f.FullName == worldFile.FullName);
+					currentWorldFile = this.viewModel.WorldFiles.FirstOrDefault(f => f.FileInfo.FullName == currentWorldFile.FileInfo.FullName);
 
-					this.viewModel.SelectedWorldFile = worldFile;
+					this.viewModel.SelectedWorldFile = currentWorldFile;
 				}
 			}
 			finally
 			{
 				ignoreSelectedWorldFileChanges = false;
 			}
-		}
-
-		private void OnWorldProgressChanged(object sender, ProgressEventArgs e)
-		{
-			//if (!this.Dispatcher.CheckAccess())
-			//{
-			//	this.Dispatcher.Invoke(new Action<object, ProgressEventArgs>(this.OnWorldProgressChanged), sender, e);
-			//	return;
-			//}
-
-			viewModel.ProgressMaximum = e.Maximum;
-			viewModel.ProgressValue = e.Value;
-		}
-
-		private void OnDispatcherTimerTick(object sender, EventArgs e)
-		{
-			this.Update();
 		}
 
 		private string GetWorldsPath()
@@ -190,8 +125,6 @@ namespace TerraMap
 
 		private async Task Open(FileInfo fileInfo)
 		{
-			this.viewModel.SelectedWorldFile = fileInfo;
-
 			await this.Open(fileInfo.FullName);
 		}
 
@@ -200,6 +133,8 @@ namespace TerraMap
 			var start = DateTime.Now;
 
 			this.viewModel.TileName = null;
+
+			this.viewModel.SelectedWorldFile = this.viewModel.WorldFiles.FirstOrDefault(w => w.FileInfo.FullName == filename);
 
 			this.Title = "World Info - " + filename;
 
@@ -218,6 +153,8 @@ namespace TerraMap
 				timer.Start();
 
 				await world.ReadAsync(filename);
+
+				this.Title = "TerraMap - " + world.Name;
 
 				this.viewModel.TotalTileCount = world.TotalTileCount;
 
@@ -249,7 +186,7 @@ namespace TerraMap
 
 				var elapsed = DateTime.Now - start;
 
-				world.Status = "Loaded in " + elapsed;
+				world.Status = world.Status = string.Format("Loaded {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
 			}
 			finally
 			{
@@ -338,6 +275,13 @@ namespace TerraMap
 
 		private void Save(string filename)
 		{
+			FileInfo fileInfo = new FileInfo(filename);
+			if (fileInfo.Exists && fileInfo.Extension == ".wld")
+			{
+				MessageBox.Show(this, "I'm sorry, Dave. I'm afraid I can't do that.\r\n\r\nYou don't want me overwriting your .wld file.  Please make sure to specify a filename that ends with png.  :)", "TerraMap");
+				return;
+			}
+
 			using (var stream = new FileStream(filename, FileMode.Create))
 			{
 				var encoder = new PngBitmapEncoder();
@@ -567,7 +511,175 @@ namespace TerraMap
 			this.viewModel.SelectedObjectInfoViewModel = viewModel.SelectedObjectInfoViewModel;
 		}
 
+		private void CheckForUpdates(bool isUserInitiated = false)
+		{
+			try
+			{
+				this.viewModel.IsCheckingForUpdate = true;
+				this.viewModel.UpdateVisibility = Visibility.Collapsed;
+				this.viewModel.NewRelease = null;
+
+				var updatesUrl = @"https://terramap.codeplex.com/project/feeds/rss?ProjectRSSFeed=codeplex%3a%2f%2frelease%2fterramap";
+				var updatesUri = new Uri(updatesUrl);
+
+				var webClient = new WebClient();
+				webClient.OpenReadCompleted += OnCheckForUpdatesComplete;
+				webClient.OpenReadAsync(updatesUri, isUserInitiated);
+			}
+			catch (Exception ex)
+			{
+				if (isUserInitiated)
+				{
+					ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
+				}
+				else
+				{
+					Debug.WriteLine(ex);
+				}
+			}
+		}
+
+		private void OnCheckForUpdatesComplete(object sender, OpenReadCompletedEventArgs e)
+		{
+			var isUserInitiated = false;
+
+			try
+			{
+				if (e.UserState is bool)
+					isUserInitiated = (bool)e.UserState;
+
+				if (e.Cancelled)
+					return;
+
+				if (e.Error != null)
+				{
+					if (isUserInitiated)
+					{
+						ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", e.Error));
+					}
+					else
+					{
+						Debug.WriteLine(e.Error);
+					}
+
+					return;
+				}
+
+				var releases = new List<ReleaseInfo>();
+
+				using (var stream = e.Result)
+				{
+					releases = ReleaseInfo.FromRssStream(stream);
+				}
+
+				var currentVersion = Assembly.GetEntryAssembly().GetName().Version;
+
+				if (releases == null || releases.Count < 1)
+				{
+					if (isUserInitiated)
+						MessageBox.Show(string.Format("Version {0}\r\n\r\nTerraMap is up to date.", currentVersion), "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
+
+					return;
+				}
+
+				var newRelease = ReleaseInfo.GetLatest(releases, ReleaseStatus.Alpha);
+
+				if (newRelease.Version > currentVersion)
+				{
+					this.viewModel.UpdateVisibility = Visibility.Visible;
+					this.viewModel.NewRelease = newRelease;
+				}
+			}
+			catch (Exception ex)
+			{
+				if (isUserInitiated)
+				{
+					ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
+				}
+				else
+				{
+					Debug.WriteLine(ex);
+				}
+			}
+			finally
+			{
+				this.viewModel.IsCheckingForUpdate = false;
+			}
+		}
+
 		#region Event Handlers
+
+		private async void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			this.CheckForUpdates();
+
+			await this.LoadWorldFiles();
+
+			var staticDataFileInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
+
+			string staticDataFilename = Path.Combine(staticDataFileInfo.DirectoryName, "tiles.xml");
+
+			var staticData = await StaticData.ReadAsync(staticDataFilename);
+
+			this.viewModel.StaticData = staticData;
+
+			this.viewModel.ObjectInfoViewModels = new ObservableCollection<ObjectInfoViewModel>();
+
+			foreach (var itemInfo in staticData.ItemInfos.Values.Where(i => !string.IsNullOrEmpty(i.Name)))
+				this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { ItemInfo = itemInfo, Name = itemInfo.Name });
+
+			foreach (var tileInfo in staticData.TileInfos)
+			{
+				var existingTileInfo = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == tileInfo.Name);
+
+				if (existingTileInfo == null)
+				{
+					if (!string.IsNullOrEmpty(tileInfo.Name))
+					{
+						this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = tileInfo, Name = tileInfo.Name });
+					}
+				}
+				else
+				{
+					existingTileInfo.TileInfo = tileInfo;
+				}
+
+				foreach (var variant in tileInfo.Variants)
+				{
+					var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name);
+
+					if (existingVariantViewModel == null)
+					{
+						if (!string.IsNullOrEmpty(variant.Name))
+						{
+							this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = variant, Name = variant.Name });
+						}
+					}
+					else
+					{
+						existingVariantViewModel.TileInfo = variant;
+					}
+				}
+			}
+
+			this.viewModel.SelectedObjectInfoViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == "Sand");
+
+			var args = App.Current.Properties["Args"] as string[];
+			if (args != null && args.Length > 0)
+			{
+				string filename = args[0];
+
+				var uri = new Uri(filename);
+				filename = uri.LocalPath;
+
+				await this.Open(filename);
+			}
+		}
+
+		private void OnDispatcherTimerTick(object sender, EventArgs e)
+		{
+			this.Update();
+		}
 
 		private async void OnSelectedTileInfoChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -665,29 +777,29 @@ namespace TerraMap
 			if (element == null)
 				return;
 
-			var fileInfo = element.DataContext as FileInfo;
-			if (fileInfo == null)
+			var worldFile = element.DataContext as WorldFileViewModel;
+			if (worldFile == null)
 				return;
 
-			await this.Open(fileInfo);
+			await this.Open(worldFile.FileInfo);
 		}
 
 		private async void OnSelectedWorldFileChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (ignoreSelectedWorldFileChanges || this.viewModel.IsLoading)
+			if (ignoreSelectedWorldFileChanges || this.viewModel.IsLoading || this.viewModel.SelectedWorldFile == null)
 				return;
 
-			await this.Open(this.viewModel.SelectedWorldFile);
+			await this.Open(this.viewModel.SelectedWorldFile.FileInfo);
 		}
 
-		private void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
+		private async void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
 		{
-			this.LoadWorldFiles();
+			await this.LoadWorldFiles();
 		}
 
-		private void OnWorldsDropDownOpened(object sender, EventArgs e)
+		private async void OnWorldsDropDownOpened(object sender, EventArgs e)
 		{
-			this.LoadWorldFiles();
+			await this.LoadWorldFiles();
 		}
 
 		private async void OnIsHighlightingChanged(object sender, RoutedEventArgs e)
@@ -709,6 +821,24 @@ namespace TerraMap
 				return;
 
 			this.NavigateToNpc(npc);
+		}
+
+		private void OnCheckForUpdates(object sender, RoutedEventArgs e)
+		{
+			this.CheckForUpdates(true);
+		}
+
+		private void OnShowAboutWindow(object sender, RoutedEventArgs e)
+		{
+			new AboutWindow() { Owner = this }.ShowDialog();
+		}
+
+		private void OnUpdateClicked(object sender, RoutedEventArgs e)
+		{
+			if (this.viewModel.NewRelease == null)
+				return;
+
+			Process.Start(this.viewModel.NewRelease.Url);
 		}
 
 		#endregion
@@ -879,5 +1009,6 @@ namespace TerraMap
 		}
 
 		#endregion
+
 	}
 }

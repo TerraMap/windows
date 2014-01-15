@@ -37,6 +37,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\App.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -62,14 +68,37 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AboutWindowViewModel.cs" />
     <Compile Include="AutoGreyableImage.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="ExceptionControl.xaml.cs" />
+    <Compile Include="ExceptionViewModel.cs" />
+    <Compile Include="ExceptionWindow.xaml.cs" />
     <Compile Include="InvertedBooleanConverter.cs" />
-    <Compile Include="ObjectInfoTemplateSelector.cs" />
+    <Compile Include="OwnedWindow.cs" />
+    <Compile Include="ReleaseInfo.cs" />
     <Compile Include="SearchDirection.cs" />
     <Compile Include="TileSelectionWindow.xaml.cs">
       <DependentUpon>TileSelectionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="WindowControlBox.cs" />
+    <Compile Include="WorldFileViewModel.cs" />
+    <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExceptionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ExceptionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,6 +135,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -154,6 +184,20 @@
   <ItemGroup>
     <None Include="WPFExtensions.dll" />
     <None Include="WPFExtensions.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\information-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TerraMap1.png" />
+    <None Include="TerraMap2.png" />
+    <None Include="TerraMap3.png" />
+    <None Include="TerraMap4.png" />
+    <None Include="TerraMap5.png" />
+    <None Include="TerraMap6.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

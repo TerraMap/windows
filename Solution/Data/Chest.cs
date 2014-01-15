@@ -62,7 +62,7 @@ namespace TerraMap.Data
 				}
 
 				if (item.PrefixId > 0 && world.StaticData.ItemPrefixes.Count > item.PrefixId)
-					item.Name = world.StaticData.ItemPrefixes[item.PrefixId] + " " + item.Name;
+					item.Name = world.StaticData.ItemPrefixes[item.PrefixId].Name + " " + item.Name;
 
 				chest.Items.Add(item);
 			}
