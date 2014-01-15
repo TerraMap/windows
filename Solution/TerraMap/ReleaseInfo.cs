@@ -20,7 +20,7 @@ namespace TerraMap
 			var releases = new List<ReleaseInfo>();
 
 			// regex to match a valid release version
-			Regex regex = new Regex(@"\d+.\d+.\d+");
+			Regex regex = new Regex(@"\d+.\d+.\d+.\d+");
 
 			XDocument document = XDocument.Load(stream);
 
