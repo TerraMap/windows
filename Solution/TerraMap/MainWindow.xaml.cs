@@ -577,7 +577,7 @@ namespace TerraMap
 				if (releases == null || releases.Count < 1)
 				{
 					if (isUserInitiated)
-						MessageBox.Show(string.Format("Version {0}\r\n\r\nTerraMap is up to date.", currentVersion), "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
+						MessageBox.Show("No updates found.", "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
 
 					return;
 				}
@@ -588,6 +588,10 @@ namespace TerraMap
 				{
 					this.viewModel.UpdateVisibility = Visibility.Visible;
 					this.viewModel.NewRelease = newRelease;
+				}
+				else if (isUserInitiated)
+				{
+					MessageBox.Show(string.Format("Version {0}\r\n\r\nTerraMap is up to date.", currentVersion), "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
 				}
 			}
 			catch (Exception ex)
