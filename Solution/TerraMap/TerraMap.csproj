@@ -146,6 +146,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Console\Console.csproj">
+      <Project>{89543a8a-9514-43bc-976b-a9d3001d43c3}</Project>
+      <Name>Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{215115fc-2270-4105-8f7b-3dea4f267520}</Project>
       <Name>Data</Name>
