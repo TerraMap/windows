@@ -258,9 +258,9 @@ namespace TerraMap.Data
 		[PropertyInfo(ignore: true)]
 		public List<Sign> Signs { get; set; }
 
-		[PropertyInfo(ignore: true)]
 		private ObservableCollection<NPC> npcs = new ObservableCollection<NPC>();
 
+		[PropertyInfo(ignore: true)]
 		public ObservableCollection<NPC> NPCs
 		{
 			get { return npcs; }
@@ -279,6 +279,19 @@ namespace TerraMap.Data
 
 		[PropertyInfo(ignore: true)]
 		public int VerificationWorldId { get; set; }
+
+		private ObservableCollection<WorldProperty> properties = new ObservableCollection<WorldProperty>();
+
+		[PropertyInfo(ignore: true)]
+		public ObservableCollection<WorldProperty> Properties
+		{
+			get { return properties; }
+			set
+			{
+				properties = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		#endregion
 
@@ -372,6 +385,8 @@ namespace TerraMap.Data
 
 				var dataType = property.PropertyType;
 
+				object value = null;
+
 				if (dataType == typeof(Boolean))
 					property.SetValue(this, reader.ReadBoolean());
 				else if (dataType == typeof(Byte))
@@ -396,8 +411,16 @@ namespace TerraMap.Data
 						array[i] = reader.ReadInt32();
 					}
 
+					if(count > 0)
+						value = string.Join(", ", array);
+
 					property.SetValue(this, array);
 				}
+
+				if(value == null)
+					value = property.GetValue(this);
+
+				this.Properties.Add(new WorldProperty() { Name = property.Name, Value = value });
 			}
 		}
 

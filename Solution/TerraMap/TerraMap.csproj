@@ -87,6 +87,9 @@
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="WindowControlBox.cs" />
     <Compile Include="WorldFileViewModel.cs" />
+    <Compile Include="WorldPropertiesWindow.xaml.cs">
+      <DependentUpon>WorldPropertiesWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -112,6 +115,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="TileSelectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WorldPropertiesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,6 +209,9 @@
     <None Include="TerraMap4.png" />
     <None Include="TerraMap5.png" />
     <None Include="TerraMap6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Properties.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

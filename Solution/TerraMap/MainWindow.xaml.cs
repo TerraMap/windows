@@ -51,6 +51,7 @@ namespace TerraMap
 			viewModel = (MainWindowViewModel)this.DataContext;
 			viewModel.World = null;
 			viewModel.IsLoading = false;
+			viewModel.IsLoaded = false;
 			viewModel.Status = null;
 			viewModel.Position = null;
 			viewModel.TileName = null;
@@ -146,6 +147,7 @@ namespace TerraMap
 
 			this.viewModel.World = world;
 
+			this.viewModel.ProgressValue = 0;
 			this.viewModel.BeginLoading("Reading world...");
 			try
 			{
@@ -199,10 +201,13 @@ namespace TerraMap
 			await this.Open(this.viewModel.Filename);
 		}
 
+		private void ShowProperties()
+		{
+			new WorldPropertiesWindow() { DataContext = this.viewModel.World, Owner = this }.Show();
+		}
+
 		private async Task UpdateHighlight()
 		{
-			var start = DateTime.Now;
-
 			if (this.viewModel.IsLoading)
 				return;
 
@@ -210,9 +215,10 @@ namespace TerraMap
 			if (world == null)
 				return;
 
-			this.viewModel.IsLoading = true;
+			var start = DateTime.Now;
 
-			world.Status = "Updating map";
+			this.viewModel.BeginLoading("Updating map");
+			this.viewModel.ProgressValue = 0;
 
 			var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
 			timer.Start();
@@ -228,15 +234,14 @@ namespace TerraMap
 
 			world.Status = "";
 
-			this.viewModel.IsLoaded = true;
-			this.viewModel.IsLoading = false;
-
 			var elapsed = DateTime.Now - start;
 
 			if (this.viewModel.IsHighlighting)
 				world.Status = string.Format("Highlighted {0:N0} out of {1:N0} blocks in {2:N1} seconds", this.viewModel.HighlightedTileCount, this.viewModel.TotalTileCount, elapsed.TotalSeconds);
 			else
 				world.Status = string.Format("Updated {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+
+			this.viewModel.EndLoading();
 		}
 
 		private void Update()
@@ -298,49 +303,6 @@ namespace TerraMap
 			this.Indicator.Visibility = Visibility.Collapsed;
 		}
 
-		private async Task FindTile(SearchDirection direction)
-		{
-			this.viewModel.BeginLoading("Finding tile...", true);
-
-			TileHitTestInfo tileHitTestInfo = null;
-
-			if (direction == SearchDirection.Forwards)
-			{
-				tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel, this.viewModel.CurrentTileHitTestInfo);
-				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel);
-			}
-			else
-			{
-				tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel, this.viewModel.CurrentTileHitTestInfo);
-				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel);
-			}
-
-			this.viewModel.EndLoading();
-
-			this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
-
-			if (tileHitTestInfo == null)
-			{
-				this.Indicator.Visibility = Visibility.Collapsed;
-				return;
-			}
-
-			this.Indicator.Visibility = Visibility.Visible;
-			Canvas.SetLeft(this.Indicator, tileHitTestInfo.X - 1);
-			Canvas.SetTop(this.Indicator, tileHitTestInfo.Y - 1);
-
-			indicatorStoryboard.Begin();
-
-			if (this.zoomControl.Zoom < 1)
-				this.zoomControl.Zoom = 1;
-
-			this.zoomControl.Mode = ZoomControlModes.Custom;
-
-			this.NavigateTo(tileHitTestInfo.X, tileHitTestInfo.Y);
-		}
-
 		private void NavigateToSpawn()
 		{
 			this.NavigateTo(this.viewModel.World.SpawnX, this.viewModel.World.SpawnY);
@@ -368,6 +330,49 @@ namespace TerraMap
 			this.zoomControl.TranslateY = (-y + this.zoomControl.ActualHeight / 2) * this.zoomControl.Zoom;
 		}
 
+		private async Task FindTile(SearchDirection direction)
+		{
+			this.viewModel.BeginLoading("Finding tile...");
+
+			TileHitTestInfo tileHitTestInfo = null;
+
+			if (direction == SearchDirection.Forwards)
+			{
+				tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel, this.viewModel.CurrentTileHitTestInfo);
+				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
+					tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel);
+			}
+			else
+			{
+				tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel, this.viewModel.CurrentTileHitTestInfo);
+				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
+					tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel);
+			}
+
+			this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
+
+			this.viewModel.EndLoading();
+
+			if (tileHitTestInfo == null)
+			{
+				this.Indicator.Visibility = Visibility.Collapsed;
+				return;
+			}
+
+			this.Indicator.Visibility = Visibility.Visible;
+			Canvas.SetLeft(this.Indicator, tileHitTestInfo.X - 1);
+			Canvas.SetTop(this.Indicator, tileHitTestInfo.Y - 1);
+
+			indicatorStoryboard.Begin();
+
+			if (this.zoomControl.Zoom < 1)
+				this.zoomControl.Zoom = 1;
+
+			this.zoomControl.Mode = ZoomControlModes.Custom;
+
+			this.NavigateTo(tileHitTestInfo.X, tileHitTestInfo.Y);
+		}
+
 		private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo currentTileHitTestInfo = null)
 		{
 			return Task.Run<TileHitTestInfo>(() =>
@@ -392,6 +397,9 @@ namespace TerraMap
 				startX = currentTileHitTestInfo.X;
 				startY = currentTileHitTestInfo.Y;
 			}
+
+			this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
+			this.viewModel.ProgressValue = this.viewModel.World.WorldHeightinTiles * (startX - 1) + startY;
 
 			for (int x = startX; x > -1; x--)
 			{
@@ -423,6 +431,8 @@ namespace TerraMap
 
 				if (matchingTile != null)
 					break;
+
+				this.viewModel.ProgressValue -= this.viewModel.World.WorldHeightinTiles;
 			}
 
 			if (matchingTile == null)
@@ -456,6 +466,9 @@ namespace TerraMap
 				startY = currentTileHitTestInfo.Y;
 			}
 
+			this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
+			this.viewModel.ProgressValue = this.viewModel.World.WorldHeightinTiles * (startX - 1) + startY;
+
 			for (int x = startX; x < this.viewModel.World.WorldWidthinTiles; x++)
 			{
 				for (int y = startY; y < this.viewModel.World.WorldHeightinTiles; y++)
@@ -486,6 +499,8 @@ namespace TerraMap
 
 				if (matchingTile != null)
 					break;
+
+				this.viewModel.ProgressValue += this.viewModel.World.WorldHeightinTiles;
 			}
 
 			if (matchingTile == null)
@@ -666,7 +681,7 @@ namespace TerraMap
 				}
 			}
 
-			this.viewModel.SelectedObjectInfoViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == "Sand");
+			this.viewModel.SelectedObjectInfoViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == "Crimstone");
 
 			var args = App.Current.Properties["Args"] as string[];
 			if (args != null && args.Length > 0)
@@ -736,18 +751,6 @@ namespace TerraMap
 				y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
 				return;
 
-			//var tile = this.viewModel.World.Tiles[x, y];
-
-			//if (!tile.IsActive)
-			//	return;
-
-			//var tileInfo = this.viewModel.World.TileInfoList[tile.Type];
-
-			//if (tileInfo.Name != "Chest")
-			//	return;
-
-			//List<string> itemNames = new List<string>() { tileInfo.Name };
-
 			var chest = this.viewModel.World.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
 			if (chest != null)
 			{
@@ -770,6 +773,16 @@ namespace TerraMap
 				this.viewModel.CurrentChestItemNames = new string[] { sign.Text };
 				this.popup.IsOpen = true;
 			}
+
+			var tile = this.viewModel.World.Tiles[x, y];
+
+			var tileHitTestInfo = new TileHitTestInfo(tile, x, y);
+
+			this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
+
+			this.Indicator.Visibility = Visibility.Visible;
+			Canvas.SetLeft(this.Indicator, tileHitTestInfo.X - 1);
+			Canvas.SetTop(this.Indicator, tileHitTestInfo.Y - 1);
 		}
 
 		private async void OnOpenWorldFile(object sender, RoutedEventArgs e)
@@ -882,6 +895,18 @@ namespace TerraMap
 		private async void OnRefreshExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
 			await this.Refresh();
+		}
+
+
+		private void OnPropertiesCanExecute(object sender, CanExecuteRoutedEventArgs e)
+		{
+			if (this.viewModel.IsLoaded)
+				e.CanExecute = true;
+		}
+
+		private void OnPropertiesExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			this.ShowProperties();
 		}
 
 

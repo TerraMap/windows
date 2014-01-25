@@ -66,6 +66,7 @@
     <Compile Include="WallInfo.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldProperty.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="tiles.xml">
