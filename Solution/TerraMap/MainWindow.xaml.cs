@@ -338,15 +338,15 @@ namespace TerraMap
 
 			if (direction == SearchDirection.Forwards)
 			{
-				tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel, this.viewModel.CurrentTileHitTestInfo);
+				tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel, start: this.viewModel.CurrentTileHitTestInfo);
 				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel);
+					tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel, end: this.viewModel.CurrentTileHitTestInfo);
 			}
 			else
 			{
-				tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel, this.viewModel.CurrentTileHitTestInfo);
+				tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel, start: this.viewModel.CurrentTileHitTestInfo);
 				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel);
+					tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel, end: this.viewModel.CurrentTileHitTestInfo);
 			}
 
 			this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
@@ -373,15 +373,15 @@ namespace TerraMap
 			this.NavigateTo(tileHitTestInfo.X, tileHitTestInfo.Y);
 		}
 
-		private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo currentTileHitTestInfo = null)
+		private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			return Task.Run<TileHitTestInfo>(() =>
 			{
-				return this.FindPreviousTile(targetObjectType, currentTileHitTestInfo);
+				return this.FindPreviousTile(targetObjectType, start, end);
 			});
 		}
 
-		private TileHitTestInfo FindPreviousTile(ObjectInfoViewModel targetObjectType, TileHitTestInfo currentTileHitTestInfo = null)
+		private TileHitTestInfo FindPreviousTile(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			Tile matchingTile = null;
 			int tileX = 0;
@@ -392,10 +392,10 @@ namespace TerraMap
 			int startX = this.viewModel.World.WorldWidthinTiles - 1;
 			int startY = this.viewModel.World.WorldHeightinTiles - 1;
 
-			if (currentTileHitTestInfo != null)
+			if (start != null)
 			{
-				startX = currentTileHitTestInfo.X;
-				startY = currentTileHitTestInfo.Y;
+				startX = start.X;
+				startY = start.Y;
 			}
 
 			this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
@@ -405,20 +405,23 @@ namespace TerraMap
 			{
 				for (int y = startY; y > -1; y--)
 				{
+					if (end != null && end.X == x && end.Y == y)
+						return null;
+
 					var tile = this.viewModel.World.Tiles[x, y];
 
-					if (currentTileHitTestInfo != null && !foundStartTile)
+					if (start != null && !foundStartTile)
 					{
-						if (tile == currentTileHitTestInfo.Tile)
+						if (tile == start.Tile)
 							foundStartTile = true;
 
 						continue;
 					}
 
-					if (currentTileHitTestInfo != null && tile == currentTileHitTestInfo.Tile)
+					if (start != null && tile == start.Tile)
 						continue;
 
-					if (this.viewModel.World.IsTileMatch(targetObjectType, x, y, tile, currentTileHitTestInfo))
+					if (this.viewModel.World.IsTileMatch(targetObjectType, x, y, tile, start))
 					{
 						tileX = x;
 						tileY = y;
@@ -441,15 +444,15 @@ namespace TerraMap
 			return new TileHitTestInfo(matchingTile, tileX, tileY);
 		}
 
-		private Task<TileHitTestInfo> FindNextTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo currentTileHitTestInfo = null)
+		private Task<TileHitTestInfo> FindNextTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			return Task.Run<TileHitTestInfo>(() =>
 			{
-				return this.FindNextTile(targetObjectType, currentTileHitTestInfo);
+				return this.FindNextTile(targetObjectType, start, end);
 			});
 		}
 
-		private TileHitTestInfo FindNextTile(ObjectInfoViewModel targetObjectType, TileHitTestInfo currentTileHitTestInfo = null)
+		private TileHitTestInfo FindNextTile(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			Tile matchingTile = null;
 			int tileX = 0;
@@ -460,10 +463,10 @@ namespace TerraMap
 			int startX = 0;
 			int startY = 0;
 
-			if (currentTileHitTestInfo != null)
+			if (start != null)
 			{
-				startX = currentTileHitTestInfo.X;
-				startY = currentTileHitTestInfo.Y;
+				startX = start.X;
+				startY = start.Y;
 			}
 
 			this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
@@ -473,20 +476,23 @@ namespace TerraMap
 			{
 				for (int y = startY; y < this.viewModel.World.WorldHeightinTiles; y++)
 				{
+					if (end != null && end.X == x && end.Y == y)
+						return null;
+
 					var tile = this.viewModel.World.Tiles[x, y];
 
-					if (currentTileHitTestInfo != null && !foundStartTile)
+					if (start != null && !foundStartTile)
 					{
-						if (tile == currentTileHitTestInfo.Tile)
+						if (tile == start.Tile)
 							foundStartTile = true;
 
 						continue;
 					}
 
-					if (currentTileHitTestInfo != null && tile == currentTileHitTestInfo.Tile)
+					if (start != null && tile == start.Tile)
 						continue;
 
-					if (this.viewModel.World.IsTileMatch(targetObjectType, x, y, tile, currentTileHitTestInfo))
+					if (this.viewModel.World.IsTileMatch(targetObjectType, x, y, tile, start))
 					{
 						tileX = x;
 						tileY = y;
