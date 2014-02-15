@@ -12,6 +12,7 @@ namespace TerraMap.Data
 		public int X { get; set; }
 		public int Y { get; set; }
 		public List<Item> Items { get; set; }
+		public string Name { get; set; }
 
 		public Chest()
 		{

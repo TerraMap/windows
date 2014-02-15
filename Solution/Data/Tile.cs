@@ -11,7 +11,7 @@ namespace TerraMap.Data
 	public class Tile
 	{
 		public Boolean IsActive { get; set; }
-		public Byte Type { get; set; }
+		public ushort Type { get; set; }
 		public Int16 TextureU { get; set; }
 		public Int16 TextureV { get; set; }
 		public Boolean IsColorPresent { get; set; }

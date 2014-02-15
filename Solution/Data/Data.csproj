@@ -52,6 +52,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="ItemInfo.cs" />
     <Compile Include="ItemPrefix.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="NPC.cs" />
     <Compile Include="ObjectInfo.cs" />
     <Compile Include="ObjectInfoViewModel.cs" />
@@ -71,6 +72,7 @@
   <ItemGroup>
     <None Include="tiles.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

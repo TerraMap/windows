@@ -992,6 +992,69 @@
   <tile num="254" name="Pumpkin Seed" color="#1E9648" hasExtra="1" letLight="1">
     <var minu="142" name="Pumpkin Plant" color="#FAAC0F" />
   </tile>
+
+  <tile num="255" name="Purple Gemspark Block" />
+  <tile num="256" name="Yellow Gemspark Block" />
+  <tile num="257" name="Blue Gemspark Block" />
+  <tile num="258" name="Green Gemspark Block" />
+  <tile num="259" name="Red Gemspark Block" />
+  <tile num="260" name="White Gemspark Block" />
+  <tile num="261" name="Orange Gemspark Block" />
+  <tile num="262" name="Purple Gemspark Block2" />
+  <tile num="263" name="Yellow Gemspark Block2" />
+  <tile num="264" name="Blue Gemspark Block2" />
+  <tile num="265" name="Green Gemspark Block2" />
+  <tile num="266" name="Red Gemspark Block2" />
+  <tile num="267" name="White Gemspark Block2" />
+  <tile num="268" name="Orange Gemspark Block2" />
+  <tile num="269" name="Womannequin" />
+  <tile num="270" name="Fireflyina Bottle" />
+  <tile num="271" name="Lightning Bugina Bottle" />
+  <tile num="272" name="Cog" />
+  <tile num="273" name="Stone Slab" />
+  <tile num="274" name="Sand Stone Slab" />
+  <tile num="275" name="Bunny Cage" />
+  <tile num="276" name="Squirrel Cage" />
+  <tile num="277" name="Mallard Duck Cage" />
+  <tile num="278" name="Duck Cage" />
+  <tile num="279" name="Bird Cage" />
+  <tile num="280" name="Blue Jay Cage" />
+  <tile num="281" name="Cardinal Cage" />
+  <tile num="282" name="Fish Bowl" />
+  <tile num="283" name="Heavy Work Bench" />
+  <tile num="284" name="Copper Plating" />
+  <tile num="285" name="Snail Cage" />
+  <tile num="286" name="Glowing Snail Cage" />
+  <tile num="287" name="Ammo Box" />
+  <tile num="288" name="Monarch Butterfly Jar" />
+  <tile num="289" name="Purple Emperor Butterfly Jar" />
+  <tile num="290" name="Red Admiral Butterfly Jar" />
+  <tile num="291" name="Ulysses Butterfly Jar" />
+  <tile num="292" name="Sulphur Butterfly Jar" />
+  <tile num="293" name="Tree Nymph Butterfly Jar" />
+  <tile num="294" name="Zebra Swallowtail Butterfly Jar" />
+  <tile num="295" name="Julia Butterfly Jar" />
+  <tile num="296" name="Scorpion Cage" />
+  <tile num="297" name="Black Scorpion Cage" />
+  <tile num="298" name="Frog Cage" />
+  <tile num="299" name="Mouse Cage" />
+  <tile num="300" name="Bone Welder" />
+  <tile num="301" name="Flesh Cloning Vaat" />
+  <tile num="302" name="Glass Kiln" />
+  <tile num="303" name="Lihzahrd Furnace" />
+  <tile num="304" name="Living Loom" />
+  <tile num="305" name="Sky Mill" />
+  <tile num="306" name="Ice Machine" />
+  <tile num="307" name="Steampunk Boiler" />
+  <tile num="308" name="Honey Dispenser" />
+  <tile num="309" name="Penguin Cage" />
+  <tile num="310" name="Worm Cage" />
+  <tile num="311" name="Dynasty Wood" />
+  <tile num="312" name="Red Dynasty Shingles" />
+  <tile num="313" name="Blue Dynasty Shingles" />
+  <tile num="314" name="Count" />
+
+
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
   <wall num="3" name="Stone Wall" color="#3D3A4E" />
@@ -1117,6 +1180,7 @@
   <wall num="123" name="Krampus Horn Wallpaper" color="#85755F" />
   <wall num="124" name="Bluegreen Wallpaper" color="#100340" />
   <wall num="125" name="Grinch Finger Wallpaper" color="#748352" />
+  
   <prefix num="1" name="Large" />
   <prefix num="2" name="Massive" />
   <prefix num="3" name="Dangerous" />

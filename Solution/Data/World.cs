@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -21,6 +22,7 @@ namespace TerraMap.Data
 	{
 		public World()
 		{
+			Map.Initialize();
 		}
 
 		#region Dynamically read properties
@@ -295,6 +297,51 @@ namespace TerraMap.Data
 
 		#endregion
 
+		public static string GetWorldName(string worldFileName)
+		{
+			if (worldFileName == null)
+			{
+				return string.Empty;
+			}
+			try
+			{
+				using (FileStream fileStream = new FileStream(worldFileName, FileMode.Open))
+				{
+					using (BinaryReader binaryReader = new BinaryReader(fileStream))
+					{
+						int version = binaryReader.ReadInt32();
+						if (version > 0 && version <= 93)
+						{
+							string text;
+							string result;
+							if (version <= 87)
+							{
+								text = binaryReader.ReadString();
+								binaryReader.Close();
+								result = text;
+								return result;
+							}
+							binaryReader.ReadInt16();
+							fileStream.Position = (long)binaryReader.ReadInt32();
+							text = binaryReader.ReadString();
+							binaryReader.Close();
+							result = text;
+							return result;
+						}
+					}
+				}
+			}
+			catch
+			{
+			}
+			string[] array = worldFileName.Split(new char[]
+			{
+				Path.DirectorySeparatorChar
+			});
+			string text2 = array[array.Length - 1];
+			return text2.Substring(0, text2.Length - 4);
+		}
+
 		public Task ReadAsync(string filename)
 		{
 			return Task.Run(() =>
@@ -314,20 +361,31 @@ namespace TerraMap.Data
 			{
 				using (BinaryReader reader = new BinaryReader(stream))
 				{
-					this.Status = "Reading header";
-					this.ReadHeader(reader);
+					this.Version = reader.ReadInt32();
 
-					this.Status = "Reading tiles";
-					this.ReadTiles(reader);
+					reader.BaseStream.Position = 0L;
 
-					this.Status = "Reading chests";
-					this.ReadChests(reader);
+					if (Version <= 87)
+					{
+						this.Status = "Reading header";
+						this.ReadHeader(reader);
 
-					this.Status = "Reading signs";
-					this.ReadSigns(reader);
+						this.Status = "Reading tiles";
+						this.ReadTiles(reader);
 
-					this.Status = "Reading NPCs";
-					this.ReadNPCs(reader);
+						this.Status = "Reading chests";
+						this.ReadChests(reader);
+
+						this.Status = "Reading signs";
+						this.ReadSigns(reader);
+
+						this.Status = "Reading NPCs";
+						this.ReadNPCs(reader);
+					}
+					else
+					{
+						this.ReadWorldVersion2(reader);
+					}
 
 					//this.Status = "Reading Verification";
 					//this.ReadVerification(reader);
@@ -335,6 +393,73 @@ namespace TerraMap.Data
 			}
 
 			this.Status = string.Format("Finished reading '{0}'", filename);
+		}
+
+		private void ReadWorldVersion2(BinaryReader reader)
+		{
+			bool[] importance;
+			int[] positions;
+
+			this.LoadFileFormatHeader(reader, out importance, out positions);
+
+			if (reader.BaseStream.Position != (long)positions[0])
+				throw new Exception(string.Format("World file header is not where it's expected to be. Expected: {0} Actual: {1}", positions[0], reader.BaseStream.Position));
+			this.ReadHeader(reader, skipVersion: true);
+
+			if (reader.BaseStream.Position != (long)positions[1])
+				throw new Exception(string.Format("World file tiles list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[1], reader.BaseStream.Position));
+			this.ReadTilesVersion2(reader, importance);
+
+			if (reader.BaseStream.Position != (long)positions[2])
+				throw new Exception(string.Format("World file chests list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[2], reader.BaseStream.Position));
+			this.ReadChestsVersion2(reader);
+
+			this.Signs = new List<Sign>();
+
+			if (reader.BaseStream.Position != (long)positions[3])
+				throw new Exception(string.Format("World file signs list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[3], reader.BaseStream.Position));
+			this.ReadSignsVersion2(reader);
+
+			if (reader.BaseStream.Position != (long)positions[4])
+				throw new Exception(string.Format("World file NPCs list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[4], reader.BaseStream.Position));
+			this.ReadNPCsVersion2(reader);
+
+			if (reader.BaseStream.Position != (long)positions[5])
+				throw new Exception(string.Format("World file verification footer is not where it's expected to be. Expected: {0} Actual: {1}", positions[4], reader.BaseStream.Position));
+			this.ReadVerification(reader);
+		}
+
+		private void LoadFileFormatHeader(BinaryReader reader, out bool[] importance, out int[] positions)
+		{
+			this.Version = reader.ReadInt32();
+
+			var positionsLength = reader.ReadInt16();
+			positions = new int[(int)positionsLength];
+			for (int i = 0; i < (int)positionsLength; i++)
+			{
+				positions[i] = reader.ReadInt32();
+			}
+
+			var importanceLength = reader.ReadInt16();
+			importance = new bool[(int)importanceLength];
+			byte b = 0;
+			byte b2 = 128;
+			for (int i = 0; i < (int)importanceLength; i++)
+			{
+				if (b2 == 128)
+				{
+					b = reader.ReadByte();
+					b2 = 1;
+				}
+				else
+				{
+					b2 = (byte)(b2 << 1);
+				}
+				if ((b & b2) == b2)
+				{
+					importance[i] = true;
+				}
+			}
 		}
 
 		private void ReadVerification(BinaryReader reader)
@@ -361,12 +486,18 @@ namespace TerraMap.Data
 			});
 		}
 
-		public void ReadHeader(BinaryReader reader)
+		public void ReadHeader(BinaryReader reader, bool skipVersion = false)
 		{
 			var properties = typeof(World).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
 			foreach (var property in properties)
 			{
+				if (property.Name == "Version" && skipVersion)
+				{
+					this.Properties.Add(new WorldProperty() { Name = "Version", Value = this.Version });
+					continue;
+				}
+
 				var minimumVersion = 0;
 				var count = 1;
 
@@ -411,16 +542,207 @@ namespace TerraMap.Data
 						array[i] = reader.ReadInt32();
 					}
 
-					if(count > 0)
+					if (count > 0)
 						value = string.Join(", ", array);
 
 					property.SetValue(this, array);
 				}
 
-				if(value == null)
+				if (value == null)
 					value = property.GetValue(this);
 
 				this.Properties.Add(new WorldProperty() { Name = property.Name, Value = value });
+			}
+		}
+
+		private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
+		{
+			this.Tiles = new Tile[this.WorldWidthinTiles, this.WorldHeightinTiles];
+
+			this.totalTileCount = this.WorldHeightinTiles * this.WorldWidthinTiles;
+
+			var tilesProcessed = 0;
+
+			this.ProgressMaximum = this.totalTileCount;
+			this.ProgressValue = tilesProcessed;
+
+			for (int x = 0; x < this.WorldWidthinTiles; x++)
+			{
+				for (int y = 0; y < this.WorldHeightinTiles; y++)
+				{
+					if (x == 1593 && y == 84)
+						Debug.Write("");
+
+					int num2 = -1;
+					byte b2;
+					byte b = b2 = 0;
+					Tile tile = new Tile();
+					byte b3 = reader.ReadByte();
+					if ((b3 & 1) == 1)
+					{
+						b2 = reader.ReadByte();
+						if ((b2 & 1) == 1)
+						{
+							b = reader.ReadByte();
+						}
+					}
+					byte b4;
+					if ((b3 & 2) == 2)
+					{
+						tile.IsActive = true;
+						if ((b3 & 32) == 32)
+						{
+							b4 = reader.ReadByte();
+							num2 = (int)reader.ReadByte();
+							num2 = (num2 << 8 | (int)b4);
+						}
+						else
+						{
+							num2 = (int)reader.ReadByte();
+						}
+
+						tile.Type = (ushort)num2;
+
+						if (tile.Type > 254 && tile.Type != 280)
+							Debug.Write("");
+
+						if (importance[num2])
+						{
+							tile.TextureU = reader.ReadInt16();
+							tile.TextureV = reader.ReadInt16();
+							if (tile.Type == 144)
+							{
+								tile.TextureV = 0;
+							}
+						}
+						else
+						{
+							tile.TextureU = -1;
+							tile.TextureV = -1;
+						}
+						if ((b & 8) == 8)
+						{
+							tile.ColorValue = reader.ReadByte();
+						}
+					}
+					if ((b3 & 4) == 4)
+					{
+						tile.WallType = reader.ReadByte();
+						tile.IsWallPresent = true;
+						if ((b & 16) == 16)
+						{
+							tile.WallColor = reader.ReadByte();
+							tile.IsWallColorPresent = true;
+						}
+					}
+					b4 = (byte)((b3 & 24) >> 3);
+					if (b4 != 0)
+					{
+						tile.IsLiquidPresent = true;
+						tile.LiquidAmount = reader.ReadByte();
+						if (b4 > 1)
+						{
+							if (b4 == 2)
+							{
+								tile.IsLiquidLava = true;
+							}
+							else
+							{
+								tile.IsLiquidHoney = true;
+							}
+						}
+					}
+					if (b2 > 1)
+					{
+						if ((b2 & 2) == 2)
+						{
+							tile.IsRedWirePresent = true;
+						}
+						if ((b2 & 4) == 4)
+						{
+							tile.IsGreenWirePresent = true;
+						}
+						if ((b2 & 8) == 8)
+						{
+							tile.IsBlueWirePresent = true;
+						}
+						b4 = (byte)((b2 & 112) >> 4);
+						//if (b4 != 0 && this.SolidTiles[(int)tile.Type])
+						//{
+						//	if (b4 == 1)
+						//	{
+						//		tile.IsHalfTile = true;
+						//	}
+						//	else
+						//	{
+						//		tile.Slope = b4;
+						//	}
+						//}
+					}
+					if (b > 0)
+					{
+						if ((b & 2) == 2)
+						{
+							tile.IsActuatorPresent = true;
+						}
+						if ((b & 4) == 4)
+						{
+							tile.IsActive = false;
+						}
+					}
+					b4 = (byte)((b3 & 192) >> 6);
+					int k;
+					if (b4 == 0)
+					{
+						k = 0;
+					}
+					else
+					{
+						if (b4 == 1)
+						{
+							k = (int)reader.ReadByte();
+						}
+						else
+						{
+							k = (int)reader.ReadInt16();
+						}
+					}
+					//if (num2 != -1)
+					//{
+					//	if ((double)y <= this.WorldSurfaceY)
+					//	{
+					//		if ((double)(y + k) <= this.worldSurface)
+					//		{
+					//			WorldGen.tileCounts[num2] += (k + 1) * 5;
+					//		}
+					//		else
+					//		{
+					//			int num3 = (int)(Main.worldSurface - (double)y + 1.0);
+					//			int num4 = k + 1 - num3;
+					//			WorldGen.tileCounts[num2] += num3 * 5 + num4;
+					//		}
+					//	}
+					//	else
+					//	{
+					//		WorldGen.tileCounts[num2] += k + 1;
+					//	}
+					//}
+
+					tile.Color = GetTileColor(y, tile);
+
+					this.Tiles[x, y] = tile;
+					while (k > 0)
+					{
+						y++;
+						this.Tiles[x, y] = tile;
+						k--;
+					}
+				}
+
+				tilesProcessed += this.WorldHeightinTiles;
+
+				this.ProgressMaximum = this.totalTileCount;
+				this.ProgressValue = tilesProcessed;
 			}
 		}
 
@@ -443,48 +765,7 @@ namespace TerraMap.Data
 				{
 					var tile = Tile.Read(reader, this);
 
-					Color color = Color.Transparent;
-
-					var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
-
-					if (tile.IsActive)
-					{
-						if (tileInfo.IsColorSet)
-							color = tileInfo.Color;
-						else
-						{
-							color = tileInfo.Color = ColorTranslator.FromHtml(tileInfo.ColorName);
-
-							tileInfo.IsColorSet = true;
-						}
-					}
-					else if (tile.IsLiquidPresent)
-					{
-						if (tile.IsLiquidLava)
-							color = this.staticData.GlobalColors.LavaColor;
-						else if (tile.IsLiquidHoney)
-							color = this.staticData.GlobalColors.HoneyColor;
-						else
-							color = this.staticData.GlobalColors.WaterColor;
-					}
-					else if (tile.IsWallPresent)
-					{
-						color = this.staticData.WallInfos[tile.WallType].Color;
-					}
-					else if (y < this.WorldSurfaceY)
-					{
-						color = this.staticData.GlobalColors.SkyColor;
-					}
-					else // if (y < this.RockLayerY)
-					{
-						color = this.staticData.GlobalColors.EarthColor;
-					}
-					//else
-					//{
-					//	// fade betwen rock color and hell color
-					//}
-
-					tile.Color = color;
+					tile.Color = GetTileColor(y, tile);
 
 					this.Tiles[x, y] = tile;
 
@@ -502,6 +783,60 @@ namespace TerraMap.Data
 
 				//this.OnProgressChanged(new ProgressEventArgs(tilesProcessed, totalTileCount));
 			}
+		}
+
+		private Color GetTileColor(int y, Tile tile)
+		{
+			Color color = Color.Transparent;
+
+			var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+
+			if (tile.IsActive)
+			{
+				if (string.IsNullOrEmpty(tileInfo.ColorName))
+				{
+					color = Map.GetTileColor(tile.Type, tile.TextureU, tile.TextureV);
+				}
+				else if (tileInfo.IsColorSet)
+				{
+					color = tileInfo.Color;
+				}
+				else
+				{
+					color = tileInfo.Color = ColorTranslator.FromHtml(tileInfo.ColorName);
+
+					tileInfo.IsColorSet = true;
+				}
+			}
+			else if (tile.IsLiquidPresent)
+			{
+				if (tile.IsLiquidLava)
+					color = this.staticData.GlobalColors.LavaColor; // Terraria.Map.GetLiquidColor(1);
+				else if (tile.IsLiquidHoney)
+					color = this.staticData.GlobalColors.HoneyColor; // Terraria.Map.GetLiquidColor(2);
+				else
+					color = this.staticData.GlobalColors.WaterColor; // Terraria.Map.GetLiquidColor(0);
+			}
+			else if (tile.IsWallPresent)
+			{
+				if (tile.WallType - 1 > -1 && tile.WallType - 1 < this.staticData.WallInfos.Count)
+					color = this.staticData.WallInfos[tile.WallType - 1].Color;
+				else
+					color = Map.GetWallColor(tile.WallType);
+			}
+			else if (y < this.WorldSurfaceY)
+			{
+				color = this.staticData.GlobalColors.SkyColor;
+			}
+			else // if (y < this.RockLayerY)
+			{
+				color = this.staticData.GlobalColors.EarthColor;
+			}
+			//else
+			//{
+			//	// fade betwen rock color and hell color
+			//}
+			return color;
 		}
 
 		private void ReadChests(BinaryReader reader)
@@ -528,6 +863,68 @@ namespace TerraMap.Data
 			}
 		}
 
+		private void ReadChestsVersion2(BinaryReader reader)
+		{
+			this.Chests = new List<Chest>();
+
+			int num = (int)reader.ReadInt16();
+			int num2 = (int)reader.ReadInt16();
+			int num3;
+			int num4;
+
+			int maxItems = 40;
+
+			if (num2 < maxItems)
+			{
+				num3 = num2;
+				num4 = 0;
+			}
+			else
+			{
+				num3 = maxItems;
+				num4 = num2 - maxItems;
+			}
+			int i;
+			for (i = 0; i < num; i++)
+			{
+				Chest chest = new Chest();
+				chest.X = reader.ReadInt32();
+				chest.Y = reader.ReadInt32();
+				chest.Name = reader.ReadString();
+				for (int j = 0; j < num3; j++)
+				{
+					short num5 = reader.ReadInt16();
+					Item item = new Item();
+					if (num5 > 0)
+					{
+						item.Id = reader.ReadInt32();
+						item.Count = (byte)num5;
+						item.PrefixId = reader.ReadByte();
+						chest.Items.Add(item);
+
+						if (item.Id != 0 && this.StaticData.ItemInfos.ContainsKey(item.Id))
+						{
+							var itemInfo = this.StaticData.ItemInfos[item.Id];
+							item.Name = itemInfo.Name;
+						}
+
+						if (item.PrefixId > 0 && this.StaticData.ItemPrefixes.Count > item.PrefixId)
+							item.Name = this.StaticData.ItemPrefixes[item.PrefixId].Name + " " + item.Name;
+					}
+				}
+				for (int j = 0; j < num4; j++)
+				{
+					short num5 = reader.ReadInt16();
+					if (num5 > 0)
+					{
+						reader.ReadInt32();
+						reader.ReadByte();
+					}
+				}
+				this.Chests.Add(chest);
+			}
+		}
+
 		private void ReadSigns(BinaryReader reader)
 		{
 			this.Signs = new List<Sign>();
@@ -549,6 +946,29 @@ namespace TerraMap.Data
 				this.Signs.Add(sign);
 
 				this.ProgressValue++;
+			}
+		}
+
+		private void ReadSignsVersion2(BinaryReader reader)
+		{
+			this.Signs = new List<Sign>();
+
+			short num = reader.ReadInt16();
+			int i;
+			for (i = 0; i < (int)num; i++)
+			{
+				string text = reader.ReadString();
+				int x = reader.ReadInt32();
+				int y = reader.ReadInt32();
+				Tile tile = this.Tiles[x, y];
+				if (tile.IsActive && (tile.Type == 55 || tile.Type == 85))
+				{
+					Sign sign = new Sign();
+					sign.Text = text;
+					sign.X = x;
+					sign.Y = y;
+					this.Signs.Add(sign);
+				}
 			}
 		}
 
@@ -595,6 +1015,28 @@ namespace TerraMap.Data
 			var npc = this.NPCs.FirstOrDefault(n => n.Type == type);
 			if (npc != null)
 				npc.Name = name;
+		}
+
+		private void ReadNPCsVersion2(BinaryReader reader)
+		{
+			this.NPCs = new ObservableCollection<NPC>();
+
+			int num = 0;
+			bool flag = reader.ReadBoolean();
+			while (flag)
+			{
+				NPC nPC = new NPC();
+				nPC.Type = reader.ReadString();
+				nPC.Name = reader.ReadString();
+				nPC.X = reader.ReadSingle();
+				nPC.Y = reader.ReadSingle();
+				nPC.IsHomeless = reader.ReadBoolean();
+				nPC.HomeX = reader.ReadInt32();
+				nPC.HomeY = reader.ReadInt32();
+				num++;
+				flag = reader.ReadBoolean();
+				this.NPCs.Add(nPC);
+			}
 		}
 
 		private static Rectangle ReadRectangle(BinaryReader reader)
@@ -835,7 +1277,24 @@ namespace TerraMap.Data
 
 				if (tile.IsActive)
 				{
-					name = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV].Name;
+					var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+
+					name = tileInfo.Name;
+
+					if (tileInfo.Id == 21)
+					{
+						var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+
+						if (chest != null && !string.IsNullOrEmpty(chest.Name))
+							name += ": \"" + chest.Name + "\"";
+					}
+					else if (tileInfo.Name == "Sign")
+					{
+						var sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+
+						if (sign != null && !string.IsNullOrEmpty(sign.Text))
+							name += ": \"" + sign.Text + "\"";
+					}
 				}
 				else if (tile.IsLiquidPresent)
 				{
@@ -848,7 +1307,7 @@ namespace TerraMap.Data
 				}
 				else if (tile.IsWallPresent)
 				{
-					name = this.staticData.WallInfos[tile.WallType].Name;
+					name = this.staticData.WallInfos[tile.WallType - 1].Name;
 				}
 			}
 			else

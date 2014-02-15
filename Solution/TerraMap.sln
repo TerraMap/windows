@@ -14,16 +14,16 @@ Global
 		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
-		SccProjectUniqueName0 = Data\\Data.csproj
-		SccProjectName0 = Data
-		SccLocalPath0 = Data
-		SccProjectUniqueName1 = TerraMap\\TerraMap.csproj
-		SccProjectName1 = TerraMap
-		SccLocalPath1 = TerraMap
-		SccProjectUniqueName2 = Console\\Console.csproj
-		SccProjectName2 = Console
-		SccLocalPath2 = Console
-		SccLocalPath3 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Data\\Data.csproj
+		SccProjectName1 = Data
+		SccLocalPath1 = Data
+		SccProjectUniqueName2 = TerraMap\\TerraMap.csproj
+		SccProjectName2 = TerraMap
+		SccLocalPath2 = TerraMap
+		SccProjectUniqueName3 = Console\\Console.csproj
+		SccProjectName3 = Console
+		SccLocalPath3 = Console
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

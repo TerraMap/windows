@@ -65,7 +65,7 @@ namespace TerraMap
 			ExceptionWindow.ShowDialog(ex, this);
 		}
 
-		private async Task LoadWorldFiles()
+		private void LoadWorldFiles()
 		{
 			try
 			{
@@ -79,9 +79,8 @@ namespace TerraMap
 
 				foreach (var filename in Directory.GetFiles(path, "*.wld"))
 				{
-					var world = new World();
-					await world.ReadHeaderAsync(filename);
-					this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = world.Name });
+					string name = World.GetWorldName(filename);
+					this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name });
 				}
 
 				if (currentWorldFile != null)
@@ -638,7 +637,7 @@ namespace TerraMap
 		{
 			this.CheckForUpdates();
 
-			await this.LoadWorldFiles();
+			this.LoadWorldFiles();
 
 			var staticDataFileInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
 
@@ -815,14 +814,14 @@ namespace TerraMap
 			await this.Open(this.viewModel.SelectedWorldFile.FileInfo);
 		}
 
-		private async void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
+		private void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
 		{
-			await this.LoadWorldFiles();
+			this.LoadWorldFiles();
 		}
 
-		private async void OnWorldsDropDownOpened(object sender, EventArgs e)
+		private void OnWorldsDropDownOpened(object sender, EventArgs e)
 		{
-			await this.LoadWorldFiles();
+			this.LoadWorldFiles();
 		}
 
 		private async void OnIsHighlightingChanged(object sender, RoutedEventArgs e)

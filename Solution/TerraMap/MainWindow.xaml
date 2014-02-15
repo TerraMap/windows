@@ -171,7 +171,7 @@
 				<Separator />
 				<MenuItem Command="local:Commands.NavigateToSpawn" Header="_Spawn" InputGestureText="Home" />
 				<MenuItem Command="local:Commands.NavigateToDungeon" Header="_Dungeon" InputGestureText="End" />
-				<MenuItem Header="_NPCs" ItemsSource="{Binding Source={StaticResource npcViewSource}}">
+				<MenuItem Header="_NPCs" ItemsSource="{Binding Source={StaticResource npcViewSource}, IsAsync=True}">
 					<MenuItem.ItemTemplate>
 						<DataTemplate>
 							<TextBlock>
@@ -227,7 +227,7 @@
 				<Button Command="Refresh" ToolTip="Refresh">
 					<local:AutoGreyableImage Width="16" Source="Resources/Refresh.png" />
 				</Button>
-				<Button Command="Properties" ToolTip="Refresh">
+				<Button Command="Properties" ToolTip="World Properties">
 					<local:AutoGreyableImage Width="16" Source="Resources/Properties.png" />
 				</Button>
 			</ToolBar>

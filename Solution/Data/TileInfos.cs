@@ -95,8 +95,11 @@ namespace TerraMap.Data
 		private void LoadInfo(TileInfo info, XmlNode node)
 		{
 			info.Name = node.Attributes["name"].Value;
-			info.ColorName = node.Attributes["color"].Value;
-			info.ColorValue = ParseColor(info.ColorName);
+			if (node.Attributes["color"] != null)
+			{
+				info.ColorName = node.Attributes["color"].Value;
+				info.ColorValue = ParseColor(info.ColorName);
+			}
 			info.HasExtra = node.Attributes["hasExtra"] != null;
 			info.Light = (node.Attributes["light"] == null) ? 0.0 : ParseDouble(node.Attributes["light"].Value);
 			info.LightR = (node.Attributes["lightr"] == null) ? 0.0 : ParseDouble(node.Attributes["lightr"].Value);
