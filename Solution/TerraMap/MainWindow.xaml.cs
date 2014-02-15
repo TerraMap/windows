@@ -146,6 +146,8 @@ namespace TerraMap
 
 			this.viewModel.World = world;
 
+			this.viewModel.NPCs.Clear();
+
 			this.viewModel.ProgressValue = 0;
 			this.viewModel.BeginLoading("Reading world...");
 			try
@@ -178,6 +180,9 @@ namespace TerraMap
 					await world.WritePixelDataAsync(pixels, stride, this.viewModel.SelectedObjectInfoViewModel);
 				else
 					await world.WritePixelDataAsync(pixels, stride);
+
+				foreach (var npc in world.NPCs.OrderBy(n => n.Type))
+					viewModel.NPCs.Add(npc);
 
 				timer.Stop();
 
@@ -374,7 +379,7 @@ namespace TerraMap
 
 		private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
-			return Task.Run<TileHitTestInfo>(() =>
+			return Task.Factory.StartNew<TileHitTestInfo>(() =>
 			{
 				return this.FindPreviousTile(targetObjectType, start, end);
 			});
@@ -445,7 +450,7 @@ namespace TerraMap
 
 		private Task<TileHitTestInfo> FindNextTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
-			return Task.Run<TileHitTestInfo>(() =>
+			return Task.Factory.StartNew<TileHitTestInfo>(() =>
 			{
 				return this.FindNextTile(targetObjectType, start, end);
 			});

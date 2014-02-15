@@ -33,6 +33,18 @@ namespace TerraMap
 			}
 		}
 
+		private ObservableCollection<NPC> npcs = new ObservableCollection<NPC>();
+
+		public ObservableCollection<NPC> NPCs
+		{
+			get { return npcs; }
+			set
+			{
+				npcs = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		private ObjectInfoViewModel selectedObjectInfoViewModel;
 
 		public ObjectInfoViewModel SelectedObjectInfoViewModel

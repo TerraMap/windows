@@ -344,7 +344,7 @@ namespace TerraMap.Data
 
 		public Task ReadAsync(string filename)
 		{
-			return Task.Run(() =>
+			return Task.Factory.StartNew(() =>
 			{
 				this.Read(filename);
 			});
@@ -474,7 +474,7 @@ namespace TerraMap.Data
 
 		public Task ReadHeaderAsync(string filename)
 		{
-			return Task.Run(() =>
+			return Task.Factory.StartNew(() =>
 			{
 				using (Stream stream = File.OpenRead(filename))
 				{
@@ -519,21 +519,21 @@ namespace TerraMap.Data
 				object value = null;
 
 				if (dataType == typeof(Boolean))
-					property.SetValue(this, reader.ReadBoolean());
+					property.SetValue(this, reader.ReadBoolean(), null);
 				else if (dataType == typeof(Byte))
-					property.SetValue(this, reader.ReadByte());
+					property.SetValue(this, reader.ReadByte(), null);
 				else if (dataType == typeof(Int16))
-					property.SetValue(this, reader.ReadInt16());
+					property.SetValue(this, reader.ReadInt16(), null);
 				else if (dataType == typeof(Int32))
-					property.SetValue(this, reader.ReadInt32());
+					property.SetValue(this, reader.ReadInt32(), null);
 				else if (dataType == typeof(String))
-					property.SetValue(this, reader.ReadString());
+					property.SetValue(this, reader.ReadString(), null);
 				else if (dataType == typeof(Single))
-					property.SetValue(this, reader.ReadSingle());
+					property.SetValue(this, reader.ReadSingle(), null);
 				else if (dataType == typeof(Double))
-					property.SetValue(this, reader.ReadDouble());
+					property.SetValue(this, reader.ReadDouble(), null);
 				else if (dataType == typeof(Rectangle))
-					property.SetValue(this, ReadRectangle(reader));
+					property.SetValue(this, ReadRectangle(reader), null);
 				else if (dataType == typeof(Int32[]))
 				{
 					Int32[] array = new Int32[count];
@@ -545,11 +545,11 @@ namespace TerraMap.Data
 					if (count > 0)
 						value = string.Join(", ", array);
 
-					property.SetValue(this, array);
+					property.SetValue(this, array, null);
 				}
 
 				if (value == null)
-					value = property.GetValue(this);
+					value = property.GetValue(this, null);
 
 				this.Properties.Add(new WorldProperty() { Name = property.Name, Value = value });
 			}
@@ -570,7 +570,7 @@ namespace TerraMap.Data
 			{
 				for (int y = 0; y < this.WorldHeightinTiles; y++)
 				{
-					if (x == 1593 && y == 84)
+					if (x == 47 && y == 715)
 						Debug.Write("");
 
 					int num2 = -1;
@@ -819,10 +819,15 @@ namespace TerraMap.Data
 			}
 			else if (tile.IsWallPresent)
 			{
+				WallInfo? wallInfo = null;
+
 				if (tile.WallType - 1 > -1 && tile.WallType - 1 < this.staticData.WallInfos.Count)
-					color = this.staticData.WallInfos[tile.WallType - 1].Color;
-				else
+					wallInfo = this.staticData.WallInfos[tile.WallType - 1];
+
+				if (wallInfo == null || string.IsNullOrEmpty(wallInfo.Value.ColorName))
 					color = Map.GetWallColor(tile.WallType);
+				else
+					color = wallInfo.Value.Color;
 			}
 			else if (y < this.WorldSurfaceY)
 			{
@@ -1139,7 +1144,7 @@ namespace TerraMap.Data
 
 		public async Task WritePixelDataAsync(byte[] pixelData, int rawStride, ObjectInfoViewModel objectTypeToHighlight = null)
 		{
-			await Task.Run(() =>
+			await Task.Factory.StartNew(() =>
 			{
 				this.WritePixelData(pixelData, rawStride, objectTypeToHighlight);
 			});
@@ -1161,6 +1166,9 @@ namespace TerraMap.Data
 			{
 				for (int x = 0; x < this.WorldWidthinTiles; x++)
 				{
+					if (x == 47 && y == 715)
+						Debug.Write("");
+
 					var tile = this.Tiles[x, y];
 
 					// compute the pixel's color
@@ -1326,7 +1334,7 @@ namespace TerraMap.Data
 
 			foreach (var property in properties)
 			{
-				stringBuilder.AppendFormat("{0}: {1}", property.Name, property.GetValue(this));
+				stringBuilder.AppendFormat("{0}: {1}", property.Name, property.GetValue(this, null));
 				stringBuilder.AppendLine();
 			}
 

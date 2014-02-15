@@ -75,7 +75,7 @@ namespace TerraMap.Data
 
 		public static Task<StaticData> ReadAsync(string filename)
 		{
-			return Task.Run(() =>
+			return Task.Factory.StartNew(() =>
 			{
 				return Read(filename);
 			});

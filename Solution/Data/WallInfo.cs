@@ -11,6 +11,7 @@ namespace TerraMap.Data
 		public UInt32 ColorValue;
 		public Int16 Blend;
 		public Color Color;
+		public string ColorName;
 
 		public static List<WallInfo> Read(XmlDocument xml)
 		{
@@ -28,9 +29,16 @@ namespace TerraMap.Data
 
 				wallInfo.Name = wallNode.Attributes["name"].Value;
 
-				string colorName = wallNode.Attributes["color"].Value;
-				wallInfo.ColorValue = TileInfos.ParseColor(colorName);
-				wallInfo.Color = ColorTranslator.FromHtml(colorName);
+				if (wallNode.Attributes["color"] != null)
+				{
+					wallInfo.ColorName = wallNode.Attributes["color"].Value;
+					wallInfo.ColorValue = TileInfos.ParseColor(wallInfo.ColorName);
+					wallInfo.Color = ColorTranslator.FromHtml(wallInfo.ColorName);
+				}
+				else
+				{
+					wallInfo.Color = Map.GetWallColor((ushort)id);
+				}
 
 				if (wallNode.Attributes["blend"] != null)
 					wallInfo.Blend = Convert.ToInt16(wallNodeList[i].Attributes["blend"].Value);

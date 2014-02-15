@@ -40,13 +40,6 @@
 			</CollectionViewSource.SortDescriptions>
 		</CollectionViewSource>
 
-
-		<CollectionViewSource x:Key="npcViewSource" Source="{Binding World.NPCs, IsAsync=True}">
-			<CollectionViewSource.SortDescriptions>
-				<ComponentModel:SortDescription Direction="Ascending" PropertyName="Type"/>
-			</CollectionViewSource.SortDescriptions>
-		</CollectionViewSource>
-
 		<Storyboard x:Key="indicatorStoryboard" RepeatBehavior="2.0x" Duration="0:0:0.1" AutoReverse="True">
 			<DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="(Rectangle.RenderTransform).(ScaleTransform.ScaleX)"
 								  From="1.0" To="100.0" />
@@ -171,7 +164,7 @@
 				<Separator />
 				<MenuItem Command="local:Commands.NavigateToSpawn" Header="_Spawn" InputGestureText="Home" />
 				<MenuItem Command="local:Commands.NavigateToDungeon" Header="_Dungeon" InputGestureText="End" />
-				<MenuItem Header="_NPCs" ItemsSource="{Binding Source={StaticResource npcViewSource}, IsAsync=True}">
+				<MenuItem x:Name="menuItemNpcs" Header="_NPCs" ItemsSource="{Binding NPCs}">
 					<MenuItem.ItemTemplate>
 						<DataTemplate>
 							<TextBlock>
@@ -251,12 +244,17 @@
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
 				<TextBlock VerticalAlignment="Center">Blocks:</TextBlock>
 				<ComboBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
-				SelectionChanged="OnSelectedTileInfoChanged" TextSearch.TextPath="Name" VirtualizingPanel.IsVirtualizing="True">
+							 SelectionChanged="OnSelectedTileInfoChanged" TextSearch.TextPath="Name">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding Name}" />
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
+					<ComboBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<VirtualizingStackPanel IsVirtualizing="True" />
+						</ItemsPanelTemplate>
+					</ComboBox.ItemsPanel>
 				</ComboBox>
 				<Button Command="Find" ToolTip="Select Block...">...</Button>
 				<Button Command="PreviousPage" ToolTip="Previous">
