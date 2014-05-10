@@ -295,6 +295,32 @@ namespace TerraMap.Data
 			}
 		}
 
+		private bool savedAngler;
+
+		[PropertyInfo(ignore: true)]
+		public bool SavedAngler
+		{
+			get { return savedAngler; }
+			set
+			{
+				savedAngler = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private int anglerQuest;
+
+		[PropertyInfo(ignore: true)]
+		public int AnglerQuest
+		{
+			get { return anglerQuest; }
+			set
+			{
+				anglerQuest = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		#endregion
 
 		public static string GetWorldName(string worldFileName)
@@ -553,6 +579,26 @@ namespace TerraMap.Data
 
 				this.Properties.Add(new WorldProperty() { Name = property.Name, Value = value });
 			}
+
+			if (Version < 95)
+				return;
+
+			List<string> anglerWhoFinishedToday = new List<string>();
+
+			for(int i = reader.ReadInt32(); i > 0; i--)
+			{
+				anglerWhoFinishedToday.Add(reader.ReadString());
+			}
+
+			if (Version < 99)
+				return;
+
+			this.SavedAngler = reader.ReadBoolean();
+
+			if (Version < 101)
+				return;
+
+			this.AnglerQuest = reader.ReadInt32();
 		}
 
 		private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
