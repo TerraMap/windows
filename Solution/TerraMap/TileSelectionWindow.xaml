@@ -26,7 +26,7 @@
 			<Button Margin="2" MinWidth="75" IsCancel="True" Click="OnCancel">_Cancel</Button>
 		</StackPanel>
 		<ListBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
-					TextSearch.TextPath="Name">
+					TextSearch.TextPath="Name" local:ItemActivation.ActivationMode="Mouse,Keyboard" local:ItemActivation.ItemActivate="OnItemActivate">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding Name}" />

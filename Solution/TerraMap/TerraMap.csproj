@@ -82,6 +82,7 @@
     <Compile Include="ExceptionViewModel.cs" />
     <Compile Include="ExceptionWindow.xaml.cs" />
     <Compile Include="InvertedBooleanConverter.cs" />
+    <Compile Include="ItemActivation.cs" />
     <Compile Include="OwnedWindow.cs" />
     <Compile Include="ReleaseInfo.cs" />
     <Compile Include="SearchDirection.cs" />

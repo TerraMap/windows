@@ -59,5 +59,11 @@ namespace TerraMap
 			this.DialogResult = false;
 			this.Close();
 		}
+
+		private void OnItemActivate(object sender, ItemActivateEventArgs e)
+		{
+			this.DialogResult = true;
+			this.Close();
+		}
 	}
 }

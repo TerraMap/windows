@@ -1262,7 +1262,7 @@ namespace TerraMap.Data
 			{
 				var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-				if (tileInfo == objectTypeToHighlight.TileInfo)
+				if (tileInfo == objectTypeToHighlight.TileInfo || tileInfo.Id == objectTypeToHighlight.TileInfo.Id)
 					return true;
 			}
 
