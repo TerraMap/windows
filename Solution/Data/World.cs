@@ -616,8 +616,8 @@ namespace TerraMap.Data
 			{
 				for (int y = 0; y < this.WorldHeightinTiles; y++)
 				{
-					if (x == 47 && y == 715)
-						Debug.Write("");
+					//if (x == 100 && y == 440)
+					//	Debug.Write("");
 
 					int num2 = -1;
 					byte b2;
@@ -649,8 +649,8 @@ namespace TerraMap.Data
 
 						tile.Type = (ushort)num2;
 
-						if (tile.Type > 254 && tile.Type != 280)
-							Debug.Write("");
+						//if (tile.Type > 254 && tile.Type != 280)
+						//	Debug.Write("");
 
 						if (importance[num2])
 						{
@@ -1212,8 +1212,8 @@ namespace TerraMap.Data
 			{
 				for (int x = 0; x < this.WorldWidthinTiles; x++)
 				{
-					if (x == 47 && y == 715)
-						Debug.Write("");
+					//if (x == 47 && y == 715)
+					//	Debug.Write("");
 
 					var tile = this.Tiles[x, y];
 
@@ -1262,7 +1262,7 @@ namespace TerraMap.Data
 			{
 				var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-				if (tileInfo == objectTypeToHighlight.TileInfo || tileInfo.Id == objectTypeToHighlight.TileInfo.Id)
+				if (tileInfo == objectTypeToHighlight.TileInfo)
 					return true;
 			}
 

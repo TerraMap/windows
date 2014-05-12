@@ -4399,9 +4399,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]TerraMap.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{C01BD0AE-A873-4F23-B374-76BB31EC3011}</td><td/></row>
+		<row><td>ProductCode</td><td>{76661666-B8BC-4495-9EBB-DDA14F6BFE24}</td><td/></row>
 		<row><td>ProductName</td><td>TerraMap</td><td/></row>
-		<row><td>ProductVersion</td><td>1.0.3.13909</td><td/></row>
+		<row><td>ProductVersion</td><td>1.0.4</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -4414,7 +4414,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>SERIALNUMBER</td><td/><td/></row>
 		<row><td>SERIALNUMVALSUCCESSRETVAL</td><td>1</td><td/></row>
 		<row><td>SHOWLAUNCHPROGRAM</td><td>-1</td><td/></row>
-		<row><td>SecureCustomProperties</td><td>USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR;DOTNETVERSION40CLIENT;ISACTIONPROP1;ISACTIONPROP2;ISACTIONPROP3</td><td/></row>
+		<row><td>SecureCustomProperties</td><td>USERNAME;COMPANYNAME;ISX_SERIALNUM;SUPPORTDIR;DOTNETVERSION40CLIENT;ISACTIONPROP3</td><td/></row>
 		<row><td>SelectedSetupType</td><td>##IDS__DisplayName_Typical##</td><td/></row>
 		<row><td>SetupType</td><td>Typical</td><td/></row>
 		<row><td>UpgradeCode</td><td>{B315C97F-6D1C-41BA-8893-109C706075F3}</td><td/></row>
@@ -4688,9 +4688,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">Remove</col>
 		<col def="s72">ActionProperty</col>
 		<col def="S72">ISDisplayName</col>
-		<row><td>{B315C97F-6D1C-41BA-8893-109C706075F3}</td><td>1.0.2.30729</td><td>1.0.2.30729</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP1</td><td>1.0.2.30729</td></row>
-		<row><td>{B315C97F-6D1C-41BA-8893-109C706075F3}</td><td>1.0.2.31822</td><td>1.0.2.31822</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP2</td><td>1.0.2.31822</td></row>
-		<row><td>{B315C97F-6D1C-41BA-8893-109C706075F3}</td><td>1.0.3.13909</td><td>1.0.3.13909</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP3</td><td>1.0.3.13909</td></row>
+		<row><td>{B315C97F-6D1C-41BA-8893-109C706075F3}</td><td>1.0.0.0</td><td>1.0.3.33908</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP3</td><td>All {B315C97F-6D1C-41BA-8893-109C706075F3}</td></row>
 	</table>
 
 	<table name="Verb">
