@@ -8,7 +8,7 @@
 		  xmlns:local="clr-namespace:TerraMap"
 		  xmlns:data="clr-namespace:TerraMap.Data;assembly=TerraMap.Data"
 		  WindowState="Maximized" Loaded="OnLoaded"
-        Title="TerraMap" Height="480" Width="640" 
+        Title="TerraMap" Height="480" Width="800" 
 		  Icon="Resources/App.ico">
 	<Window.DataContext>
 		<local:MainWindowViewModel TileName="Gold Chest" Status="Status" Position="3, 300" ProgressValue="100" ProgressMaximum="100" IsLoading="True">
@@ -34,7 +34,7 @@
 		<local:InvertedBooleanConverter x:Key="InvertedBooleanConverter" />
 		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-		<CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}">
+		<CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}" Filter="OnFilter">
 			<CollectionViewSource.SortDescriptions>
 				<ComponentModel:SortDescription Direction="Ascending" PropertyName="Name"/>
 			</CollectionViewSource.SortDescriptions>
@@ -46,7 +46,6 @@
 			<DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="(Rectangle.RenderTransform).(ScaleTransform.ScaleY)"
 								  From="1.0" To="100.0" />
 		</Storyboard>
-
 	</Window.Resources>
 	<Window.CommandBindings>
 		<CommandBinding Command="Open" CanExecute="OnOpenCanExecute" Executed="OnOpenExecuted" />
@@ -242,8 +241,8 @@
 			</ToolBar>
 			<ToolBar Band="0" BandIndex="2" Name="Search" ToolTip="Search"
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
-				<TextBlock VerticalAlignment="Center">Blocks:</TextBlock>
-				<ComboBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
+				<!--<TextBlock VerticalAlignment="Center">Blocks:</TextBlock>-->
+				<!--<ComboBox ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" SelectedItem="{Binding SelectedObjectInfoViewModel}"
 							 SelectionChanged="OnSelectedTileInfoChanged" TextSearch.TextPath="Name">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
@@ -255,8 +254,79 @@
 							<VirtualizingStackPanel IsVirtualizing="True" />
 						</ItemsPanelTemplate>
 					</ComboBox.ItemsPanel>
-				</ComboBox>
-				<Button Command="Find" ToolTip="Select Block...">...</Button>
+				</ComboBox>-->
+				<CheckBox x:Name="checkBoxBlocksDropDown">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition Width="20" />
+						</Grid.ColumnDefinitions>
+						<TextBlock>Blocks</TextBlock>
+						<Path x:Name="Arrow"
+								Grid.Column="1"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Data="M 0 0 L 4 4 L 8 0 Z" >
+							<Path.Fill>
+								<SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
+							</Path.Fill>
+						</Path>
+					</Grid>
+				</CheckBox>
+				<Popup StaysOpen="False" Placement="Bottom" PlacementTarget="{Binding ElementName=checkBoxBlocksDropDown}" 
+						 IsOpen="{Binding ElementName=checkBoxBlocksDropDown, Path=IsChecked}">
+					<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" 
+							  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+							  Height="250" Width="250">
+						<DockPanel>
+							<Grid DockPanel.Dock="Top">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Margin="2" VerticalAlignment="Center">Name:</TextBlock>
+								<TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
+								<Button Grid.Column="2" Margin="2" Padding="2" Click="OnCheckAll"
+										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
+										  Content="Check All" />
+								<Button Grid.Column="3" Margin="2" Padding="2" Click="OnUncheckAll"
+										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
+										  Content="Uncheck All" />
+							</Grid>
+							<ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name"
+											  VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+											  BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Margin="2">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Margin="2" Checked="OnItemChecked" Unchecked="OnItemChecked"
+													 IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<VirtualizingStackPanel IsVirtualizing="True" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.Template>
+									<ControlTemplate>
+										<Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+												  Padding="{TemplateBinding Control.Padding}"
+												  BorderBrush="{TemplateBinding Border.BorderBrush}"
+												  Background="{TemplateBinding Panel.Background}"
+												  SnapsToDevicePixels="True">
+											<ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+												<ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+											</ScrollViewer>
+										</Border>
+									</ControlTemplate>
+								</ItemsControl.Template>
+							</ItemsControl>
+						</DockPanel>
+					</Border>
+				</Popup>
+				<Button Command="Find" ToolTip="Select Blocks...">...</Button>
 				<Button Command="PreviousPage" ToolTip="Previous">
 					<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
 				</Button>
@@ -267,6 +337,7 @@
 					<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
 				</Button>
 				<CheckBox IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged">Highlight All</CheckBox>
+				<Slider Minimum="0" Maximum="1" Value="{Binding MaskOpacity, UpdateSourceTrigger=PropertyChanged}" Width="100" SmallChange=".1" LargeChange=".2" />
 			</ToolBar>
 		</ToolBarTray>
 		<StatusBar DockPanel.Dock="Bottom">
@@ -304,6 +375,11 @@
 		<ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
 			<Grid x:Name="Grid">
 				<Image x:Name="Map" Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" Source="{Binding WriteableBitmap}" />
+				<Grid>
+					<Grid.Background>
+						<ImageBrush ImageSource="{Binding WriteableBitmapMask}" Opacity="{Binding MaskOpacity}" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
+					</Grid.Background>
+				</Grid>
 				<Canvas x:Name="Canvas" Width="360" Height="240">
 					<Rectangle x:Name="Indicator" Fill="Transparent" Stroke="Red" StrokeThickness="1" Width="3" Height="3" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
 						<Rectangle.RenderTransform>

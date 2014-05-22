@@ -26,6 +26,14 @@ namespace TerraMap
 			tileInfoViewSource = (CollectionViewSource)this.FindResource("tileInfoViewSource");
 		}
 
+		public MainWindowViewModel ViewModel
+		{
+			get
+			{
+				return this.DataContext as MainWindowViewModel;
+			}
+		}
+
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
 			this.searchBox.Focus();
@@ -64,6 +72,27 @@ namespace TerraMap
 		{
 			this.DialogResult = true;
 			this.Close();
+		}
+
+		private void OnCheckAll(object sender, RoutedEventArgs e)
+		{
+			this.SetIsSelected(true);
+		}
+
+		private void OnUncheckAll(object sender, RoutedEventArgs e)
+		{
+			this.SetIsSelected(false);
+		}
+
+		private void SetIsSelected(bool isSelected)
+		{
+			if (tileInfoViewSource == null || tileInfoViewSource.View == null)
+				return;
+
+			foreach (var item in tileInfoViewSource.View.OfType<ObjectInfoViewModel>())
+			{
+				item.IsSelected = isSelected;
+			}
 		}
 	}
 }

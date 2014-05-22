@@ -73,7 +73,7 @@ namespace TerraMap
 					objectTypeToHighlight.ItemInfo = world.StaticData.ItemInfos.Values.FirstOrDefault(t => t.Name.ToLower() == name);
 				}
 
-				world.WritePixelData(pixels, stride, objectTypeToHighlight);
+				world.WritePixelData(pixels, stride, new ObjectInfoViewModel[] { objectTypeToHighlight });
 
 				Int32Rect rect;
 

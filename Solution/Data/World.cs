@@ -585,7 +585,7 @@ namespace TerraMap.Data
 
 			List<string> anglerWhoFinishedToday = new List<string>();
 
-			for(int i = reader.ReadInt32(); i > 0; i--)
+			for (int i = reader.ReadInt32(); i > 0; i--)
 			{
 				anglerWhoFinishedToday.Add(reader.ReadString());
 			}
@@ -1188,15 +1188,15 @@ namespace TerraMap.Data
 		//	bitmap.Unlock();
 		//}
 
-		public async Task WritePixelDataAsync(byte[] pixelData, int rawStride, ObjectInfoViewModel objectTypeToHighlight = null)
+		public async Task WritePixelDataAsync(byte[] pixelData, int rawStride, ObjectInfoViewModel[] objectTypesToHighlight = null)
 		{
 			await Task.Factory.StartNew(() =>
 			{
-				this.WritePixelData(pixelData, rawStride, objectTypeToHighlight);
+				this.WritePixelData(pixelData, rawStride, objectTypesToHighlight);
 			});
 		}
 
-		public void WritePixelData(byte[] buffer, int rawStride, ObjectInfoViewModel objectTypeToHighlight = null)
+		public void WritePixelData(byte[] buffer, int rawStride, ObjectInfoViewModel[] objectTypesToHighlight = null)
 		{
 			int totalTileCount = this.WorldWidthinTiles * this.WorldHeightinTiles;
 			int tilesProcessed = 0;
@@ -1217,20 +1217,20 @@ namespace TerraMap.Data
 
 					var tile = this.Tiles[x, y];
 
-					// compute the pixel's color
-
 					Color color = tile.Color;
 
-					var tileMatches = IsTileMatch(objectTypeToHighlight, x, y, tile);
+					if (objectTypesToHighlight != null && objectTypesToHighlight.Length > 0)
+					{
+						var tileMatches = IsTileMatch(objectTypesToHighlight, x, y, tile);
 
-					if (tileMatches)
-					{
-						if (objectTypeToHighlight != null)
+						if (tileMatches)
+						{
 							this.HighlightedTileCount++;
-					}
-					else
-					{
-						color = Blend(Color.Black, color, 0.8);
+						}
+						else
+						{
+							color = Color.Black;
+						}
 					}
 
 					var pixelIndex = y * this.WorldWidthinTiles * 4 + (x * 4);
@@ -1247,50 +1247,51 @@ namespace TerraMap.Data
 
 				this.ProgressMaximum = totalTileCount;
 				this.ProgressValue = tilesProcessed;
-
-				//this.OnProgressChanged(new ProgressEventArgs(tilesProcessed, totalTileCount));
 			}
 			);
 		}
 
-		public bool IsTileMatch(ObjectInfoViewModel objectTypeToHighlight, int x, int y, Tile tile, TileHitTestInfo currentTile = null)
+		public bool IsTileMatch(ObjectInfoViewModel[] objectTypesToHighlight, int x, int y, Tile tile, TileHitTestInfo currentTile = null)
 		{
-			if (objectTypeToHighlight == null)
+			if (objectTypesToHighlight == null || objectTypesToHighlight.Length < 1)
 				return true;
 
-			if (objectTypeToHighlight.TileInfo != null)
+			foreach (ObjectInfoViewModel objectTypeToHighlight in objectTypesToHighlight)
 			{
-				var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
-
-				if (tileInfo == objectTypeToHighlight.TileInfo)
-					return true;
-			}
-
-			if (objectTypeToHighlight.ItemInfo != null)
-			{
-				var tileInfo = this.StaticData.TileInfos[tile.Type];
-
-				var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
-
-				if (tileInfo.Name != "Chest")
-					return false;
-
-				var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
-				if (chest == null)
-					return false;
-
-				if (currentTile != null)
+				if (objectTypeToHighlight.TileInfo != null)
 				{
-					var currentChest = this.Chests.FirstOrDefault(c => (c.X == currentTile.X || c.X + 1 == currentTile.X) && (c.Y == currentTile.Y || c.Y + 1 == currentTile.Y));
-					if (chest == currentChest)
-						return false;
+					var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+
+					if (tileInfo == objectTypeToHighlight.TileInfo)
+						return true;
 				}
 
-				foreach (var item in chest.Items)
+				if (objectTypeToHighlight.ItemInfo != null)
 				{
-					if (item.Id == objectTypeToHighlight.ItemInfo.Id)
+					var tileInfo = this.StaticData.TileInfos[tile.Type];
+
+					var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+
+					if (tileInfo.Name != "Chest")
+						continue;
+
+					var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+					if (chest == null)
+						continue;
+
+					if (currentTile != null)
 					{
-						return true;
+						var currentChest = this.Chests.FirstOrDefault(c => (c.X == currentTile.X || c.X + 1 == currentTile.X) && (c.Y == currentTile.Y || c.Y + 1 == currentTile.Y));
+						if (chest == currentChest)
+							continue;
+					}
+
+					foreach (var item in chest.Items)
+					{
+						if (item.Id == objectTypeToHighlight.ItemInfo.Id)
+						{
+							return true;
+						}
 					}
 				}
 			}

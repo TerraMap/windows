@@ -31,6 +31,8 @@ namespace TerraMap
 	{
 		#region Variables
 
+		CollectionViewSource tileInfoViewSource;
+
 		MainWindowViewModel viewModel = new MainWindowViewModel();
 		private bool ignoreSelectedWorldFileChanges;
 
@@ -39,6 +41,10 @@ namespace TerraMap
 		int width, height, stride;
 		byte[] pixels;
 		PixelFormat pixelFormat = PixelFormats.Bgr32;
+
+		byte[] maskPixels;
+
+		bool isChoosingBlocks = false;
 
 		#endregion
 
@@ -56,6 +62,8 @@ namespace TerraMap
 			viewModel.Position = null;
 			viewModel.TileName = null;
 			indicatorStoryboard = (Storyboard)this.FindResource("indicatorStoryboard");
+
+			tileInfoViewSource = (CollectionViewSource)this.FindResource("tileInfoViewSource");
 		}
 
 		#endregion
@@ -173,13 +181,19 @@ namespace TerraMap
 				height = world.WorldHeightinTiles;
 				stride = (width * pixelFormat.BitsPerPixel + 7) / 8;
 				pixels = new byte[stride * height];
+				maskPixels = new byte[stride * height];
 
 				viewModel.WriteableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+				viewModel.WriteableBitmapMask = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+
+				await world.WritePixelDataAsync(pixels, stride);
+
+				var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
 
 				if (this.viewModel.IsHighlighting)
-					await world.WritePixelDataAsync(pixels, stride, this.viewModel.SelectedObjectInfoViewModel);
+					await world.WritePixelDataAsync(maskPixels, stride, selectedObjectInfoViewModels);
 				else
-					await world.WritePixelDataAsync(pixels, stride);
+					await world.WritePixelDataAsync(maskPixels, stride);
 
 				foreach (var npc in world.NPCs.OrderBy(n => n.Type))
 					viewModel.NPCs.Add(npc);
@@ -212,7 +226,7 @@ namespace TerraMap
 
 		private async Task UpdateHighlight()
 		{
-			if (this.viewModel.IsLoading)
+			if (this.viewModel.IsLoading || this.isChoosingBlocks)
 				return;
 
 			var world = this.viewModel.World;
@@ -227,10 +241,12 @@ namespace TerraMap
 			var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
 			timer.Start();
 
+			var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
+
 			if (this.viewModel.IsHighlighting)
-				await world.WritePixelDataAsync(pixels, stride, this.viewModel.SelectedObjectInfoViewModel);
+				await world.WritePixelDataAsync(maskPixels, stride, selectedObjectInfoViewModels);
 			else
-				await world.WritePixelDataAsync(pixels, stride);
+				await world.WritePixelDataAsync(maskPixels, stride);
 
 			timer.Stop();
 
@@ -262,6 +278,7 @@ namespace TerraMap
 				var offset = rect.Y * width * 4;
 
 				viewModel.WriteableBitmap.WritePixels(rect, pixels, stride, offset);
+				viewModel.WriteableBitmapMask.WritePixels(rect, maskPixels, stride, offset);
 			}
 		}
 
@@ -340,17 +357,19 @@ namespace TerraMap
 
 			TileHitTestInfo tileHitTestInfo = null;
 
+			var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
+
 			if (direction == SearchDirection.Forwards)
 			{
-				tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel, start: this.viewModel.CurrentTileHitTestInfo);
+				tileHitTestInfo = await this.FindNextTileAsync(selectedObjectInfoViewModels, start: this.viewModel.CurrentTileHitTestInfo);
 				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindNextTileAsync(this.viewModel.SelectedObjectInfoViewModel, end: this.viewModel.CurrentTileHitTestInfo);
+					tileHitTestInfo = await this.FindNextTileAsync(selectedObjectInfoViewModels, end: this.viewModel.CurrentTileHitTestInfo);
 			}
 			else
 			{
-				tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel, start: this.viewModel.CurrentTileHitTestInfo);
+				tileHitTestInfo = await this.FindPreviousTileAsync(selectedObjectInfoViewModels, start: this.viewModel.CurrentTileHitTestInfo);
 				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindPreviousTileAsync(this.viewModel.SelectedObjectInfoViewModel, end: this.viewModel.CurrentTileHitTestInfo);
+					tileHitTestInfo = await this.FindPreviousTileAsync(selectedObjectInfoViewModels, end: this.viewModel.CurrentTileHitTestInfo);
 			}
 
 			this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
@@ -377,15 +396,15 @@ namespace TerraMap
 			this.NavigateTo(tileHitTestInfo.X, tileHitTestInfo.Y);
 		}
 
-		private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
+		private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			return Task.Factory.StartNew<TileHitTestInfo>(() =>
 			{
-				return this.FindPreviousTile(targetObjectType, start, end);
+				return this.FindPreviousTile(targetObjectTypes, start, end);
 			});
 		}
 
-		private TileHitTestInfo FindPreviousTile(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
+		private TileHitTestInfo FindPreviousTile(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			Tile matchingTile = null;
 			int tileX = 0;
@@ -425,7 +444,7 @@ namespace TerraMap
 					if (start != null && tile == start.Tile)
 						continue;
 
-					if (this.viewModel.World.IsTileMatch(targetObjectType, x, y, tile, start))
+					if (this.viewModel.World.IsTileMatch(targetObjectTypes, x, y, tile, start))
 					{
 						tileX = x;
 						tileY = y;
@@ -448,15 +467,15 @@ namespace TerraMap
 			return new TileHitTestInfo(matchingTile, tileX, tileY);
 		}
 
-		private Task<TileHitTestInfo> FindNextTileAsync(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
+		private Task<TileHitTestInfo> FindNextTileAsync(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			return Task.Factory.StartNew<TileHitTestInfo>(() =>
 			{
-				return this.FindNextTile(targetObjectType, start, end);
+				return this.FindNextTile(targetObjectTypes, start, end);
 			});
 		}
 
-		private TileHitTestInfo FindNextTile(ObjectInfoViewModel targetObjectType, TileHitTestInfo start = null, TileHitTestInfo end = null)
+		private TileHitTestInfo FindNextTile(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
 		{
 			Tile matchingTile = null;
 			int tileX = 0;
@@ -496,7 +515,7 @@ namespace TerraMap
 					if (start != null && tile == start.Tile)
 						continue;
 
-					if (this.viewModel.World.IsTileMatch(targetObjectType, x, y, tile, start))
+					if (this.viewModel.World.IsTileMatch(targetObjectTypes, x, y, tile, start))
 					{
 						tileX = x;
 						tileY = y;
@@ -519,21 +538,39 @@ namespace TerraMap
 			return new TileHitTestInfo(matchingTile, tileX, tileY);
 		}
 
-		private void ChooseTileInfo()
+		private async Task ChooseTileInfo()
 		{
-			var viewModel = new MainWindowViewModel();
-			viewModel.ObjectInfoViewModels = this.viewModel.ObjectInfoViewModels;
-			viewModel.SelectedObjectInfoViewModel = this.viewModel.SelectedObjectInfoViewModel;
+			try
+			{
+				this.isChoosingBlocks = true;
 
-			var window = new TileSelectionWindow();
-			window.Owner = this;
-			window.DataContext = viewModel;
+				var newViewModel = new MainWindowViewModel();
+				newViewModel.ObjectInfoViewModels = this.viewModel.ObjectInfoViewModels;
+				newViewModel.SelectedObjectInfoViewModel = this.viewModel.SelectedObjectInfoViewModel;
 
-			var result = window.ShowDialog() ?? false;
-			if (!result)
-				return;
+				var window = new TileSelectionWindow();
+				window.Owner = this;
+				window.DataContext = newViewModel;
 
-			this.viewModel.SelectedObjectInfoViewModel = viewModel.SelectedObjectInfoViewModel;
+				var result = window.ShowDialog() ?? false;
+				if (!result)
+				{
+					this.isChoosingBlocks = false;
+
+					return;
+				}
+
+				this.viewModel.SelectedObjectInfoViewModel = newViewModel.SelectedObjectInfoViewModel;
+
+				this.isChoosingBlocks = false;
+
+				if (this.viewModel.IsHighlighting)
+					await this.UpdateHighlight();
+			}
+			finally
+			{
+				this.isChoosingBlocks = false;
+			}
 		}
 
 		private void CheckForUpdates(bool isUserInitiated = false)
@@ -564,75 +601,14 @@ namespace TerraMap
 			}
 		}
 
-		private void OnCheckForUpdatesComplete(object sender, OpenReadCompletedEventArgs e)
+		private void SetIsSelected(bool isSelected)
 		{
-			var isUserInitiated = false;
+			if (tileInfoViewSource == null || tileInfoViewSource.View == null)
+				return;
 
-			try
+			foreach (var item in tileInfoViewSource.View.OfType<ObjectInfoViewModel>())
 			{
-				if (e.UserState is bool)
-					isUserInitiated = (bool)e.UserState;
-
-				if (e.Cancelled)
-					return;
-
-				if (e.Error != null)
-				{
-					if (isUserInitiated)
-					{
-						ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", e.Error));
-					}
-					else
-					{
-						Debug.WriteLine(e.Error);
-					}
-
-					return;
-				}
-
-				var releases = new List<ReleaseInfo>();
-
-				using (var stream = e.Result)
-				{
-					releases = ReleaseInfo.FromRssStream(stream);
-				}
-
-				var currentVersion = Assembly.GetEntryAssembly().GetName().Version;
-
-				if (releases == null || releases.Count < 1)
-				{
-					if (isUserInitiated)
-						MessageBox.Show("No updates found.", "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
-
-					return;
-				}
-
-				var newRelease = ReleaseInfo.GetLatest(releases, ReleaseStatus.Alpha);
-
-				if (newRelease.Version > currentVersion)
-				{
-					this.viewModel.UpdateVisibility = Visibility.Visible;
-					this.viewModel.NewRelease = newRelease;
-				}
-				else if (isUserInitiated)
-				{
-					MessageBox.Show(string.Format("Version {0}\r\n\r\nTerraMap is up to date.", currentVersion), "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
-				}
-			}
-			catch (Exception ex)
-			{
-				if (isUserInitiated)
-				{
-					ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
-				}
-				else
-				{
-					Debug.WriteLine(ex);
-				}
-			}
-			finally
-			{
-				this.viewModel.IsCheckingForUpdate = false;
+				item.IsSelected = isSelected;
 			}
 		}
 
@@ -868,6 +844,111 @@ namespace TerraMap
 			Process.Start(this.viewModel.NewRelease.Url);
 		}
 
+		private void OnCheckForUpdatesComplete(object sender, OpenReadCompletedEventArgs e)
+		{
+			var isUserInitiated = false;
+
+			try
+			{
+				if (e.UserState is bool)
+					isUserInitiated = (bool)e.UserState;
+
+				if (e.Cancelled)
+					return;
+
+				if (e.Error != null)
+				{
+					if (isUserInitiated)
+					{
+						ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", e.Error));
+					}
+					else
+					{
+						Debug.WriteLine(e.Error);
+					}
+
+					return;
+				}
+
+				var releases = new List<ReleaseInfo>();
+
+				using (var stream = e.Result)
+				{
+					releases = ReleaseInfo.FromRssStream(stream);
+				}
+
+				var currentVersion = Assembly.GetEntryAssembly().GetName().Version;
+
+				if (releases == null || releases.Count < 1)
+				{
+					if (isUserInitiated)
+						MessageBox.Show("No updates found.", "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
+
+					return;
+				}
+
+				var newRelease = ReleaseInfo.GetLatest(releases, ReleaseStatus.Alpha);
+
+				if (newRelease.Version > currentVersion)
+				{
+					this.viewModel.UpdateVisibility = Visibility.Visible;
+					this.viewModel.NewRelease = newRelease;
+				}
+				else if (isUserInitiated)
+				{
+					MessageBox.Show(string.Format("Version {0}\r\n\r\nTerraMap is up to date.", currentVersion), "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
+				}
+			}
+			catch (Exception ex)
+			{
+				if (isUserInitiated)
+				{
+					ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
+				}
+				else
+				{
+					Debug.WriteLine(ex);
+				}
+			}
+			finally
+			{
+				this.viewModel.IsCheckingForUpdate = false;
+			}
+		}
+
+		private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+		{
+			this.tileInfoViewSource.View.Refresh();
+			this.tileInfoViewSource.View.MoveCurrentToFirst();
+		}
+
+		private void OnFilter(object sender, FilterEventArgs e)
+		{
+			e.Accepted = false;
+
+			var tileInfo = e.Item as ObjectInfoViewModel;
+			if (tileInfo == null)
+				return;
+
+			e.Accepted = tileInfo.Name.ToLower().Contains(this.searchBox.Text.ToLower());
+		}
+
+		private void OnCheckAll(object sender, RoutedEventArgs e)
+		{
+			this.SetIsSelected(true);
+		}
+
+		private void OnUncheckAll(object sender, RoutedEventArgs e)
+		{
+			this.SetIsSelected(false);
+		}
+
+		private async void OnItemChecked(object sender, RoutedEventArgs e)
+		{
+			if (this.viewModel.IsHighlighting)
+				await this.UpdateHighlight();
+		}
+
 		#endregion
 
 		#region Command Event Handlers
@@ -974,9 +1055,9 @@ namespace TerraMap
 			e.CanExecute = true;
 		}
 
-		private void OnFindExecuted(object sender, ExecutedRoutedEventArgs e)
+		private async void OnFindExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			this.ChooseTileInfo();
+			await this.ChooseTileInfo();
 		}
 
 
@@ -1048,6 +1129,5 @@ namespace TerraMap
 		}
 
 		#endregion
-
 	}
 }

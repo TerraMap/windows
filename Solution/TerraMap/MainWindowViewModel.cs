@@ -261,6 +261,30 @@ namespace TerraMap
 			}
 		}
 
+		private WriteableBitmap writeableBitmapMask;
+
+		public WriteableBitmap WriteableBitmapMask
+		{
+			get { return writeableBitmapMask; }
+			set
+			{
+				writeableBitmapMask = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private double maskOpacity = 0.5;
+
+		public double MaskOpacity
+		{
+			get { return maskOpacity; }
+			set
+			{
+				maskOpacity = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public string Filename { get; set; }
 
 		private Visibility updateVisibility = Visibility.Collapsed;
