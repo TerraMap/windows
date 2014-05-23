@@ -374,12 +374,10 @@
 
 		<ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
 			<Grid x:Name="Grid">
-				<Image x:Name="Map" Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" Source="{Binding WriteableBitmap}" />
-				<Grid>
-					<Grid.Background>
-						<ImageBrush ImageSource="{Binding WriteableBitmapMask}" Opacity="{Binding MaskOpacity}" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
-					</Grid.Background>
-				</Grid>
+				<Image x:Name="Map" Source="{Binding WriteableBitmap}"
+						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
+				<Image Source="{Binding WriteableBitmapMask}" Opacity="{Binding MaskOpacity}"
+						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
 				<Canvas x:Name="Canvas" Width="360" Height="240">
 					<Rectangle x:Name="Indicator" Fill="Transparent" Stroke="Red" StrokeThickness="1" Width="3" Height="3" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
 						<Rectangle.RenderTransform>

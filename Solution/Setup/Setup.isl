@@ -4399,9 +4399,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]TerraMap.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{76661666-B8BC-4495-9EBB-DDA14F6BFE24}</td><td/></row>
+		<row><td>ProductCode</td><td>{ABEECE4E-B1BC-40F9-ADCB-9934D89E1039}</td><td/></row>
 		<row><td>ProductName</td><td>TerraMap</td><td/></row>
-		<row><td>ProductVersion</td><td>1.0.4</td><td/></row>
+		<row><td>ProductVersion</td><td>1.0.6</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>
@@ -4688,7 +4688,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="S255">Remove</col>
 		<col def="s72">ActionProperty</col>
 		<col def="S72">ISDisplayName</col>
-		<row><td>{B315C97F-6D1C-41BA-8893-109C706075F3}</td><td>1.0.0.0</td><td>1.0.3.33908</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP3</td><td>All {B315C97F-6D1C-41BA-8893-109C706075F3}</td></row>
+		<row><td>{B315C97F-6D1C-41BA-8893-109C706075F3}</td><td>1.0.0.0</td><td>1.0.6</td><td>1033</td><td>768</td><td/><td>ISACTIONPROP3</td><td>All {B315C97F-6D1C-41BA-8893-109C706075F3}</td></row>
 	</table>
 
 	<table name="Verb">
