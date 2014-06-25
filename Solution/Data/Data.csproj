@@ -61,6 +61,7 @@
     <Compile Include="Map.cs" />
     <Compile Include="NPC.cs" />
     <Compile Include="ObjectInfo.cs" />
+    <Compile Include="ObjectInfoSetViewModel.cs" />
     <Compile Include="ObjectInfoViewModel.cs" />
     <Compile Include="ProgressEventArgs.cs" />
     <Compile Include="PropertyInfoAttribute.cs" />

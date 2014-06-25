@@ -660,11 +660,20 @@ namespace TerraMap.Data
 							{
 								tile.TextureV = 0;
 							}
+							if (tile.Type == 26)
+							{
+								Debug.WriteLine("");
+							}
 						}
 						else
 						{
 							tile.TextureU = -1;
 							tile.TextureV = -1;
+
+							if (tile.Type == 105)
+							{
+								Debug.WriteLine("");
+							}
 						}
 						if ((b & 8) == 8)
 						{
@@ -949,7 +958,7 @@ namespace TerraMap.Data
 					if (num5 > 0)
 					{
 						item.Id = reader.ReadInt32();
-						item.Count = (byte)num5;
+						item.Count = (int)num5;
 						item.PrefixId = reader.ReadByte();
 						chest.Items.Add(item);
 
@@ -1258,41 +1267,51 @@ namespace TerraMap.Data
 
 			foreach (ObjectInfoViewModel objectTypeToHighlight in objectTypesToHighlight)
 			{
-				if (objectTypeToHighlight.TileInfo != null)
+				var objectTypeSet = objectTypeToHighlight as ObjectInfoSetViewModel;
+				if (objectTypeSet == null)
 				{
-					var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
-
-					if (tileInfo == objectTypeToHighlight.TileInfo)
-						return true;
-				}
-
-				if (objectTypeToHighlight.ItemInfo != null)
-				{
-					var tileInfo = this.StaticData.TileInfos[tile.Type];
-
-					var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
-
-					if (tileInfo.Name != "Chest")
-						continue;
-
-					var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
-					if (chest == null)
-						continue;
-
-					if (currentTile != null)
+					if (objectTypeToHighlight.TileInfo != null)
 					{
-						var currentChest = this.Chests.FirstOrDefault(c => (c.X == currentTile.X || c.X + 1 == currentTile.X) && (c.Y == currentTile.Y || c.Y + 1 == currentTile.Y));
-						if (chest == currentChest)
-							continue;
+						var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+
+						if (tileInfo == objectTypeToHighlight.TileInfo)
+							return true;
 					}
 
-					foreach (var item in chest.Items)
+					if (objectTypeToHighlight.ItemInfo != null)
 					{
-						if (item.Id == objectTypeToHighlight.ItemInfo.Id)
+						var tileInfo = this.StaticData.TileInfos[tile.Type];
+
+						var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+
+						if (tileInfo.Name != "Chest")
+							continue;
+
+						var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+						if (chest == null)
+							continue;
+
+						if (currentTile != null)
 						{
-							return true;
+							var currentChest = this.Chests.FirstOrDefault(c => (c.X == currentTile.X || c.X + 1 == currentTile.X) && (c.Y == currentTile.Y || c.Y + 1 == currentTile.Y));
+							if (chest == currentChest)
+								continue;
+						}
+
+						foreach (var item in chest.Items)
+						{
+							if (item.Id == objectTypeToHighlight.ItemInfo.Id)
+							{
+								return true;
+							}
 						}
 					}
+				}
+				else
+				{
+					var containsMatch = this.IsTileMatch(objectTypeSet.ObjectInfoViewModels.ToArray(), x, y, tile, currentTile);
+					if (containsMatch)
+						return true;
 				}
 			}
 

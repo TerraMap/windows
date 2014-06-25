@@ -667,7 +667,42 @@ namespace TerraMap
 				}
 			}
 
-			this.viewModel.SelectedObjectInfoViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == "Crimstone");
+			var set = new ObjectInfoSetViewModel() { Name = "Chests (Set)" };
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Chest")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			this.viewModel.ObjectInfoViewModels.Add(set);
+
+			set = new ObjectInfoSetViewModel() { Name = "Doors (Set)" };
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Door")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			this.viewModel.ObjectInfoViewModels.Add(set);
+
+			set = new ObjectInfoSetViewModel() { Name = "Crimson Blocks (Set)" };
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Crims")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Red Ice")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			this.viewModel.ObjectInfoViewModels.Add(set);
+
+			set = new ObjectInfoSetViewModel() { Name = "Corruption Blocks (Set)" };
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Ebon")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Corrupt")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Purple Ice")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			this.viewModel.ObjectInfoViewModels.Add(set);
+
+			set = new ObjectInfoSetViewModel() { Name = "Hallow Blocks (Set)" };
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Pearl")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Hallow")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.Name.Contains("Pink Ice")))
+				set.ObjectInfoViewModels.Add(objectInfo);
+			this.viewModel.ObjectInfoViewModels.Add(set);
+
+			this.viewModel.SelectedObjectInfoViewModel = set; // this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == "Crimstone");
 
 			var args = App.Current.Properties["Args"] as string[];
 			if (args != null && args.Length > 0)
@@ -1129,5 +1164,11 @@ namespace TerraMap
 		}
 
 		#endregion
+
+		private void OnBlocksPopupOpened(object sender, EventArgs e)
+		{
+			if (this.searchBox.Focusable)
+				this.searchBox.Focus();
+		}
 	}
 }

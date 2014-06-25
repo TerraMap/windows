@@ -29,10 +29,16 @@
 			<Button Grid.Column="2" Click="OnCheckAll">Check All</Button>
 			<Button Grid.Column="3" Click="OnUncheckAll">Uncheck All</Button>
 		</Grid>
-		<StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-			<Button IsDefault="True" Click="OnAccept">_OK</Button>
-			<Button IsCancel="True" Click="OnCancel">_Cancel</Button>
-		</StackPanel>
+		<Grid DockPanel.Dock="Bottom">
+			<!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+				<Button IsDefault="True" Click="OnSaveSet" HorizontalAlignment="Left">Save Set...</Button>
+				<Button IsDefault="True" Click="OnCustomize" HorizontalAlignment="Left">_Customize...</Button>
+			</StackPanel>-->
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button IsDefault="True" Click="OnAccept">_OK</Button>
+				<Button IsCancel="True" Click="OnCancel">_Cancel</Button>
+			</StackPanel>
+		</Grid>
 		<ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name" 
 						  local:ItemActivation.ActivationMode="Mouse,Keyboard" local:ItemActivation.ItemActivate="OnItemActivate"
 						  VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"

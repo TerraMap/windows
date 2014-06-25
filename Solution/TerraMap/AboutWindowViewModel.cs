@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -23,6 +24,8 @@ namespace TerraMap
 			var attr = assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
 			if (attr.Length > 0)
 				this.Description = ((AssemblyDescriptionAttribute)attr[0]).Description;
+
+			this.UserDataPath = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoaming).FilePath;
 		}
 
 		private string version;
@@ -57,6 +60,18 @@ namespace TerraMap
 			set
 			{
 				year = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private string userDataPath;
+
+		public string UserDataPath
+		{
+			get { return userDataPath; }
+			set
+			{
+				userDataPath = value;
 				RaisePropertyChanged();
 			}
 		}

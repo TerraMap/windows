@@ -264,14 +264,14 @@
   <tile num="24" name="Corrupted Weeds" color="#6D6AAE" hasExtra="1" letLight="1" />
   <tile num="25" name="Ebonstone" color="#7D7991" solid="1" blend="0" />
   <tile num="26" name="Demon Altar" color="#5E5561" hasExtra="1" letLight="1" lightr="0.325" lightg="0.115" lightb="0.47" light="0.46">
-    <var name="Demon Altar" minu="54" lightr="0.25" lightg="0.215" lightb="0.1" />
+    <var name="Crimson Altar" minu="54" lightr="0.25" lightg="0.215" lightb="0.1" />
   </tile>
   <tile num="27" name="Sunflower" color="#E3B903" hasExtra="1" letLight="1" />
   <tile num="28" name="Pot" color="#796E61" hasExtra="1" letLight="1" />
   <tile num="29" name="Piggy Bank" color="#9C546C" hasExtra="1" letLight="1" />
   <tile num="30" name="Wood" color="#A97D5D" solid="1" blend="0" merge="1" />
   <tile num="31" name="Shadow Orb" color="#674D62" hasExtra="1" letLight="1" lightr="0.325" lightg="0.115" lightb="0.47" light="0.46">
-    <var name="Demon Heart" minu="36" lightr="0.23" lightg="0.215" lightb="0.1" light="0.46" />
+    <var name="Crimson Heart" minu="36" lightr="0.23" lightg="0.215" lightb="0.1" light="0.46" />
   </tile>
   <tile num="32" name="Corrupted Vines" color="#7A618F" />
   <tile num="33" name="Candle" color="#FDDD03" hasExtra="1" letLight="1">
@@ -893,6 +893,7 @@
     <var minu="36" name="Dynasty Grandfather Clock" color="#745354" />
   </tile>
   <tile num="105" name="Statue" color="#282828" hasExtra="1" letLight="1">
+    <var minu="1800" name="Shark Statue" color="#95866f" />
     <var minu="1764" name="Obsidian Vase" color="#545454" />
     <var minu="1728" name="Pink Dungeon Vase" color="#b97197" />
     <var minu="1692" name="Green Dungeon Vase" color="#729674" />
@@ -999,7 +1000,7 @@
   <tile num="137" name="Dart Trap" color="#8C8C8C" hasExtra="1" solid="1">
     <var v="18" name="Super Dart Trap" color="#c26015" />
     <var v="36" name="Flame Trap" color="#c26015" />
-    <var v="54" name="Skipy Ball Trap" color="#c26015" />
+    <var v="54" name="Spiky Ball Trap" color="#c26015" />
     <var v="72" name="Spear Trap" color="#c26015" />
   </tile>
   <tile num="138" name="Boulder" color="#636363" hasExtra="1" solid="1" />

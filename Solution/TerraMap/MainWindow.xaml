@@ -274,7 +274,7 @@
 					</Grid>
 				</CheckBox>
 				<Popup StaysOpen="False" Placement="Bottom" PlacementTarget="{Binding ElementName=checkBoxBlocksDropDown}" 
-						 IsOpen="{Binding ElementName=checkBoxBlocksDropDown, Path=IsChecked}">
+						 IsOpen="{Binding ElementName=checkBoxBlocksDropDown, Path=IsChecked}" Opened="OnBlocksPopupOpened">
 					<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" 
 							  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
 							  Height="250" Width="250">
@@ -336,8 +336,10 @@
 				<Button Command="NextPage" ToolTip="Next">
 					<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
 				</Button>
-				<CheckBox IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged">Highlight All</CheckBox>
-				<Slider Minimum="0" Maximum="1" Value="{Binding MaskOpacity, UpdateSourceTrigger=PropertyChanged}" Width="100" SmallChange=".1" LargeChange=".2" />
+				<CheckBox IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged"
+							 ToolTip="Highlight All">Highlight All</CheckBox>
+				<Slider Minimum="0" Maximum="1" Value="{Binding MaskOpacity, UpdateSourceTrigger=PropertyChanged}" Width="100" SmallChange=".1" LargeChange=".2"
+						  ToolTip="Highlight Opacity" />
 			</ToolBar>
 		</ToolBarTray>
 		<StatusBar DockPanel.Dock="Bottom">
@@ -361,13 +363,15 @@
 				<StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 					<TextBlock Text="{Binding TileName}" FontWeight="Bold" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="2" />
 					<Separator />
-					<ItemsControl ItemsSource="{Binding CurrentChestItemNames}" Padding="2">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<TextBlock Text="{Binding}" Margin="2" />
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
+					<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="480">
+						<ItemsControl ItemsSource="{Binding CurrentChestItemNames}" Padding="2">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding}" Margin="2" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
 				</StackPanel>
 			</Border>
 		</Popup>

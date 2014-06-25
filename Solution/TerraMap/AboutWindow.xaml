@@ -30,6 +30,14 @@
 				<Run Text="{Binding Year}" />
 			</TextBlock>
 			<TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<TextBlock>User Data Path:</TextBlock>
+				<TextBlock Grid.Column="1" TextTrimming="CharacterEllipsis"><Hyperlink NavigateUri="{Binding UserDataPath}"><Run Text="{Binding UserDataPath}" /></Hyperlink></TextBlock>
+			</Grid>
 			<TextBlock TextWrapping="Wrap">
 				<Run>Terraria .wld format specification from</Run>
 				<Hyperlink NavigateUri="http://seancode.com/terrafirma" Click="OnHyperLinkClicked">seancode.com/terrafirma</Hyperlink>

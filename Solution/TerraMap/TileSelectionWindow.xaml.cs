@@ -94,5 +94,18 @@ namespace TerraMap
 				item.IsSelected = isSelected;
 			}
 		}
+
+		private void OnCustomize(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void OnSaveSet(object sender, RoutedEventArgs e)
+		{
+			foreach (var item in tileInfoViewSource.View.OfType<ObjectInfoViewModel>().Where(o => o.IsSelected))
+			{
+
+			}
+		}
 	}
 }
