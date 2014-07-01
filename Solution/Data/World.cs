@@ -1197,7 +1197,7 @@ namespace TerraMap.Data
 		//	bitmap.Unlock();
 		//}
 
-		public async Task WritePixelDataAsync(byte[] pixelData, int rawStride, ObjectInfoViewModel[] objectTypesToHighlight = null)
+		public async Task WritePixelDataAsync(byte[] pixelData, int rawStride, IEnumerable<ObjectInfoViewModel> objectTypesToHighlight = null)
 		{
 			await Task.Factory.StartNew(() =>
 			{
@@ -1205,7 +1205,7 @@ namespace TerraMap.Data
 			});
 		}
 
-		public void WritePixelData(byte[] buffer, int rawStride, ObjectInfoViewModel[] objectTypesToHighlight = null)
+		public void WritePixelData(byte[] buffer, int rawStride, IEnumerable<ObjectInfoViewModel> objectTypesToHighlight = null)
 		{
 			int totalTileCount = this.WorldWidthinTiles * this.WorldHeightinTiles;
 			int tilesProcessed = 0;
@@ -1228,7 +1228,7 @@ namespace TerraMap.Data
 
 					Color color = tile.Color;
 
-					if (objectTypesToHighlight != null && objectTypesToHighlight.Length > 0)
+					if (objectTypesToHighlight != null)
 					{
 						var tileMatches = IsTileMatch(objectTypesToHighlight, x, y, tile);
 
@@ -1260,58 +1260,48 @@ namespace TerraMap.Data
 			);
 		}
 
-		public bool IsTileMatch(ObjectInfoViewModel[] objectTypesToHighlight, int x, int y, Tile tile, TileHitTestInfo currentTile = null)
+		public bool IsTileMatch(IEnumerable<ObjectInfoViewModel> objectTypesToHighlight, int x, int y, Tile tile, TileHitTestInfo currentTile = null)
 		{
-			if (objectTypesToHighlight == null || objectTypesToHighlight.Length < 1)
+			if (objectTypesToHighlight == null)
 				return true;
 
 			foreach (ObjectInfoViewModel objectTypeToHighlight in objectTypesToHighlight)
 			{
-				var objectTypeSet = objectTypeToHighlight as ObjectInfoSetViewModel;
-				if (objectTypeSet == null)
+				if (objectTypeToHighlight.TileInfo != null)
 				{
-					if (objectTypeToHighlight.TileInfo != null)
-					{
-						var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+					var tileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-						if (tileInfo == objectTypeToHighlight.TileInfo)
-							return true;
-					}
-
-					if (objectTypeToHighlight.ItemInfo != null)
-					{
-						var tileInfo = this.StaticData.TileInfos[tile.Type];
-
-						var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
-
-						if (tileInfo.Name != "Chest")
-							continue;
-
-						var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
-						if (chest == null)
-							continue;
-
-						if (currentTile != null)
-						{
-							var currentChest = this.Chests.FirstOrDefault(c => (c.X == currentTile.X || c.X + 1 == currentTile.X) && (c.Y == currentTile.Y || c.Y + 1 == currentTile.Y));
-							if (chest == currentChest)
-								continue;
-						}
-
-						foreach (var item in chest.Items)
-						{
-							if (item.Id == objectTypeToHighlight.ItemInfo.Id)
-							{
-								return true;
-							}
-						}
-					}
-				}
-				else
-				{
-					var containsMatch = this.IsTileMatch(objectTypeSet.ObjectInfoViewModels.ToArray(), x, y, tile, currentTile);
-					if (containsMatch)
+					if (tileInfo == objectTypeToHighlight.TileInfo)
 						return true;
+				}
+
+				if (objectTypeToHighlight.ItemInfo != null)
+				{
+					var tileInfo = this.StaticData.TileInfos[tile.Type];
+
+					var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+
+					if (tileInfo.Name != "Chest")
+						continue;
+
+					var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+					if (chest == null)
+						continue;
+
+					if (currentTile != null)
+					{
+						var currentChest = this.Chests.FirstOrDefault(c => (c.X == currentTile.X || c.X + 1 == currentTile.X) && (c.Y == currentTile.Y || c.Y + 1 == currentTile.Y));
+						if (chest == currentChest)
+							continue;
+					}
+
+					foreach (var item in chest.Items)
+					{
+						if (item.Id == objectTypeToHighlight.ItemInfo.Id)
+						{
+							return true;
+						}
+					}
 				}
 			}
 

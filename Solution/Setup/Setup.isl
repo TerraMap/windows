@@ -4399,9 +4399,9 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKVROOTS</td><td>##IDS_PROGMSG_IIS_ROLLBACKVROOTS##</td><td/></row>
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>PROGRAMFILETOLAUNCHATEND</td><td>[INSTALLDIR]TerraMap.Primary output</td><td/></row>
-		<row><td>ProductCode</td><td>{4DCF1F83-F9E6-4720-B8FF-3B02508DC8D4}</td><td/></row>
+		<row><td>ProductCode</td><td>{489EF7F9-39DA-4B78-AB13-ECBBA3898B2E}</td><td/></row>
 		<row><td>ProductName</td><td>TerraMap</td><td/></row>
-		<row><td>ProductVersion</td><td>1.0.7</td><td/></row>
+		<row><td>ProductVersion</td><td>1.0.8</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

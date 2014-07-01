@@ -273,7 +273,7 @@ namespace TerraMap
 			}
 		}
 
-		private double maskOpacity = 0.5;
+		private double maskOpacity = 0.75;
 
 		public double MaskOpacity
 		{

@@ -978,7 +978,37 @@ namespace TerraMap
 			this.SetIsSelected(false);
 		}
 
-		private async void OnItemChecked(object sender, RoutedEventArgs e)
+		private void OnItemChecked(object sender, RoutedEventArgs e)
+		{
+			var checkBox = sender as CheckBox;
+			if (checkBox == null)
+				return;
+
+			var objectInfoSetViewModel = checkBox.DataContext as ObjectInfoSetViewModel;
+			if (objectInfoSetViewModel == null)
+				return;
+
+			this.CheckObjectInfoSet(objectInfoSetViewModel);
+		}
+
+		private void CheckObjectInfoSet(ObjectInfoSetViewModel objectInfoSetViewModel)
+		{
+			if (objectInfoSetViewModel == null)
+				return;
+
+			foreach (var objectInfoViewModel in objectInfoSetViewModel.ObjectInfoViewModels)
+			{
+				objectInfoViewModel.IsSelected = objectInfoSetViewModel.IsSelected;
+			}
+		}
+
+		private void OnBlocksPopupOpened(object sender, EventArgs e)
+		{
+			if (this.searchBox.Focusable)
+				this.searchBox.Focus();
+		}
+
+		private async void OnApplyBlockSelection(object sender, RoutedEventArgs e)
 		{
 			if (this.viewModel.IsHighlighting)
 				await this.UpdateHighlight();
@@ -1164,11 +1194,5 @@ namespace TerraMap
 		}
 
 		#endregion
-
-		private void OnBlocksPopupOpened(object sender, EventArgs e)
-		{
-			if (this.searchBox.Focusable)
-				this.searchBox.Focus();
-		}
 	}
 }
