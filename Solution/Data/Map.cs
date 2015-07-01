@@ -10,9 +10,9 @@ namespace TerraMap.Data
 	// copied from Terraria.Map
 	public static class Map
 	{
-		static Color[][] tileColors = new Color[314][];
+		static Color[][] tileColors = new Color[419][];
 		static Color[] liquidColors;
-		static Color[][] wallColors;
+		static Color[][] wallColors = new Color[225][];
 
 		public static int[] tileOptionCounts;
 		public static int[] wallOptionCounts;
@@ -27,12 +27,14 @@ namespace TerraMap.Data
 		public static ushort hellPosition;
 		public static Color[] colorLookup;
 		public static ushort[] snowTypes;
+		private static ushort wallRangeStart;
+		private static ushort wallRangeEnd;
 
 		public static void Initialize()
 		{
-			for (int i = 0; i < 314; i++)
+			for (int i = 0; i < 419; i++)
 			{
-				tileColors[i] = new Color[10];
+				tileColors[i] = new Color[12];
 			}
 			Color color = Color.FromArgb(151, 107, 75);
 			tileColors[0][0] = color;
@@ -54,6 +56,7 @@ namespace TerraMap.Data
 			tileColors[192][0] = color;
 			tileColors[73][0] = Color.FromArgb(27, 197, 109);
 			tileColors[52][0] = Color.FromArgb(23, 177, 76);
+			tileColors[353][0] = Color.FromArgb(28, 216, 94);
 			tileColors[20][0] = Color.FromArgb(163, 116, 81);
 			tileColors[6][0] = Color.FromArgb(140, 101, 80);
 			color = Color.FromArgb(150, 67, 22);
@@ -83,6 +86,8 @@ namespace TerraMap.Data
 			tileColors[151][0] = color;
 			tileColors[154][0] = color;
 			tileColors[274][0] = color;
+			tileColors[328][0] = Color.FromArgb(200, 246, 254);
+			tileColors[329][0] = Color.FromArgb(15, 15, 15);
 			tileColors[54][0] = Color.FromArgb(200, 246, 254);
 			tileColors[56][0] = Color.FromArgb(43, 40, 84);
 			tileColors[75][0] = Color.FromArgb(26, 26, 26);
@@ -172,6 +177,7 @@ namespace TerraMap.Data
 			tileColors[181][0] = Color.FromArgb(134, 59, 49);
 			tileColors[182][0] = Color.FromArgb(43, 86, 140);
 			tileColors[183][0] = Color.FromArgb(121, 49, 134);
+			tileColors[381][0] = Color.FromArgb(254, 121, 2);
 			tileColors[189][0] = Color.FromArgb(223, 255, 255);
 			tileColors[193][0] = Color.FromArgb(56, 121, 255);
 			tileColors[194][0] = Color.FromArgb(157, 157, 107);
@@ -252,10 +258,30 @@ namespace TerraMap.Data
 			tileColors[299][0] = color;
 			tileColors[309][0] = color;
 			tileColors[310][0] = color;
+			tileColors[413][0] = color;
+			tileColors[339][0] = color;
+			tileColors[358][0] = color;
+			tileColors[359][0] = color;
+			tileColors[360][0] = color;
+			tileColors[361][0] = color;
+			tileColors[362][0] = color;
+			tileColors[363][0] = color;
+			tileColors[364][0] = color;
+			tileColors[391][0] = color;
+			tileColors[392][0] = color;
+			tileColors[393][0] = color;
+			tileColors[394][0] = color;
+			tileColors[414][0] = color;
+			tileColors[408][0] = Color.FromArgb(85, 83, 82);
+			tileColors[409][0] = Color.FromArgb(85, 83, 82);
+			tileColors[415][0] = Color.FromArgb(249, 75, 7);
+			tileColors[416][0] = Color.FromArgb(0, 160, 170);
+			tileColors[417][0] = Color.FromArgb(160, 87, 234);
+			tileColors[418][0] = Color.FromArgb(22, 173, 254);
 			tileColors[311][0] = Color.FromArgb(117, 61, 25);
 			tileColors[312][0] = Color.FromArgb(204, 93, 73);
 			tileColors[313][0] = Color.FromArgb(87, 150, 154);
-			tileColors[4][0] = Color.FromArgb(169, 125, 93);
+			tileColors[4][0] = Color.FromArgb(253, 221, 3);
 			tileColors[4][1] = Color.FromArgb(253, 221, 3);
 			color = Color.FromArgb(253, 221, 3);
 			tileColors[93][0] = color;
@@ -285,8 +311,13 @@ namespace TerraMap.Data
 			tileColors[114][0] = color;
 			tileColors[128][0] = color;
 			tileColors[139][0] = color;
+			tileColors[172][0] = color;
 			tileColors[216][0] = color;
 			tileColors[269][0] = color;
+			tileColors[334][0] = color;
+			tileColors[377][0] = color;
+			tileColors[380][0] = color;
+			tileColors[395][0] = color;
 			tileColors[12][0] = Color.FromArgb(174, 24, 69);
 			tileColors[13][0] = Color.FromArgb(133, 213, 247);
 			color = Color.FromArgb(144, 148, 144);
@@ -316,6 +347,7 @@ namespace TerraMap.Data
 			tileColors[306][0] = color;
 			tileColors[307][0] = color;
 			tileColors[308][0] = color;
+			tileColors[349][0] = Color.FromArgb(144, 148, 144);
 			tileColors[105][0] = Color.FromArgb(144, 148, 144);
 			tileColors[105][1] = Color.FromArgb(177, 92, 31);
 			tileColors[105][2] = Color.FromArgb(201, 188, 170);
@@ -355,6 +387,13 @@ namespace TerraMap.Data
 			tileColors[92][0] = Color.FromArgb(213, 229, 237);
 			tileColors[91][0] = Color.FromArgb(13, 88, 130);
 			tileColors[215][0] = Color.FromArgb(254, 121, 2);
+			tileColors[316][0] = Color.FromArgb(157, 176, 226);
+			tileColors[317][0] = Color.FromArgb(118, 227, 129);
+			tileColors[318][0] = Color.FromArgb(227, 118, 215);
+			tileColors[319][0] = Color.FromArgb(96, 68, 48);
+			tileColors[320][0] = Color.FromArgb(203, 185, 151);
+			tileColors[321][0] = Color.FromArgb(96, 77, 64);
+			tileColors[322][0] = Color.FromArgb(198, 170, 104);
 			tileColors[149][0] = Color.FromArgb(220, 50, 50);
 			tileColors[149][1] = Color.FromArgb(0, 220, 50);
 			tileColors[149][2] = Color.FromArgb(50, 50, 220);
@@ -373,16 +412,20 @@ namespace TerraMap.Data
 			tileColors[240][1] = Color.FromArgb(99, 50, 30);
 			tileColors[240][2] = Color.FromArgb(153, 153, 117);
 			tileColors[240][3] = Color.FromArgb(112, 84, 56);
+			tileColors[240][4] = Color.FromArgb(234, 231, 226);
 			tileColors[241][0] = Color.FromArgb(77, 74, 72);
 			tileColors[244][0] = Color.FromArgb(200, 245, 253);
 			color = Color.FromArgb(99, 50, 30);
 			tileColors[242][0] = color;
-			tileColors[242][1] = Color.FromArgb(185, 142, 97);
 			tileColors[245][0] = color;
 			tileColors[246][0] = color;
+			tileColors[242][1] = Color.FromArgb(185, 142, 97);
 			tileColors[247][0] = Color.FromArgb(140, 150, 150);
 			tileColors[271][0] = Color.FromArgb(107, 250, 255);
 			tileColors[270][0] = Color.FromArgb(187, 255, 107);
+			tileColors[314][0] = Color.FromArgb(181, 164, 125);
+			tileColors[324][0] = Color.FromArgb(228, 213, 173);
+			tileColors[351][0] = Color.FromArgb(31, 31, 31);
 			tileColors[21][0] = Color.FromArgb(174, 129, 92);
 			tileColors[21][1] = Color.FromArgb(233, 207, 94);
 			tileColors[21][2] = Color.FromArgb(137, 128, 200);
@@ -414,6 +457,10 @@ namespace TerraMap.Data
 			tileColors[82][5] = color;
 			tileColors[83][5] = color;
 			tileColors[84][5] = color;
+			color = Color.FromArgb(40, 152, 240);
+			tileColors[82][6] = color;
+			tileColors[83][6] = color;
+			tileColors[84][6] = color;
 			tileColors[165][0] = Color.FromArgb(115, 173, 229);
 			tileColors[165][1] = Color.FromArgb(100, 100, 100);
 			tileColors[165][2] = Color.FromArgb(152, 152, 152);
@@ -430,6 +477,7 @@ namespace TerraMap.Data
 			tileColors[184][2] = Color.FromArgb(96, 44, 40);
 			tileColors[184][3] = Color.FromArgb(34, 63, 102);
 			tileColors[184][4] = Color.FromArgb(79, 35, 95);
+			tileColors[184][5] = Color.FromArgb(253, 62, 3);
 			color = Color.FromArgb(99, 99, 99);
 			tileColors[185][0] = color;
 			tileColors[186][0] = color;
@@ -478,17 +526,105 @@ namespace TerraMap.Data
 			tileColors[227][5] = Color.FromArgb(61, 92, 0);
 			tileColors[227][6] = Color.FromArgb(216, 112, 152);
 			tileColors[227][7] = Color.FromArgb(200, 40, 24);
-			liquidColors = new Color[]
+			tileColors[227][8] = Color.FromArgb(113, 45, 133);
+			tileColors[227][9] = Color.FromArgb(235, 137, 2);
+			tileColors[227][10] = Color.FromArgb(41, 152, 135);
+			tileColors[227][11] = Color.FromArgb(198, 19, 78);
+			tileColors[373][0] = Color.FromArgb(9, 61, 191);
+			tileColors[374][0] = Color.FromArgb(253, 32, 3);
+			tileColors[375][0] = Color.FromArgb(255, 156, 12);
+			tileColors[323][0] = Color.FromArgb(182, 141, 86);
+			tileColors[325][0] = Color.FromArgb(129, 125, 93);
+			tileColors[326][0] = Color.FromArgb(9, 61, 191);
+			tileColors[327][0] = Color.FromArgb(253, 32, 3);
+			tileColors[330][0] = Color.FromArgb(226, 118, 76);
+			tileColors[331][0] = Color.FromArgb(161, 172, 173);
+			tileColors[332][0] = Color.FromArgb(204, 181, 72);
+			tileColors[333][0] = Color.FromArgb(190, 190, 178);
+			tileColors[335][0] = Color.FromArgb(217, 174, 137);
+			tileColors[336][0] = Color.FromArgb(253, 62, 3);
+			tileColors[337][0] = Color.FromArgb(144, 148, 144);
+			tileColors[338][0] = Color.FromArgb(85, 255, 160);
+			tileColors[315][0] = Color.FromArgb(235, 114, 80);
+			tileColors[340][0] = Color.FromArgb(96, 248, 2);
+			tileColors[341][0] = Color.FromArgb(105, 74, 202);
+			tileColors[342][0] = Color.FromArgb(29, 240, 255);
+			tileColors[343][0] = Color.FromArgb(254, 202, 80);
+			tileColors[344][0] = Color.FromArgb(131, 252, 245);
+			tileColors[345][0] = Color.FromArgb(255, 156, 12);
+			tileColors[346][0] = Color.FromArgb(149, 212, 89);
+			tileColors[347][0] = Color.FromArgb(236, 74, 79);
+			tileColors[348][0] = Color.FromArgb(44, 26, 233);
+			tileColors[350][0] = Color.FromArgb(55, 97, 155);
+			tileColors[352][0] = Color.FromArgb(238, 97, 94);
+			tileColors[354][0] = Color.FromArgb(141, 107, 89);
+			tileColors[355][0] = Color.FromArgb(141, 107, 89);
+			tileColors[356][0] = Color.FromArgb(233, 203, 24);
+			tileColors[357][0] = Color.FromArgb(168, 178, 204);
+			tileColors[367][0] = Color.FromArgb(168, 178, 204);
+			tileColors[365][0] = Color.FromArgb(146, 136, 205);
+			tileColors[366][0] = Color.FromArgb(223, 232, 233);
+			tileColors[368][0] = Color.FromArgb(50, 46, 104);
+			tileColors[369][0] = Color.FromArgb(50, 46, 104);
+			tileColors[370][0] = Color.FromArgb(127, 116, 194);
+			tileColors[372][0] = Color.FromArgb(252, 128, 201);
+			tileColors[371][0] = Color.FromArgb(249, 101, 189);
+			tileColors[376][0] = Color.FromArgb(160, 120, 92);
+			tileColors[378][0] = Color.FromArgb(160, 120, 100);
+			tileColors[379][0] = Color.FromArgb(251, 209, 240);
+			tileColors[382][0] = Color.FromArgb(28, 216, 94);
+			tileColors[383][0] = Color.FromArgb(221, 136, 144);
+			tileColors[384][0] = Color.FromArgb(131, 206, 12);
+			tileColors[385][0] = Color.FromArgb(87, 21, 144);
+			tileColors[386][0] = Color.FromArgb(127, 92, 69);
+			tileColors[387][0] = Color.FromArgb(127, 92, 69);
+			tileColors[388][0] = Color.FromArgb(127, 92, 69);
+			tileColors[389][0] = Color.FromArgb(127, 92, 69);
+			tileColors[390][0] = Color.FromArgb(253, 32, 3);
+			tileColors[397][0] = Color.FromArgb(212, 192, 100);
+			tileColors[396][0] = Color.FromArgb(198, 124, 78);
+			tileColors[398][0] = Color.FromArgb(100, 82, 126);
+			tileColors[399][0] = Color.FromArgb(77, 76, 66);
+			tileColors[400][0] = Color.FromArgb(96, 68, 117);
+			tileColors[401][0] = Color.FromArgb(68, 60, 51);
+			tileColors[402][0] = Color.FromArgb(174, 168, 186);
+			tileColors[403][0] = Color.FromArgb(205, 152, 186);
+			tileColors[404][0] = Color.FromArgb(140, 84, 60);
+			tileColors[405][0] = Color.FromArgb(140, 140, 140);
+			tileColors[406][0] = Color.FromArgb(120, 120, 120);
+			tileColors[407][0] = Color.FromArgb(255, 227, 132);
+			tileColors[411][0] = Color.FromArgb(227, 46, 46);
+			tileColors[410][0] = Color.FromArgb(75, 139, 166);
+			tileColors[412][0] = Color.FromArgb(75, 139, 166);
+			Color[] array2 = new Color[]
 			{
 				Color.FromArgb(9, 61, 191),
 				Color.FromArgb(253, 32, 3),
 				Color.FromArgb(254, 194, 20)
 			};
-			wallColors = new Color[145][];
-			for (int j = 0; j < 145; j++)
+
+			for (int j = 0; j < 225; j++)
 			{
 				wallColors[j] = new Color[2];
 			}
+			wallColors[158][0] = Color.FromArgb(107, 49, 154);
+			wallColors[163][0] = Color.FromArgb(154, 148, 49);
+			wallColors[162][0] = Color.FromArgb(49, 49, 154);
+			wallColors[160][0] = Color.FromArgb(49, 154, 68);
+			wallColors[161][0] = Color.FromArgb(154, 49, 77);
+			wallColors[159][0] = Color.FromArgb(85, 89, 118);
+			wallColors[157][0] = Color.FromArgb(154, 83, 49);
+			wallColors[154][0] = Color.FromArgb(221, 79, 255);
+			wallColors[166][0] = Color.FromArgb(250, 255, 79);
+			wallColors[165][0] = Color.FromArgb(79, 102, 255);
+			wallColors[156][0] = Color.FromArgb(79, 255, 89);
+			wallColors[164][0] = Color.FromArgb(255, 79, 79);
+			wallColors[155][0] = Color.FromArgb(240, 240, 247);
+			wallColors[153][0] = Color.FromArgb(255, 145, 79);
+			wallColors[169][0] = Color.FromArgb(5, 5, 5);
+			wallColors[224][0] = Color.FromArgb(57, 55, 52);
+			wallColors[170][0] = Color.FromArgb(59, 39, 22);
+			wallColors[171][0] = Color.FromArgb(59, 39, 22);
 			color = Color.FromArgb(52, 52, 52);
 			wallColors[1][0] = color;
 			wallColors[53][0] = color;
@@ -643,6 +779,64 @@ namespace TerraMap.Data
 			wallColors[142][0] = Color.FromArgb(17, 172, 143);
 			wallColors[143][0] = Color.FromArgb(90, 112, 105);
 			wallColors[144][0] = Color.FromArgb(62, 28, 87);
+			wallColors[146][0] = Color.FromArgb(120, 59, 19);
+			wallColors[147][0] = Color.FromArgb(59, 59, 59);
+			wallColors[148][0] = Color.FromArgb(229, 218, 161);
+			wallColors[149][0] = Color.FromArgb(73, 59, 50);
+			wallColors[151][0] = Color.FromArgb(102, 75, 34);
+			wallColors[167][0] = Color.FromArgb(70, 68, 51);
+			wallColors[172][0] = Color.FromArgb(163, 96, 0);
+			wallColors[173][0] = Color.FromArgb(94, 163, 46);
+			wallColors[174][0] = Color.FromArgb(117, 32, 59);
+			wallColors[175][0] = Color.FromArgb(20, 11, 203);
+			wallColors[176][0] = Color.FromArgb(74, 69, 88);
+			wallColors[177][0] = Color.FromArgb(60, 30, 30);
+			wallColors[183][0] = Color.FromArgb(111, 117, 135);
+			wallColors[179][0] = Color.FromArgb(111, 117, 135);
+			wallColors[178][0] = Color.FromArgb(111, 117, 135);
+			wallColors[184][0] = Color.FromArgb(25, 23, 54);
+			wallColors[181][0] = Color.FromArgb(25, 23, 54);
+			wallColors[180][0] = Color.FromArgb(25, 23, 54);
+			wallColors[182][0] = Color.FromArgb(74, 71, 129);
+			wallColors[185][0] = Color.FromArgb(52, 52, 52);
+			wallColors[186][0] = Color.FromArgb(38, 9, 66);
+			wallColors[216][0] = Color.FromArgb(158, 100, 64);
+			wallColors[217][0] = Color.FromArgb(62, 45, 75);
+			wallColors[218][0] = Color.FromArgb(57, 14, 12);
+			wallColors[219][0] = Color.FromArgb(96, 72, 133);
+			wallColors[187][0] = Color.FromArgb(149, 80, 51);
+			wallColors[220][0] = Color.FromArgb(67, 55, 80);
+			wallColors[221][0] = Color.FromArgb(64, 37, 29);
+			wallColors[222][0] = Color.FromArgb(70, 51, 91);
+			wallColors[188][0] = Color.FromArgb(82, 63, 80);
+			wallColors[189][0] = Color.FromArgb(65, 61, 77);
+			wallColors[190][0] = Color.FromArgb(64, 65, 92);
+			wallColors[191][0] = Color.FromArgb(76, 53, 84);
+			wallColors[192][0] = Color.FromArgb(144, 67, 52);
+			wallColors[193][0] = Color.FromArgb(149, 48, 48);
+			wallColors[194][0] = Color.FromArgb(111, 32, 36);
+			wallColors[195][0] = Color.FromArgb(147, 48, 55);
+			wallColors[196][0] = Color.FromArgb(97, 67, 51);
+			wallColors[197][0] = Color.FromArgb(112, 80, 62);
+			wallColors[198][0] = Color.FromArgb(88, 61, 46);
+			wallColors[199][0] = Color.FromArgb(127, 94, 76);
+			wallColors[200][0] = Color.FromArgb(143, 50, 123);
+			wallColors[201][0] = Color.FromArgb(136, 120, 131);
+			wallColors[202][0] = Color.FromArgb(219, 92, 143);
+			wallColors[203][0] = Color.FromArgb(113, 64, 150);
+			wallColors[204][0] = Color.FromArgb(74, 67, 60);
+			wallColors[205][0] = Color.FromArgb(60, 78, 59);
+			wallColors[206][0] = Color.FromArgb(0, 54, 21);
+			wallColors[207][0] = Color.FromArgb(74, 97, 72);
+			wallColors[208][0] = Color.FromArgb(40, 37, 35);
+			wallColors[209][0] = Color.FromArgb(77, 63, 66);
+			wallColors[210][0] = Color.FromArgb(111, 6, 6);
+			wallColors[211][0] = Color.FromArgb(88, 67, 59);
+			wallColors[212][0] = Color.FromArgb(88, 87, 80);
+			wallColors[213][0] = Color.FromArgb(71, 71, 67);
+			wallColors[214][0] = Color.FromArgb(76, 52, 60);
+			wallColors[215][0] = Color.FromArgb(89, 48, 59);
+			wallColors[223][0] = Color.FromArgb(51, 18, 4);
 			Color[] array4 = new Color[256];
 			Color color2 = Color.FromArgb(50, 40, 255);
 			Color color3 = Color.FromArgb(145, 185, 255);
@@ -672,20 +866,20 @@ namespace TerraMap.Data
 			}
 			Color color7 = Color.FromArgb(50, 44, 38);
 			int num7 = 0;
-			Map.tileOptionCounts = new int[314];
-			for (int n = 0; n < 314; n++)
+			Map.tileOptionCounts = new int[419];
+			for (int n = 0; n < 419; n++)
 			{
 				Color[] array7 = tileColors[n];
 				int num8 = 0;
-				while (num8 < 10 && !(array7[num8] == Color.Transparent))
+				while (num8 < 12 && !(array7[num8] == Color.Transparent))
 				{
 					num8++;
 				}
 				Map.tileOptionCounts[n] = num8;
 				num7 += num8;
 			}
-			Map.wallOptionCounts = new int[145];
-			for (int num9 = 0; num9 < 145; num9++)
+			Map.wallOptionCounts = new int[225];
+			for (int num9 = 0; num9 < 225; num9++)
 			{
 				Color[] array8 = wallColors[num9];
 				int num10 = 0;
@@ -701,12 +895,12 @@ namespace TerraMap.Data
 			Map.colorLookup[0] = Color.Transparent;
 			ushort num11 = 1;
 			Map.tilePosition = num11;
-			Map.tileLookup = new ushort[314];
-			for (int num12 = 0; num12 < 314; num12++)
+			Map.tileLookup = new ushort[419];
+			for (int num12 = 0; num12 < 419; num12++)
 			{
 				if (Map.tileOptionCounts[num12] > 0)
 				{
-					Color[] arg_3D44_0 = tileColors[num12];
+					Color[] arg_5446_0 = tileColors[num12];
 					Map.tileLookup[num12] = num11;
 					for (int num13 = 0; num13 < Map.tileOptionCounts[num12]; num13++)
 					{
@@ -720,12 +914,13 @@ namespace TerraMap.Data
 				}
 			}
 			Map.wallPosition = num11;
-			Map.wallLookup = new ushort[145];
-			for (int num14 = 0; num14 < 145; num14++)
+			Map.wallLookup = new ushort[225];
+			Map.wallRangeStart = num11;
+			for (int num14 = 0; num14 < 225; num14++)
 			{
 				if (Map.wallOptionCounts[num14] > 0)
 				{
-					Color[] arg_3DD2_0 = wallColors[num14];
+					Color[] arg_54DB_0 = wallColors[num14];
 					Map.wallLookup[num14] = num11;
 					for (int num15 = 0; num15 < Map.wallOptionCounts[num14]; num15++)
 					{
@@ -738,10 +933,11 @@ namespace TerraMap.Data
 					Map.wallLookup[num14] = 0;
 				}
 			}
+			Map.wallRangeEnd = num11;
 			Map.liquidPosition = num11;
 			for (int num16 = 0; num16 < 3; num16++)
 			{
-				Map.colorLookup[(int)num11] = liquidColors[num16];
+				Map.colorLookup[(int)num11] = array2[num16];
 				num11 += 1;
 			}
 			Map.skyPosition = num11;
@@ -771,6 +967,8 @@ namespace TerraMap.Data
 			Map.snowTypes[3] = Map.tileLookup[163];
 			Map.snowTypes[4] = Map.tileLookup[164];
 			Map.snowTypes[5] = Map.tileLookup[200];
+
+			wallColors = wallColors;
 		}
 
 		public static System.Drawing.Color GetTileColor(ushort tileType, short u, short v)
