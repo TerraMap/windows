@@ -34,6 +34,12 @@ namespace TerraMap.Data
 		public Int32 WorldHeightinTiles { get; set; }
 		public Int32 WorldWidthinTiles { get; set; }
 
+		[PropertyInfo(112)]
+		public Boolean ExpertMode { get; set; }
+
+		[PropertyInfo(141)]
+		public Int64 CreationTime { get; set; }
+
 		[PropertyInfo(63)]
 		public Byte MoonType { get; set; }
 
@@ -92,6 +98,10 @@ namespace TerraMap.Data
 		public Boolean KilledPlantera { get; set; }
 		[PropertyInfo(64)]
 		public Boolean KilledGolem { get; set; }
+
+		[PropertyInfo(118)]
+		public Boolean KilledSlimeKing { get; set; }
+
 		[PropertyInfo(29)]
 		public Boolean SavedGoblinTinkerer { get; set; }
 		[PropertyInfo(29)]
@@ -121,6 +131,12 @@ namespace TerraMap.Data
 		public Int32 GoblinInvasionType { get; set; }
 		public Double GoblinInvasionX { get; set; }
 
+		[PropertyInfo(118)]
+		public Double SlimeRainTime { get; set; }
+
+		[PropertyInfo(113)]
+		public Byte SundialCooldown { get; set; }
+
 		[PropertyInfo(53)]
 		public Boolean IsRaining { get; set; }
 		[PropertyInfo(53)]
@@ -133,6 +149,7 @@ namespace TerraMap.Data
 		public Int32 Tier2OreID { get; set; }
 		[PropertyInfo(54)]
 		public Int32 Tier3OreID { get; set; }
+
 		[PropertyInfo(55)]
 		public Byte TreeStyle { get; set; }
 		[PropertyInfo(55)]
@@ -149,6 +166,7 @@ namespace TerraMap.Data
 		public Byte DesertStyle { get; set; }
 		[PropertyInfo(60)]
 		public Byte OceanStyle { get; set; }
+
 		[PropertyInfo(60)]
 		public Int32 CloudBackground { get; set; }
 		[PropertyInfo(62)]
@@ -321,6 +339,81 @@ namespace TerraMap.Data
 			}
 		}
 
+		[PropertyInfo(ignore: true)]
+		public uint Revision { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool IsFavorite { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool SavedStylist { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool SavedTaxCollector { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public int InvasionSizeStart { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public int TempCultistDelay { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool FastForwardTime { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedFishron { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedMartians { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedAncientCultist { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedMoonlord { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedHalloweenKing { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedHalloweenTree { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedChristmasIceQueen { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedChristmasSantank { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedChristmasTree { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedTowerSolar { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedTowerVortex { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedTowerNebula { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool DownedTowerStardust { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool TowerActiveSolar { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool TowerActiveVortex { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool TowerActiveNebula { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool TowerActiveStardust { get; set; }
+
+		[PropertyInfo(ignore: true)]
+		public bool LunarApocalypseIsUp { get; set; }
+
 		#endregion
 
 		public static string GetWorldName(string worldFileName)
@@ -459,6 +552,21 @@ namespace TerraMap.Data
 		{
 			this.Version = reader.ReadInt32();
 
+			if (this.Version >= 135)
+			{
+				// read file metadata
+				ulong num = reader.ReadUInt64();
+
+				if ((num & 72057594037927935uL) != 27981915666277746uL)
+				{
+					throw new FileFormatException("Expected Re-Logic file format.");
+				}
+
+				this.Revision = reader.ReadUInt32();
+				ulong num2 = reader.ReadUInt64();
+				this.IsFavorite = ((num2 & 1uL) == 1uL);
+			}
+
 			var positionsLength = reader.ReadInt16();
 			positions = new int[(int)positionsLength];
 			for (int i = 0; i < (int)positionsLength; i++)
@@ -552,6 +660,8 @@ namespace TerraMap.Data
 					property.SetValue(this, reader.ReadInt16(), null);
 				else if (dataType == typeof(Int32))
 					property.SetValue(this, reader.ReadInt32(), null);
+				else if (dataType == typeof(Int64))
+					property.SetValue(this, reader.ReadInt64(), null);
 				else if (dataType == typeof(String))
 					property.SetValue(this, reader.ReadString(), null);
 				else if (dataType == typeof(Single))
@@ -599,6 +709,81 @@ namespace TerraMap.Data
 				return;
 
 			this.AnglerQuest = reader.ReadInt32();
+			
+			if (Version < 104)
+				return;
+
+			this.SavedStylist = reader.ReadBoolean();
+			
+			if (Version >= 129)
+			{
+				this.SavedTaxCollector = reader.ReadBoolean();
+			}
+
+			if (Version < 107)
+			{
+			}
+			else
+			{
+				this.InvasionSizeStart = reader.ReadInt32();
+			}
+
+			if (Version < 108)
+			{
+				this.TempCultistDelay = 86400;
+			}
+			else
+			{
+				this.TempCultistDelay = reader.ReadInt32();
+			}
+
+			if (Version < 109)
+				return;
+			
+			int num2 = (int)reader.ReadInt16();
+			for (int j = 0; j < num2; j++)
+			{
+				if (j < 540)
+				{
+					//this.NpcKillCount[j] = reader.ReadInt32();
+					reader.ReadInt32();
+				}
+				else
+				{
+					reader.ReadInt32();
+				}
+			}
+
+			if (Version < 128)
+				return;
+			
+			this.FastForwardTime = reader.ReadBoolean();
+			
+			if (Version < 131)
+				return;
+			
+			this.DownedFishron = reader.ReadBoolean();
+			this.DownedMartians = reader.ReadBoolean();
+			this.DownedAncientCultist = reader.ReadBoolean();
+			this.DownedMoonlord = reader.ReadBoolean();
+			this.DownedHalloweenKing = reader.ReadBoolean();
+			this.DownedHalloweenTree = reader.ReadBoolean();
+			this.DownedChristmasIceQueen = reader.ReadBoolean();
+			this.DownedChristmasSantank = reader.ReadBoolean();
+			this.DownedChristmasTree = reader.ReadBoolean();
+			
+			if (Version < 140)
+				return;
+
+			this.DownedTowerSolar = reader.ReadBoolean();
+			this.DownedTowerVortex = reader.ReadBoolean();
+			this.DownedTowerNebula = reader.ReadBoolean();
+			this.DownedTowerStardust = reader.ReadBoolean();
+			this.TowerActiveSolar = reader.ReadBoolean();
+			this.TowerActiveVortex = reader.ReadBoolean();
+			this.TowerActiveNebula = reader.ReadBoolean();
+			this.TowerActiveStardust = reader.ReadBoolean();
+			this.LunarApocalypseIsUp = reader.ReadBoolean();
 		}
 
 		private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
@@ -1096,6 +1281,19 @@ namespace TerraMap.Data
 				num++;
 				flag = reader.ReadBoolean();
 				this.NPCs.Add(nPC);
+			}
+
+			if (Version < 140)
+				return;
+			flag = reader.ReadBoolean();
+			while (flag)
+			{
+				NPC npc = new NPC();
+				npc.Type = reader.ReadString();
+				npc.X = reader.ReadSingle();
+				npc.Y = reader.ReadSingle();
+				num++;
+				flag = reader.ReadBoolean();
 			}
 		}
 
