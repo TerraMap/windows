@@ -37,7 +37,7 @@ namespace TerraMap.Data
 				}
 				else
 				{
-					wallInfo.Color = Map.GetWallColor((ushort)id);
+					wallInfo.Color = MapHelper.GetWallColor((ushort)id);
 				}
 
 				if (wallNode.Attributes["blend"] != null)

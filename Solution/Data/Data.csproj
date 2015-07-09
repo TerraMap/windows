@@ -58,7 +58,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="ItemInfo.cs" />
     <Compile Include="ItemPrefix.cs" />
-    <Compile Include="Map.cs" />
+    <Compile Include="MapHelper.cs" />
     <Compile Include="NPC.cs" />
     <Compile Include="ObjectInfo.cs" />
     <Compile Include="ObjectInfoSetViewModel.cs" />

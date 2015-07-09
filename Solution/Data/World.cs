@@ -22,7 +22,7 @@ namespace TerraMap.Data
 	{
 		public World()
 		{
-			Map.Initialize();
+			MapHelper.Initialize();
 		}
 
 		#region Dynamically read properties
@@ -1035,7 +1035,7 @@ namespace TerraMap.Data
 			{
 				if (string.IsNullOrEmpty(tileInfo.ColorName))
 				{
-					color = Map.GetTileColor(tile.Type, tile.TextureU, tile.TextureV);
+					color = MapHelper.GetTileColor(tile.Type, tile.TextureU, tile.TextureV);
 				}
 				else if (tileInfo.IsColorSet)
 				{
@@ -1051,11 +1051,11 @@ namespace TerraMap.Data
 			else if (tile.IsLiquidPresent)
 			{
 				if (tile.IsLiquidLava)
-					color = this.staticData.GlobalColors.LavaColor; // Terraria.Map.GetLiquidColor(1);
+					color = this.staticData.GlobalColors.LavaColor; // Terraria.MapHelper.GetLiquidColor(1);
 				else if (tile.IsLiquidHoney)
-					color = this.staticData.GlobalColors.HoneyColor; // Terraria.Map.GetLiquidColor(2);
+					color = this.staticData.GlobalColors.HoneyColor; // Terraria.MapHelper.GetLiquidColor(2);
 				else
-					color = this.staticData.GlobalColors.WaterColor; // Terraria.Map.GetLiquidColor(0);
+					color = this.staticData.GlobalColors.WaterColor; // Terraria.MapHelper.GetLiquidColor(0);
 			}
 			else if (tile.IsWallPresent)
 			{
@@ -1065,7 +1065,7 @@ namespace TerraMap.Data
 					wallInfo = this.staticData.WallInfos[tile.WallType - 1];
 
 				if (wallInfo == null || string.IsNullOrEmpty(wallInfo.Value.ColorName))
-					color = Map.GetWallColor(tile.WallType);
+					color = MapHelper.GetWallColor(tile.WallType);
 				else
 					color = wallInfo.Value.Color;
 			}
