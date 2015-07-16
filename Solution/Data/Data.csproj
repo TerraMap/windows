@@ -71,6 +71,7 @@
     <Compile Include="TileHitTestInfo.cs" />
     <Compile Include="TileInfo.cs" />
     <Compile Include="TileInfos.cs" />
+    <Compile Include="Set.cs" />
     <Compile Include="WallInfo.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,6 +81,11 @@
     <None Include="tiles.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sets-default.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

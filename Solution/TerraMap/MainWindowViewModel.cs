@@ -33,6 +33,18 @@ namespace TerraMap
 			}
 		}
 
+    private ObservableCollection<ObjectInfoSetViewModel> sets;
+
+    public ObservableCollection<ObjectInfoSetViewModel> Sets
+    {
+      get { return sets; }
+      set
+      {
+        sets = value;
+        RaisePropertyChanged();
+      }
+    }
+
 		private ObservableCollection<NPC> npcs = new ObservableCollection<NPC>();
 
 		public ObservableCollection<NPC> NPCs
@@ -45,18 +57,6 @@ namespace TerraMap
 			}
 		}
 
-		private ObjectInfoViewModel selectedObjectInfoViewModel;
-
-		public ObjectInfoViewModel SelectedObjectInfoViewModel
-		{
-			get { return selectedObjectInfoViewModel; }
-			set
-			{
-				selectedObjectInfoViewModel = value;
-				RaisePropertyChanged();
-			}
-		}
-		
 		private TileHitTestInfo currentTileHitTestInfo;
 
 		public TileHitTestInfo CurrentTileHitTestInfo

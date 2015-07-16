@@ -62,8 +62,9 @@
 		<CommandBinding Command="NextPage" CanExecute="OnNextPageCanExecute" Executed="OnNextPageExecuted" />
 		<CommandBinding Command="local:Commands.NavigateToSpawn" CanExecute="OnNavigateToSpawnCanExecute" Executed="OnNavigateToSpawnExecuted" />
 		<CommandBinding Command="local:Commands.NavigateToDungeon" CanExecute="OnNavigateToDungeonCanExecute" Executed="OnNavigateToDungeonExecuted" />
-		<CommandBinding Command="Close" CanExecute="OnCloseCanExecute" Executed="OnCloseExecuted" />
-	</Window.CommandBindings>
+    <CommandBinding Command="Close" CanExecute="OnCloseCanExecute" Executed="OnCloseExecuted" />
+    <CommandBinding Command="local:Commands.HighlightSet" CanExecute="OnCanExecuteHighlightSet" Executed="OnExecutedHighlightSet" />
+  </Window.CommandBindings>
 	<Window.InputBindings>
 		<KeyBinding Gesture="Ctrl+O" Command="Open" />
 		<KeyBinding Gesture="Ctrl+S" Command="Save" />
@@ -77,8 +78,17 @@
 		<KeyBinding Key="F3" Command="NextPage" />
 		<KeyBinding Gesture="Shift+F3" Command="PreviousPage" />
 		<KeyBinding Key="Home" Command="local:Commands.NavigateToSpawn" />
-		<KeyBinding Key="End" Command="local:Commands.NavigateToSpawn" />
-	</Window.InputBindings>
+    <KeyBinding Key="End" Command="local:Commands.NavigateToSpawn" />
+    <KeyBinding Gesture="Ctrl+1" Command="local:Commands.HighlightSet" CommandParameter="1" />
+    <KeyBinding Gesture="Ctrl+2" Command="local:Commands.HighlightSet" CommandParameter="2" />
+    <KeyBinding Gesture="Ctrl+3" Command="local:Commands.HighlightSet" CommandParameter="3" />
+    <KeyBinding Gesture="Ctrl+4" Command="local:Commands.HighlightSet" CommandParameter="4" />
+    <KeyBinding Gesture="Ctrl+5" Command="local:Commands.HighlightSet" CommandParameter="5" />
+    <KeyBinding Gesture="Ctrl+6" Command="local:Commands.HighlightSet" CommandParameter="6" />
+    <KeyBinding Gesture="Ctrl+7" Command="local:Commands.HighlightSet" CommandParameter="7" />
+    <KeyBinding Gesture="Ctrl+8" Command="local:Commands.HighlightSet" CommandParameter="8" />
+    <KeyBinding Gesture="Ctrl+9" Command="local:Commands.HighlightSet" CommandParameter="9" />
+  </Window.InputBindings>
 	<DockPanel>
 		<Menu DockPanel.Dock="Top" IsMainMenu="True">
 			<MenuItem Header="_File">
@@ -179,8 +189,21 @@
 						</Style>
 					</MenuItem.Resources>
 				</MenuItem>
-			</MenuItem>
-			<MenuItem Header="_Help">
+      </MenuItem>
+      <MenuItem Header="_Sets" ItemsSource="{Binding Sets}">
+        <MenuItem.Resources>
+          <Style TargetType="MenuItem">
+            <Setter Property="InputGestureText" Value="{Binding InputGestureText}" />
+            <EventSetter Event="Click" Handler="OnSetClicked" />
+          </Style>
+        </MenuItem.Resources>
+        <MenuItem.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Name}" />
+          </DataTemplate>
+        </MenuItem.ItemTemplate>
+      </MenuItem>
+      <MenuItem Header="_Help">
 				<MenuItem Header="_Check for updates" Click="OnCheckForUpdates" IsEnabled="{Binding IsCheckingForUpdate, Converter={StaticResource InvertedBooleanConverter}}" />
 				<Separator />
 				<MenuItem Header="_About" Click="OnShowAboutWindow">
@@ -241,25 +264,25 @@
 			</ToolBar>
 			<ToolBar Band="0" BandIndex="2" Name="Search" ToolTip="Search"
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
-				<CheckBox x:Name="checkBoxBlocksDropDown">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition Width="20" />
-						</Grid.ColumnDefinitions>
-						<TextBlock>Blocks</TextBlock>
-						<Path x:Name="Arrow"
+        <CheckBox x:Name="checkBoxBlocksDropDown">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <TextBlock>Blocks</TextBlock>
+            <Path x:Name="Arrow"
 								Grid.Column="1"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Data="M 0 0 L 4 4 L 8 0 Z" >
-							<Path.Fill>
-								<SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
-							</Path.Fill>
-						</Path>
-					</Grid>
-				</CheckBox>
-				<Popup StaysOpen="False" Placement="Bottom" PlacementTarget="{Binding ElementName=checkBoxBlocksDropDown}" 
+              <Path.Fill>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
+              </Path.Fill>
+            </Path>
+          </Grid>
+        </CheckBox>
+        <Popup StaysOpen="False" Placement="Bottom" PlacementTarget="{Binding ElementName=checkBoxBlocksDropDown}" 
 						 IsOpen="{Binding ElementName=checkBoxBlocksDropDown, Path=IsChecked}" Opened="OnBlocksPopupOpened">
 					<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" 
 							  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
@@ -317,7 +340,7 @@
 						</DockPanel>
 					</Border>
 				</Popup>
-				<Button Command="Find" ToolTip="Select Blocks...">...</Button>
+        <Button Command="Find" ToolTip="Select Blocks...">...</Button>
 				<Button Command="PreviousPage" ToolTip="Previous">
 					<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
 				</Button>

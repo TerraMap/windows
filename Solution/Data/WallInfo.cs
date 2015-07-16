@@ -6,7 +6,8 @@ using System.Xml;
 namespace TerraMap.Data
 {
 	public struct WallInfo
-	{
+  {
+    public int Id;
 		public string Name;
 		public UInt32 ColorValue;
 		public Int16 Blend;
@@ -15,18 +16,27 @@ namespace TerraMap.Data
 
 		public static List<WallInfo> Read(XmlDocument xml)
 		{
-			XmlNodeList wallNodeList = xml.GetElementsByTagName("wall");
+			var wallNodeList = xml.GetElementsByTagName("wall");
 
+      return Read(wallNodeList);
+    }
+
+    public static List<WallInfo> Read(XmlNodeList wallNodeList)
+    {
 			var wallInfoList = new List<WallInfo>();
 
 			for (int i = 0; i < wallNodeList.Count; i++)
 			{
 				var wallNode = wallNodeList[i];
 
-				int id = Convert.ToInt32(wallNode.Attributes["num"].Value);
+        int id = 0;
+
+        if (wallNode.Attributes["num"] != null)
+          id = Convert.ToInt32(wallNode.Attributes["num"].Value);
 
 				var wallInfo = new WallInfo();
 
+        wallInfo.Id = id;
 				wallInfo.Name = wallNode.Attributes["name"].Value;
 
 				if (wallNode.Attributes["color"] != null)

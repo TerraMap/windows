@@ -96,7 +96,7 @@ namespace TerraMap.Data
 			staticData.WallInfos = WallInfo.Read(xmlDocument);
 			staticData.GlobalColors = GlobalColors.Read(xmlDocument);
 			staticData.ItemPrefixes = ItemPrefix.Read(xmlDocument);
-			staticData.ItemInfos = ItemInfo.ReadItems(xmlDocument);
+			staticData.ItemInfos = ItemInfo.Read(xmlDocument);
 
 			return staticData;
 		}

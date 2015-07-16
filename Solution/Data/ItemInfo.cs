@@ -26,24 +26,27 @@ namespace TerraMap.Data
 			return this.Name;
 		}
 
-		public static Dictionary<int, ItemInfo> ReadItems(XmlDocument xml)
+		public static Dictionary<int, ItemInfo> Read(XmlDocument xml)
 		{
-			var itemInfos = new Dictionary<int, ItemInfo>();
+			var itemNodes = xml.GetElementsByTagName("item");
 
-			XmlNodeList itemNodes = xml.GetElementsByTagName("item");
+      return Read(itemNodes);
+    }
+
+    public static Dictionary<int, ItemInfo> Read(XmlNodeList itemNodes)
+    {
+			var itemInfos = new Dictionary<int, ItemInfo>();
 
 			for (int i = 0; i < itemNodes.Count; i++)
 			{
 				var itemNode = itemNodes[i];
+        
+        int id = 0;
 
-				int id = Convert.ToInt32(itemNode.Attributes["num"].Value);
+        if (itemNode.Attributes["num"] != null)
+          id = Convert.ToInt32(itemNode.Attributes["num"].Value);
+
 				string name = itemNode.Attributes["name"].Value;
-
-				//if (id >= 1966)
-				//{
-				//	name = regex.Replace(name, " $1");
-				//	Debug.WriteLine(string.Format("<item num=\"{0}\" name=\"{1}\" />", id, name));
-				//}
 
 				var itemInfo = new ItemInfo() { Id = id, Name = name };
 
@@ -52,5 +55,28 @@ namespace TerraMap.Data
 
 			return itemInfos;
 		}
+
+    public static List<ItemInfo> ReadList(XmlNodeList itemNodes)
+    {
+      var itemInfos = new List<ItemInfo>();
+
+      for (int i = 0; i < itemNodes.Count; i++)
+      {
+        var itemNode = itemNodes[i];
+
+        int id = 0;
+
+        if (itemNode.Attributes["num"] != null)
+          id = Convert.ToInt32(itemNode.Attributes["num"].Value);
+
+        string name = itemNode.Attributes["name"].Value;
+
+        var itemInfo = new ItemInfo() { Id = id, Name = name };
+
+        itemInfos.Add(itemInfo);
+      }
+
+      return itemInfos;
+    }
 	}
 }

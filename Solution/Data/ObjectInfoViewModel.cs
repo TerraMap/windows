@@ -35,6 +35,54 @@ namespace TerraMap.Data
 			}
 		}
 
+    private WallInfo wallInfo;
+
+    public WallInfo WallInfo
+    {
+      get { return wallInfo; }
+      set
+      {
+        wallInfo = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    private bool isRedWire;
+
+    public bool IsRedWire
+    {
+      get { return isRedWire; }
+      set
+      {
+        isRedWire = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    private bool isGreenWire;
+
+    public bool IsGreenWire
+    {
+      get { return isGreenWire; }
+      set
+      {
+        isGreenWire = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    private bool isBlueWire;
+
+    public bool IsBlueWire
+    {
+      get { return isBlueWire; }
+      set
+      {
+        isBlueWire = value;
+        RaisePropertyChanged();
+      }
+    }
+
 		private string name;
 
 		public string Name
@@ -66,5 +114,5 @@ namespace TerraMap.Data
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-	}
+  }
 }

@@ -10,18 +10,30 @@ using TerraMap.Data;
 
 namespace TerraMap.Data
 {
-	public class ObjectInfoSetViewModel : ObjectInfoViewModel
-	{
-		private ObservableCollection<ObjectInfoViewModel> objectInfoViewModels = new ObservableCollection<ObjectInfoViewModel>();
+  public class ObjectInfoSetViewModel : ObjectInfoViewModel
+  {
+    private ObservableCollection<ObjectInfoViewModel> objectInfoViewModels = new ObservableCollection<ObjectInfoViewModel>();
 
-		public ObservableCollection<ObjectInfoViewModel> ObjectInfoViewModels
-		{
-			get { return objectInfoViewModels; }
-			set
-			{
-				objectInfoViewModels = value;
-				RaisePropertyChanged();
-			}
-		}
-	}
+    public ObservableCollection<ObjectInfoViewModel> ObjectInfoViewModels
+    {
+      get { return objectInfoViewModels; }
+      set
+      {
+        objectInfoViewModels = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    private string inputGestureText;
+
+    public string InputGestureText
+    {
+      get { return inputGestureText; }
+      set
+      {
+        inputGestureText = value;
+        RaisePropertyChanged();
+      }
+    }
+  }
 }

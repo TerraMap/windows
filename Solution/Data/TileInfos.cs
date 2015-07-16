@@ -14,7 +14,11 @@ namespace TerraMap.Data
 		{
 			for (int i = 0; i < nodes.Count; i++)
 			{
-				int id = Convert.ToInt32(nodes[i].Attributes["num"].Value);
+        int id = 0;
+        
+        if(nodes[i].Attributes["num"] != null)
+          id = Convert.ToInt32(nodes[i].Attributes["num"].Value);
+
 				var tileInfo = new TileInfo() { Id = (byte)id };
 				LoadInfo(tileInfo, nodes[i]);
 				this.Add(tileInfo);
@@ -94,7 +98,9 @@ namespace TerraMap.Data
 
 		private void LoadInfo(TileInfo info, XmlNode node)
 		{
-			info.Name = node.Attributes["name"].Value;
+      if(node.Attributes["name"] != null)
+			  info.Name = node.Attributes["name"].Value;
+
 			if (node.Attributes["color"] != null)
 			{
 				info.ColorName = node.Attributes["color"].Value;

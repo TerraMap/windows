@@ -1524,9 +1524,9 @@
   <tile num="110" name="Weeds" color="#1E9648" hasExtra="1" letLight="1" />
   <tile num="111" name="Adamantite Ore" color="#801A34" solid="1" blend="0" />
   <tile num="112" name="Ebonsand" color="#67627A" solid="1" blend="0" />
-  <tile num="113" name="Weeds" color="#1E9648" hasExtra="1" letLight="1" />
+  <tile num="113" name="Hallowed Weeds" color="#1E9648" hasExtra="1" letLight="1" />
   <tile num="114" name="Tinkerer's Workshop" color="#7F5C45" hasExtra="1" letLight="1" />
-  <tile num="115" name="Vines" color="#327FA1" />
+  <tile num="115" name="Hallowed Vines" color="#327FA1" />
   <tile num="116" name="Pearlsand" color="#D5C4C5" solid="1" blend="0" />
   <tile num="117" name="Pearlstone" color="#B5ACBE" solid="1" blend="0" />
   <tile num="118" name="Pearlstone Brick" color="#D5C4C5" solid="1" blend="0" merge="1" />
