@@ -33,17 +33,29 @@ namespace TerraMap
 			}
 		}
 
-    private ObservableCollection<ObjectInfoSetViewModel> sets;
+		private ObservableCollection<ObjectInfoSetViewModel> sets;
 
-    public ObservableCollection<ObjectInfoSetViewModel> Sets
-    {
-      get { return sets; }
-      set
-      {
-        sets = value;
-        RaisePropertyChanged();
-      }
-    }
+		public ObservableCollection<ObjectInfoSetViewModel> Sets
+		{
+			get { return sets; }
+			set
+			{
+				sets = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private ObjectInfoSetViewModel selectedSet;
+
+		public ObjectInfoSetViewModel SelectedSet
+		{
+			get { return selectedSet; }
+			set
+			{
+				selectedSet = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		private ObservableCollection<NPC> npcs = new ObservableCollection<NPC>();
 
@@ -322,6 +334,8 @@ namespace TerraMap
 				RaisePropertyChanged();
 			}
 		}
+
+		public string SetsFilename { get; internal set; }
 
 		public void BeginLoading(string status, bool isProgressIndeterminate = false)
 		{

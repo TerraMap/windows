@@ -20,6 +20,9 @@ namespace TerraMap.Data
 			{
 				itemInfo = value;
 				RaisePropertyChanged();
+				RaisePropertyChanged("Type");
+				RaisePropertyChanged("ItemName");
+				RaisePropertyChanged("ItemId");
 			}
 		}
 
@@ -32,56 +35,62 @@ namespace TerraMap.Data
 			{
 				tileInfo = value;
 				RaisePropertyChanged();
+				RaisePropertyChanged("Type");
+				RaisePropertyChanged("ItemName");
+				RaisePropertyChanged("ItemId");
 			}
 		}
 
-    private WallInfo wallInfo;
+		private WallInfo wallInfo;
 
-    public WallInfo WallInfo
-    {
-      get { return wallInfo; }
-      set
-      {
-        wallInfo = value;
-        RaisePropertyChanged();
-      }
-    }
+		public WallInfo WallInfo
+		{
+			get { return wallInfo; }
+			set
+			{
+				wallInfo = value;
+				RaisePropertyChanged();
+				RaisePropertyChanged("Type");
+				RaisePropertyChanged("ItemName");
+				RaisePropertyChanged("ItemId");
+			}
+		}
 
-    private bool isRedWire;
+		private bool isRedWire;
 
-    public bool IsRedWire
-    {
-      get { return isRedWire; }
-      set
-      {
-        isRedWire = value;
-        RaisePropertyChanged();
-      }
-    }
+		public bool IsRedWire
+		{
+			get { return isRedWire; }
+			set
+			{
+				isRedWire = value;
+				RaisePropertyChanged();
+			}
+		}
 
-    private bool isGreenWire;
+		private bool isGreenWire;
 
-    public bool IsGreenWire
-    {
-      get { return isGreenWire; }
-      set
-      {
-        isGreenWire = value;
-        RaisePropertyChanged();
-      }
-    }
+		public bool IsGreenWire
+		{
+			get { return isGreenWire; }
+			set
+			{
+				isGreenWire = value;
+				RaisePropertyChanged();
+			}
+		}
 
-    private bool isBlueWire;
+		private bool isBlueWire;
 
-    public bool IsBlueWire
-    {
-      get { return isBlueWire; }
-      set
-      {
-        isBlueWire = value;
-        RaisePropertyChanged();
-      }
-    }
+		public bool IsBlueWire
+		{
+			get { return isBlueWire; }
+			set
+			{
+				isBlueWire = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		private string name;
 
@@ -107,6 +116,45 @@ namespace TerraMap.Data
 			}
 		}
 
+		public virtual string Type
+		{
+			get
+			{
+				if (this.tileInfo != null)
+					return "Tile";
+				else if (this.itemInfo != null)
+					return "Item";
+				else
+					return "Wall";
+			}
+		}
+
+		public string ItemName
+		{
+			get
+			{
+				if (this.tileInfo != null)
+					return this.tileInfo.Name;
+				else if (this.itemInfo != null)
+					return this.itemInfo.Name;
+				else
+					return this.wallInfo.Name;
+			}
+		}
+
+		public int ItemId
+		{
+			get
+			{
+				if (this.tileInfo != null)
+					return this.tileInfo.Id;
+				else if (this.itemInfo != null)
+					return this.itemInfo.Id;
+				else
+					return this.wallInfo.Id;
+			}
+		}
+
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			if (this.PropertyChanged != null)
@@ -114,5 +162,5 @@ namespace TerraMap.Data
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
-  }
+	}
 }

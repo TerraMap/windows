@@ -36,17 +36,18 @@
 			</StackPanel>-->
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<Button IsDefault="True" Click="OnAccept">_OK</Button>
-				<Button IsCancel="True" Click="OnCancel">_Cancel</Button>
+				<Button IsCancel="True" Click="OnCancel" Visibility="Collapsed">_Cancel</Button>
 			</StackPanel>
 		</Grid>
 		<ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name" 
 						  local:ItemActivation.ActivationMode="Mouse,Keyboard" local:ItemActivation.ItemActivate="OnItemActivate"
 						  VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
 						  BorderThickness="1" Margin="2" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
-			<!--SelectedItem="{Binding SelectedObjectInfoViewModel}"-->
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Name}" Margin="2" />
+					<CheckBox IsChecked="{Binding IsSelected}" Margin="2">
+						<TextBlock><Run Text="{Binding Name}"/> (<Run Text="{Binding Type, Mode=OneWay}" />)</TextBlock>
+					</CheckBox>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 			<ItemsControl.ItemsPanel>

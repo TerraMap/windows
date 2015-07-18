@@ -2203,7 +2203,7 @@
   <tile num="398" name="Corrupt Hardened Sand" color="#604475" solid="1" />
   <tile num="399" name="Crimson Hardened Sand" color="#4D4C42" solid="1" />
   <tile num="400" name="Corrupt Sandstone" color="#604475" solid="1" />
-  <tile num="401" name="Crismon Sandstone" color="#573937" solid="1" />
+  <tile num="401" name="Crimson Sandstone" color="#573937" solid="1" />
   <tile num="402" name="Hallow Hardened Sand" color="#B18ABA" solid="1" />
   <tile num="403" name="Hallow Sandstone" color="#9E71A4" solid="1" />
   <tile num="404" name="Desert Fossil Block" color="#8C543C" solid="1" />

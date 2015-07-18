@@ -35,5 +35,21 @@ namespace TerraMap.Data
         RaisePropertyChanged();
       }
     }
-  }
+
+		private ObjectInfoViewModel selectedItem;
+
+		public ObjectInfoViewModel SelectedItem
+		{
+			get { return selectedItem; }
+			set { selectedItem = value; }
+		}
+
+		public override string Type
+		{
+			get
+			{
+				return "Set";
+			}
+		}
+	}
 }

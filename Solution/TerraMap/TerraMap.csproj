@@ -82,11 +82,19 @@
     <Compile Include="ExceptionControl.xaml.cs" />
     <Compile Include="ExceptionViewModel.cs" />
     <Compile Include="ExceptionWindow.xaml.cs" />
+    <Compile Include="InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="InvertedBooleanConverter.cs" />
     <Compile Include="ItemActivation.cs" />
     <Compile Include="OwnedWindow.cs" />
     <Compile Include="ReleaseInfo.cs" />
     <Compile Include="SearchDirection.cs" />
+    <Compile Include="SetWindow.xaml.cs">
+      <DependentUpon>SetWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SetsWindow.xaml.cs">
+      <DependentUpon>SetsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SetWindowViewModel.cs" />
     <Compile Include="TileSelectionWindow.xaml.cs">
       <DependentUpon>TileSelectionWindow.xaml</DependentUpon>
     </Compile>
@@ -120,6 +128,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SetWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SetsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TileSelectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -218,6 +234,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Properties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DeleteHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\NewDocumentHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Down.png" />
+    <Resource Include="Resources\Up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

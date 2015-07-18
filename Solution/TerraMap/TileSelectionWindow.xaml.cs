@@ -19,7 +19,7 @@ namespace TerraMap
 	{
 		CollectionViewSource tileInfoViewSource;
 
-		public TileSelectionWindow()
+		public TileSelectionWindow(Window owner = null) : base(owner)
 		{
 			InitializeComponent();
 
