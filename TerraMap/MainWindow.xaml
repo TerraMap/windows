@@ -1,0 +1,420 @@
+﻿<Window x:Class="TerraMap.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+		  xmlns:imaging="clr-namespace:System.Windows.Media.Imaging;assembly=PresentationCore"
+		  xmlns:ext="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions"
+		  xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+		  xmlns:local="clr-namespace:TerraMap"
+		  xmlns:data="clr-namespace:TerraMap.Data;assembly=TerraMap.Data"
+		  WindowState="Maximized" Loaded="OnLoaded"
+        Title="TerraMap" Height="480" Width="800" 
+		  Icon="Resources/App.ico">
+	<Window.DataContext>
+		<local:MainWindowViewModel TileName="Gold Chest" Status="Status" Position="3, 300" ProgressValue="100" ProgressMaximum="100" IsLoading="True">
+			<local:MainWindowViewModel.World>
+				<data:World Status="Status">
+					<data:World.NPCs>
+						<data:NPC Type="Merchant" Name="Bob" />
+						<data:NPC Type="Plumber" Name="Alice" />
+					</data:World.NPCs>
+				</data:World>
+			</local:MainWindowViewModel.World>
+			<local:MainWindowViewModel.CurrentChestItemNames>
+				<x:Array Type="sys:String">
+					<sys:String>Wooden Arrow</sys:String>
+					<sys:String>Iron Sword</sys:String>
+					<sys:String>Torch</sys:String>
+				</x:Array>
+			</local:MainWindowViewModel.CurrentChestItemNames>
+		</local:MainWindowViewModel>
+	</Window.DataContext>
+
+	<Window.Resources>
+		<local:InvertedBooleanConverter x:Key="InvertedBooleanConverter" />
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+		<CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}" Filter="OnFilter">
+			<CollectionViewSource.SortDescriptions>
+				<ComponentModel:SortDescription Direction="Ascending" PropertyName="Name"/>
+			</CollectionViewSource.SortDescriptions>
+		</CollectionViewSource>
+
+		<CollectionViewSource x:Key="Sets" Source="{Binding Sets}" />
+
+		<Storyboard x:Key="indicatorStoryboard" RepeatBehavior="2.0x" Duration="0:0:0.1" AutoReverse="True">
+			<DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="(Rectangle.RenderTransform).(ScaleTransform.ScaleX)"
+								  From="1.0" To="100.0" />
+			<DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="(Rectangle.RenderTransform).(ScaleTransform.ScaleY)"
+								  From="1.0" To="100.0" />
+		</Storyboard>
+	</Window.Resources>
+	<Window.CommandBindings>
+		<CommandBinding Command="Open" CanExecute="OnOpenCanExecute" Executed="OnOpenExecuted" />
+		<CommandBinding Command="Save" CanExecute="OnSaveCanExecute" Executed="OnSaveExecuted" />
+		<CommandBinding Command="Refresh" CanExecute="OnRefreshCanExecute" Executed="OnRefreshExecuted" />
+		<CommandBinding Command="Properties" CanExecute="OnPropertiesCanExecute" Executed="OnPropertiesExecuted" />
+		<CommandBinding Command="local:Commands.ZoomToOriginal" CanExecute="OnZoomToOriginalCanExecute" Executed="OnZoomToOriginalExecuted" />
+		<CommandBinding Command="local:Commands.ZoomToFit" CanExecute="OnZoomToFitCanExecute" Executed="OnZoomToFitExecuted" />
+		<CommandBinding Command="DecreaseZoom" CanExecute="OnDecreaseZoomCanExecute" Executed="OnDecreaseZoomExecuted" />
+		<CommandBinding Command="IncreaseZoom" CanExecute="OnIncreaseZoomCanExecute" Executed="OnIncreaseZoomExecuted" />
+		<CommandBinding Command="Find" CanExecute="OnFindCanExecute" Executed="OnFindExecuted" />
+		<CommandBinding Command="PreviousPage" CanExecute="OnPreviousPageCanExecute" Executed="OnPreviousPageExecuted" />
+		<CommandBinding Command="BrowseStop" CanExecute="OnBrowseStopCanExecute" Executed="OnBrowseStopExecuted" />
+		<CommandBinding Command="NextPage" CanExecute="OnNextPageCanExecute" Executed="OnNextPageExecuted" />
+		<CommandBinding Command="local:Commands.NavigateToSpawn" CanExecute="OnNavigateToSpawnCanExecute" Executed="OnNavigateToSpawnExecuted" />
+		<CommandBinding Command="local:Commands.NavigateToDungeon" CanExecute="OnNavigateToDungeonCanExecute" Executed="OnNavigateToDungeonExecuted" />
+		<CommandBinding Command="Close" CanExecute="OnCloseCanExecute" Executed="OnCloseExecuted" />
+		<CommandBinding Command="local:Commands.HighlightSet" CanExecute="OnCanExecuteHighlightSet" Executed="OnExecutedHighlightSet" />
+	</Window.CommandBindings>
+	<Window.InputBindings>
+		<KeyBinding Gesture="Ctrl+O" Command="Open" />
+		<KeyBinding Gesture="Ctrl+S" Command="Save" />
+		<KeyBinding Key="F5" Command="Refresh" />
+		<KeyBinding Key="F4" Command="Properties" />
+		<KeyBinding Key="OemMinus" Command="DecreaseZoom" />
+		<KeyBinding Key="Subtract" Command="DecreaseZoom" />
+		<KeyBinding Key="OemPlus" Command="IncreaseZoom" />
+		<KeyBinding Key="Add" Command="IncreaseZoom" />
+		<KeyBinding Gesture="Ctrl+F" Command="Find" />
+		<KeyBinding Key="F3" Command="NextPage" />
+		<KeyBinding Gesture="Shift+F3" Command="PreviousPage" />
+		<KeyBinding Key="Home" Command="local:Commands.NavigateToSpawn" />
+		<KeyBinding Key="End" Command="local:Commands.NavigateToSpawn" />
+		<KeyBinding Gesture="Ctrl+1" Command="local:Commands.HighlightSet" CommandParameter="1" />
+		<KeyBinding Gesture="Ctrl+2" Command="local:Commands.HighlightSet" CommandParameter="2" />
+		<KeyBinding Gesture="Ctrl+3" Command="local:Commands.HighlightSet" CommandParameter="3" />
+		<KeyBinding Gesture="Ctrl+4" Command="local:Commands.HighlightSet" CommandParameter="4" />
+		<KeyBinding Gesture="Ctrl+5" Command="local:Commands.HighlightSet" CommandParameter="5" />
+		<KeyBinding Gesture="Ctrl+6" Command="local:Commands.HighlightSet" CommandParameter="6" />
+		<KeyBinding Gesture="Ctrl+7" Command="local:Commands.HighlightSet" CommandParameter="7" />
+		<KeyBinding Gesture="Ctrl+8" Command="local:Commands.HighlightSet" CommandParameter="8" />
+		<KeyBinding Gesture="Ctrl+9" Command="local:Commands.HighlightSet" CommandParameter="9" />
+	</Window.InputBindings>
+	<DockPanel>
+		<Menu DockPanel.Dock="Top" IsMainMenu="True">
+			<MenuItem Header="_File">
+				<MenuItem Header="Open World" ItemsSource="{Binding WorldFiles}" SubmenuOpened="OnWorldsDropDownOpened">
+					<MenuItem.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" ToolTip="{Binding FullName}" />
+						</DataTemplate>
+					</MenuItem.ItemTemplate>
+					<MenuItem.Resources>
+						<Style TargetType="MenuItem">
+							<EventSetter Event="Click" Handler="OnOpenWorldFile" />
+						</Style>
+					</MenuItem.Resources>
+				</MenuItem>
+				<MenuItem Command="Open" Header="_Open...">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="Save" Header="_Save...">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem Command="Close" Header="E_xit" InputGestureText="Alt+F4" />
+			</MenuItem>
+			<MenuItem Header="_View">
+				<MenuItem Command="local:Commands.ZoomToOriginal" Header="Zoom to 100%">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="local:Commands.ZoomToFit" Header="Zoom to _Fit">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomFit.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem Command="DecreaseZoom" Header="Zoom _Out" InputGestureText="-">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomOut.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="IncreaseZoom" Header="Zoom _In" InputGestureText="+">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/zoomIn.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged" Header="Highlight All" />
+				<Separator />
+				<MenuItem Command="Refresh">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Width="16" Source="Resources/Refresh.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="Properties">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Width="16" Source="Resources/Properties.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="_Navigate">
+				<MenuItem Command="Find" Header="Select Block/Item..." InputGestureText="Ctrl+F" />
+				<MenuItem Command="PreviousPage" Header="Previous Match" InputGestureText="Shift+F3">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="BrowseStop" Header="Clear Match">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Command="NextPage" Header="Next Match" InputGestureText="F3">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
+					</MenuItem.Icon>
+				</MenuItem>
+				<Separator />
+				<MenuItem Command="local:Commands.NavigateToSpawn" Header="_Spawn" InputGestureText="Home" />
+				<MenuItem Command="local:Commands.NavigateToDungeon" Header="_Dungeon" InputGestureText="End" />
+				<MenuItem x:Name="menuItemNpcs" Header="_NPCs" ItemsSource="{Binding NPCs}">
+					<MenuItem.ItemTemplate>
+						<DataTemplate>
+							<TextBlock>
+								<Run Text="{Binding Name}" />
+								<Run Text="the" />
+								<Run Text="{Binding Type}" />
+							</TextBlock>
+						</DataTemplate>
+					</MenuItem.ItemTemplate>
+					<MenuItem.Resources>
+						<Style TargetType="MenuItem">
+							<EventSetter Event="Click" Handler="OnNavigateToNpc" />
+						</Style>
+					</MenuItem.Resources>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Header="_Sets">
+				<MenuItem.ItemsSource>
+					<CompositeCollection>
+						<CollectionContainer Collection="{Binding Source={StaticResource Sets}}" />
+						<Separator />
+						<MenuItem Header="Edit Sets..." Click="OnEditSets" />
+					</CompositeCollection>
+				</MenuItem.ItemsSource>
+				<MenuItem.Resources>
+					<Style TargetType="MenuItem">
+						<Setter Property="InputGestureText" Value="{Binding InputGestureText}" />
+						<EventSetter Event="Click" Handler="OnSetClicked" />
+					</Style>
+				</MenuItem.Resources>
+				<MenuItem.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</MenuItem.ItemTemplate>
+			</MenuItem>
+			<MenuItem Header="_Help">
+				<MenuItem Header="_Check for updates" Click="OnCheckForUpdates" IsEnabled="{Binding IsCheckingForUpdate, Converter={StaticResource InvertedBooleanConverter}}" />
+				<Separator />
+				<MenuItem Header="_About" Click="OnShowAboutWindow">
+					<MenuItem.Icon>
+						<local:AutoGreyableImage Width="16" Source="Resources/information-white.png" />
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+			<MenuItem Click="OnUpdateClicked" Visibility="{Binding UpdateVisibility}" ToolTip="A new version of TerraMap is available" Padding="0">
+				<MenuItem.Header>
+					<Label Padding="0" VerticalAlignment="Center" VerticalContentAlignment="Center">_Update</Label>
+				</MenuItem.Header>
+				<MenuItem.Icon>
+					<local:AutoGreyableImage Width="16" Source="Resources/information-white.png" VerticalAlignment="Center" />
+				</MenuItem.Icon>
+			</MenuItem>
+		</Menu>
+		<ToolBarTray DockPanel.Dock="Top">
+			<ToolBar Band="0" BandIndex="0" Name="File" ToolTip="File"
+						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+				<TextBlock VerticalAlignment="Center">Worlds:</TextBlock>
+				<ComboBox ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
+				SelectionChanged="OnSelectedWorldFileChanged" DropDownOpened="OnWorldsDropDownOpened">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				<Button Command="Open" ToolTip="Open">
+					<local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
+				</Button>
+				<Button Command="Save" ToolTip="Save Image">
+					<local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
+				</Button>
+				<Button Command="Refresh" ToolTip="Refresh">
+					<local:AutoGreyableImage Width="16" Source="Resources/Refresh.png" />
+				</Button>
+				<Button Command="Properties" ToolTip="World Properties">
+					<local:AutoGreyableImage Width="16" Source="Resources/Properties.png" />
+				</Button>
+			</ToolBar>
+			<ToolBar Band="0" BandIndex="1" Name="View" ToolTip="View"
+						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+				<Button Command="local:Commands.ZoomToOriginal" ToolTip="Zoom to 100%">
+					<local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
+				</Button>
+				<Button Command="local:Commands.ZoomToFit" ToolTip="Zoom to fit">
+					<local:AutoGreyableImage Source="Resources/zoomFit.png" Width="16" />
+				</Button>
+				<Separator />
+				<Button Command="DecreaseZoom" ToolTip="Zoom out">
+					<local:AutoGreyableImage Source="Resources/zoomOut.png" Width="16" />
+				</Button>
+				<Button Command="IncreaseZoom" ToolTip="Zoom in">
+					<local:AutoGreyableImage Source="Resources/zoomIn.png" Width="16" />
+				</Button>
+			</ToolBar>
+			<ToolBar Band="0" BandIndex="2" Name="Search" ToolTip="Search"
+						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+				<CheckBox x:Name="checkBoxBlocksDropDown">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition Width="20" />
+						</Grid.ColumnDefinitions>
+						<TextBlock>Blocks</TextBlock>
+						<Path x:Name="Arrow"
+								Grid.Column="1"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Data="M 0 0 L 4 4 L 8 0 Z" >
+							<Path.Fill>
+								<SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
+							</Path.Fill>
+						</Path>
+					</Grid>
+				</CheckBox>
+				<Popup StaysOpen="False" Placement="Bottom" PlacementTarget="{Binding ElementName=checkBoxBlocksDropDown}" 
+						 IsOpen="{Binding ElementName=checkBoxBlocksDropDown, Path=IsChecked}" Opened="OnBlocksPopupOpened">
+					<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" 
+							  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+							  Height="250" Width="250">
+						<DockPanel>
+							<Grid DockPanel.Dock="Top">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Margin="2" VerticalAlignment="Center">Name:</TextBlock>
+								<TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
+								<Button Grid.Column="2" Margin="2" Padding="2" Click="OnCheckAll"
+										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
+										  Content="Check All" />
+								<Button Grid.Column="3" Margin="2" Padding="2" Click="OnUncheckAll"
+										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
+										  Content="Uncheck All" />
+							</Grid>
+							<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+								<Button Margin="2" Padding="10,2" Click="OnApplyBlockSelection"
+										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
+										  Content="Apply" />
+							</StackPanel>
+							<ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name"
+											  VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+											  BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Margin="2">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<CheckBox IsChecked="{Binding IsSelected}" Margin="2" Checked="OnItemChecked" Unchecked="OnItemChecked"
+													 IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+											<TextBlock><Run Text="{Binding Name, Mode=OneWay}"/> (<Run Text="{Binding Type, Mode=OneWay}" />)</TextBlock>
+										</CheckBox>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<VirtualizingStackPanel IsVirtualizing="True" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.Template>
+									<ControlTemplate>
+										<Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+												  Padding="{TemplateBinding Control.Padding}"
+												  BorderBrush="{TemplateBinding Border.BorderBrush}"
+												  Background="{TemplateBinding Panel.Background}"
+												  SnapsToDevicePixels="True">
+											<ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+												<ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+											</ScrollViewer>
+										</Border>
+									</ControlTemplate>
+								</ItemsControl.Template>
+							</ItemsControl>
+						</DockPanel>
+					</Border>
+				</Popup>
+				<Button Command="Find" ToolTip="Select Blocks...">...</Button>
+				<Button Command="PreviousPage" ToolTip="Previous">
+					<local:AutoGreyableImage Source="Resources/Previous.png" Width="16" />
+				</Button>
+				<Button Command="BrowseStop" ToolTip="Clear">
+					<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+				</Button>
+				<Button Command="NextPage" ToolTip="Next">
+					<local:AutoGreyableImage Source="Resources/Next.png" Width="16" />
+				</Button>
+				<CheckBox IsChecked="{Binding IsHighlighting}" Checked="OnIsHighlightingChanged" Unchecked="OnIsHighlightingChanged"
+							 ToolTip="Highlight All">Highlight All</CheckBox>
+				<Slider Minimum="0" Maximum="1" Value="{Binding MaskOpacity, UpdateSourceTrigger=PropertyChanged}" Width="100" SmallChange=".1" LargeChange=".2"
+						  ToolTip="Highlight Opacity" />
+			</ToolBar>
+		</ToolBarTray>
+		<StatusBar DockPanel.Dock="Bottom">
+			<StatusBarItem DockPanel.Dock="Left">
+				<TextBlock Text="{Binding Position}" />
+			</StatusBarItem>
+			<StatusBarItem DockPanel.Dock="Left">
+				<TextBlock Text="{Binding TileName}" />
+			</StatusBarItem>
+			<StatusBarItem DockPanel.Dock="Right">
+				<TextBlock Text="{Binding World.Status}" HorizontalAlignment="Right" />
+			</StatusBarItem>
+			<StatusBarItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+				<ProgressBar Minimum="0" Maximum="{Binding ProgressMaximum}" Value="{Binding ProgressValue}"
+					Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" IsIndeterminate="{Binding IsProgressIndeterminate}"/>
+			</StatusBarItem>
+		</StatusBar>
+
+		<Popup x:Name="popup" StaysOpen="False" Placement="Mouse">
+			<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}">
+				<StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+					<TextBlock Text="{Binding TileName}" FontWeight="Bold" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="2" />
+					<Separator />
+					<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="480">
+						<ItemsControl ItemsSource="{Binding CurrentChestItemNames}" Padding="2">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding}" Margin="2" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+				</StackPanel>
+			</Border>
+		</Popup>
+
+		<ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
+			<Grid x:Name="Grid">
+				<Image x:Name="Map" Source="{Binding WriteableBitmap}"
+						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
+				<Image Source="{Binding WriteableBitmapMask}" Opacity="{Binding MaskOpacity}"
+						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
+				<Canvas x:Name="Canvas" Width="360" Height="240">
+					<Rectangle x:Name="Indicator" Fill="Transparent" Stroke="Red" StrokeThickness="1" Width="3" Height="3" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+						<Rectangle.RenderTransform>
+							<ScaleTransform />
+						</Rectangle.RenderTransform>
+					</Rectangle>
+				</Canvas>
+			</Grid>
+		</ext:ZoomControl>
+	</DockPanel>
+</Window>

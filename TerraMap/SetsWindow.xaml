@@ -1,0 +1,74 @@
+﻿<local:OwnedWindow x:Class="TerraMap.SetsWindow"
+									 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+									 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+									 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+									 xmlns:local="clr-namespace:TerraMap"
+									 mc:Ignorable="d"
+									 Title="Edit Sets - TerraMap" Height="300" Width="300"
+									 Icon="Resources/App.ico"
+									 Loaded="OnLoaded">
+	<Window.Resources>
+		<Style TargetType="Button">
+			<Setter Property="Margin" Value="2" />
+			<Setter Property="MinWidth" Value="75" />
+		</Style>
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+		<local:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+	</Window.Resources>
+	<Window.CommandBindings>
+		<CommandBinding Command="New" CanExecute="OnCanExecuteNew" Executed="OnExecutedNew" />
+		<CommandBinding Command="Properties" CanExecute="OnCanExecuteProperties" Executed="OnExecutedProperties" />
+		<CommandBinding Command="Delete" CanExecute="OnCanExecuteDelete" Executed="OnExecutedDelete" />
+		<CommandBinding Command="Close" CanExecute="OnCanExecuteClose" Executed="OnExecutedClose" />
+		<CommandBinding Command="NavigationCommands.BrowseForward" CanExecute="OnCanExecuteDown" Executed="OnExecutedDown" />
+		<CommandBinding Command="NavigationCommands.BrowseBack" CanExecute="OnCanExecuteUp" Executed="OnExecutedUp" />
+	</Window.CommandBindings>
+	<Window.InputBindings>
+		<KeyBinding Key="Insert" Command="New" />
+		<KeyBinding Key="Delete" Command="Delete" />
+		<KeyBinding Key="Return" Command="Properties" />
+		<KeyBinding Key="Esc" Command="Close" />
+		<KeyBinding Modifiers="Alt" Key="Down" Gesture="Alt+Down" Command="NavigationCommands.BrowseForward" />
+		<KeyBinding Modifiers="Alt" Key="Up"  Gesture="Alt+Up" Command="NavigationCommands.BrowseBack" />
+	</Window.InputBindings>
+	<DockPanel LastChildFill="True">
+		<ToolBarTray DockPanel.Dock="Top">
+			<ToolBar Band="0" BandIndex="0" ToolBarTray.IsLocked="True">
+				<Button Command="New" ToolTip="New Set (Insert)">
+					<local:AutoGreyableImage Source="Resources/NewDocumentHS.png" Width="16" />
+				</Button>
+				<Button Command="Properties" ToolTip="Edit Set (Enter)">
+					<local:AutoGreyableImage Source="Resources/Properties.png" Width="16" />
+				</Button>
+				<Button Command="Delete" ToolTip="Delete Set (Delete)">
+					<local:AutoGreyableImage Source="Resources/DeleteHS.png" Width="16" />
+				</Button>
+				<Button Command="NavigationCommands.BrowseBack" ToolTip="Move Up (Alt+Up)">
+					<local:AutoGreyableImage Source="Resources/Up.png" Width="16" />
+				</Button>
+				<Button Command="NavigationCommands.BrowseForward" ToolTip="Move Down (Alt+Down)">
+					<local:AutoGreyableImage Source="Resources/Down.png" Width="16" />
+				</Button>
+			</ToolBar>
+		</ToolBarTray>
+		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button IsDefault="True" Click="OnAccept">_OK</Button>
+		</StackPanel>
+		<ListBox ItemsSource="{Binding Sets}" SelectedItem="{Binding SelectedSet}">
+			<ListBox.Resources>
+				<Style TargetType="ListBoxItem">
+					<Setter Property="IsSelected" Value="{Binding IsSelected}" />
+				</Style>
+			</ListBox.Resources>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<!--<TextBox Text="{Binding Name}" Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
+						<TextBlock Text="{Binding Name}" Background="Transparent" MouseDown="OnItemMouseDown" /> <!--Visibility="{Binding IsSelected, Converter={StaticResource InvertedBooleanToVisibilityConverter}}"-->
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</DockPanel>
+</local:OwnedWindow>
