@@ -27,5 +27,17 @@ namespace TerraMap
 				RaisePropertyChanged();
 			}
 		}
+
+		private bool cloud;
+
+		public bool Cloud
+		{
+			get { return cloud; }
+			set
+			{
+				cloud = value;
+				RaisePropertyChanged();
+			}
+		}
 	}
 }

@@ -107,5 +107,10 @@ namespace TerraMap
 
 			}
 		}
+
+		private void OnSearchBoxClear(object sender, RoutedEventArgs e)
+		{
+			this.searchBox.Text = "";
+		}
 	}
 }

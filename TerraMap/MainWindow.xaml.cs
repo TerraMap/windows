@@ -91,6 +91,17 @@ namespace TerraMap
 					this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name });
 				}
 
+				var cloudPaths = GetCloudPaths();
+
+				foreach (var cloudPath in cloudPaths)
+				{
+					foreach (var filename in Directory.GetFiles(cloudPath, "*.wld"))
+					{
+						string name = World.GetWorldName(filename);
+						this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name, Cloud = true });
+					}
+				}
+
 				if (currentWorldFile != null)
 				{
 					currentWorldFile = this.viewModel.WorldFiles.FirstOrDefault(f => f.FileInfo.FullName == currentWorldFile.FileInfo.FullName);
@@ -102,6 +113,38 @@ namespace TerraMap
 			{
 				ignoreSelectedWorldFileChanges = false;
 			}
+		}
+
+		private IEnumerable<string> GetCloudPaths()
+		{
+			List<string> cloudPaths = new List<string>();
+
+			string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+			try
+			{
+				userdataPath = Path.Combine(userdataPath, "Steam");
+				userdataPath = Path.Combine(userdataPath, "userdata");
+
+				foreach (var userDir in Directory.GetDirectories(userdataPath))
+				{
+					// Each user could have a Terraria directory
+					var cloudPath = Path.Combine(userDir, "105600");
+					cloudPath = Path.Combine(cloudPath, "remote");
+					cloudPath = Path.Combine(cloudPath, "worlds");
+
+					if (!Directory.Exists(cloudPath))
+						continue;
+
+					cloudPaths.Add(cloudPath);
+				}
+			}
+			catch (Exception ex)
+			{
+				HandleException(ex);
+			}
+
+			return cloudPaths;
 		}
 
 		private string GetWorldsPath()
@@ -1295,6 +1338,11 @@ namespace TerraMap
 		private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
 			this.Close();
+		}
+
+		private void OnSearchBoxClear(object sender, RoutedEventArgs e)
+		{
+			this.searchBox.Text = "";
 		}
 
 		private void OnCanExecuteHighlightSet(object sender, CanExecuteRoutedEventArgs e)

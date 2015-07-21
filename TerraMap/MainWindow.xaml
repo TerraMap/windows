@@ -231,14 +231,17 @@
 			</MenuItem>
 		</Menu>
 		<ToolBarTray DockPanel.Dock="Top">
-			<ToolBar Band="0" BandIndex="0" Name="File" ToolTip="File"
+			<ToolBar Band="0" BandIndex="0" Name="File"
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
 				<TextBlock VerticalAlignment="Center">Worlds:</TextBlock>
 				<ComboBox ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
 				SelectionChanged="OnSelectedWorldFileChanged" DropDownOpened="OnWorldsDropDownOpened">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" />
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" />
+								<Image Source="Resources/Cloud.png" Width="16" Visibility="{Binding Cloud, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="4,0,0,0" ToolTip="Cloud" />
+							</StackPanel>
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
 				</ComboBox>
@@ -255,7 +258,7 @@
 					<local:AutoGreyableImage Width="16" Source="Resources/Properties.png" />
 				</Button>
 			</ToolBar>
-			<ToolBar Band="0" BandIndex="1" Name="View" ToolTip="View"
+			<ToolBar Band="0" BandIndex="1" Name="View"
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
 				<Button Command="local:Commands.ZoomToOriginal" ToolTip="Zoom to 100%">
 					<local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
@@ -271,7 +274,7 @@
 					<local:AutoGreyableImage Source="Resources/zoomIn.png" Width="16" />
 				</Button>
 			</ToolBar>
-			<ToolBar Band="0" BandIndex="2" Name="Search" ToolTip="Search"
+			<ToolBar Band="0" BandIndex="2" Name="Search"
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
 				<CheckBox x:Name="checkBoxBlocksDropDown">
 					<Grid>
@@ -295,7 +298,7 @@
 						 IsOpen="{Binding ElementName=checkBoxBlocksDropDown, Path=IsChecked}" Opened="OnBlocksPopupOpened">
 					<Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" 
 							  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-							  Height="250" Width="250">
+							  Height="250" Width="300">
 						<DockPanel>
 							<Grid DockPanel.Dock="Top">
 								<Grid.ColumnDefinitions>
@@ -303,13 +306,17 @@
 									<ColumnDefinition Width="*" />
 									<ColumnDefinition Width="Auto" />
 									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="Auto" />
 								</Grid.ColumnDefinitions>
 								<TextBlock Grid.Column="0" Margin="2" VerticalAlignment="Center">Name:</TextBlock>
 								<TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
-								<Button Grid.Column="2" Margin="2" Padding="2" Click="OnCheckAll"
+								<Button Grid.Column="2" Margin="2" Padding="2" Click="OnSearchBoxClear" ToolTip="Clear">
+									<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+								</Button>
+								<Button Grid.Column="3" Margin="2" Padding="2" Click="OnCheckAll"
 										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
 										  Content="Check All" />
-								<Button Grid.Column="3" Margin="2" Padding="2" Click="OnUncheckAll"
+								<Button Grid.Column="4" Margin="2" Padding="2" Click="OnUncheckAll"
 										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
 										  Content="Uncheck All" />
 							</Grid>
