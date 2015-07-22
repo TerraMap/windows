@@ -37,6 +37,7 @@ namespace TerraMap
 		private bool ignoreSelectedWorldFileChanges;
 
 		Storyboard indicatorStoryboard;
+		Storyboard highlightStoryboard;
 
 		int width, height, stride;
 		byte[] pixels;
@@ -61,7 +62,9 @@ namespace TerraMap
 			viewModel.Status = null;
 			viewModel.Position = null;
 			viewModel.TileName = null;
+
 			indicatorStoryboard = (Storyboard)this.FindResource("indicatorStoryboard");
+			highlightStoryboard = (Storyboard)this.FindResource("highlightStoryboard");
 
 			tileInfoViewSource = (CollectionViewSource)this.FindResource("tileInfoViewSource");
 		}
@@ -126,17 +129,20 @@ namespace TerraMap
 				userdataPath = Path.Combine(userdataPath, "Steam");
 				userdataPath = Path.Combine(userdataPath, "userdata");
 
-				foreach (var userDir in Directory.GetDirectories(userdataPath))
+				if (Directory.Exists(userdataPath))
 				{
-					// Each user could have a Terraria directory
-					var cloudPath = Path.Combine(userDir, "105600");
-					cloudPath = Path.Combine(cloudPath, "remote");
-					cloudPath = Path.Combine(cloudPath, "worlds");
+					foreach (var userDir in Directory.GetDirectories(userdataPath))
+					{
+						// Each user could have a Terraria directory
+						var cloudPath = Path.Combine(userDir, "105600");
+						cloudPath = Path.Combine(cloudPath, "remote");
+						cloudPath = Path.Combine(cloudPath, "worlds");
 
-					if (!Directory.Exists(cloudPath))
-						continue;
+						if (!Directory.Exists(cloudPath))
+							continue;
 
-					cloudPaths.Add(cloudPath);
+						cloudPaths.Add(cloudPath);
+					}
 				}
 			}
 			catch (Exception ex)
@@ -276,6 +282,8 @@ namespace TerraMap
 			if (world == null)
 				return;
 
+			//highlightStoryboard.Stop();
+
 			var start = DateTime.Now;
 
 			this.viewModel.BeginLoading("Updating map");
@@ -303,6 +311,9 @@ namespace TerraMap
 				world.Status = string.Format("Highlighted {0:N0} out of {1:N0} blocks in {2:N1} seconds", this.viewModel.HighlightedTileCount, this.viewModel.TotalTileCount, elapsed.TotalSeconds);
 			else
 				world.Status = string.Format("Updated {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+
+			//if (this.viewModel.IsHighlighting)
+			//	highlightStoryboard.Begin();
 
 			this.viewModel.EndLoading();
 		}
@@ -351,10 +362,32 @@ namespace TerraMap
 				return;
 			}
 
+			var bitmap = this.viewModel.WriteableBitmap;
+			var mask = this.viewModel.WriteableBitmapMask;
+
+			var output = BitmapFactory.New(bitmap.PixelWidth, bitmap.PixelHeight);
+
+			var rect = new Rect(0, 0, bitmap.PixelWidth, bitmap.PixelHeight);
+			var point = new Point(0, 0);
+
+			output.Blit(rect, bitmap, rect);
+
+			byte alpha = (byte)(255 * this.viewModel.MaskOpacity);
+
+			mask.ForEach((x, y, color) =>
+			{
+				if (color == Colors.Black)
+					return Color.FromArgb(alpha, color.R, color.G, color.B);
+				else
+					return color;
+			});
+
+			output.Blit(rect, mask, rect, WriteableBitmapExtensions.BlendMode.Alpha);
+
 			using (var stream = new FileStream(filename, FileMode.Create))
 			{
 				var encoder = new PngBitmapEncoder();
-				encoder.Frames.Add(BitmapFrame.Create(this.viewModel.WriteableBitmap));
+				encoder.Frames.Add(BitmapFrame.Create(output));
 				encoder.Save(stream);
 				stream.Close();
 			}
@@ -879,19 +912,19 @@ namespace TerraMap
 			var y = (int)position.Y;
 
 			if (x < 0 || x >= this.viewModel.World.WorldWidthinTiles ||
-				y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
+					y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
 				return;
 
 			var chest = this.viewModel.World.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
 			if (chest != null)
 			{
 				var itemNames = chest.Items.Select(i =>
-					{
-						if (i.Count > 1)
-							return string.Concat(i.Name, " (", i.Count, ")");
-						else
-							return i.Name;
-					}).ToArray();
+						{
+							if (i.Count > 1)
+								return string.Concat(i.Name, " (", i.Count, ")");
+							else
+								return i.Name;
+						}).ToArray();
 
 				this.viewModel.CurrentChestItemNames = itemNames;
 
@@ -948,6 +981,21 @@ namespace TerraMap
 		private void OnWorldsDropDownOpened(object sender, EventArgs e)
 		{
 			this.LoadWorldFiles();
+		}
+
+		private async void OnToggleIsHighlighting(object sender, RoutedEventArgs e)
+		{
+			this.viewModel.IsHighlighting = !this.viewModel.IsHighlighting;
+
+			await this.UpdateHighlight();
+		}
+
+		private async void OnToggleInvertHighlight(object sender, RoutedEventArgs e)
+		{
+			if (this.viewModel.World != null)
+				this.viewModel.World.InvertHighlight = !this.viewModel.World.InvertHighlight;
+
+			await this.UpdateHighlight();
 		}
 
 		private async void OnIsHighlightingChanged(object sender, RoutedEventArgs e)

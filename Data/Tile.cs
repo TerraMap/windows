@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace TerraMap.Data
 {
   public class Tile
   {
-    private Tile tile;
-
     public Boolean IsActive { get; set; }
     public ushort Type { get; set; }
     public Int16 TextureU { get; set; }

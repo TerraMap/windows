@@ -351,6 +351,7 @@
   </tile>
   <tile num="27" name="Sunflower" color="#E3B903" hasExtra="1" letLight="1">
     <var maxv="36" lightr="0.3" lightg="0.27" lightb="0.0" />
+    <var minu="72" color="#1E9648" />
   </tile>
   <tile num="28" name="Pot" color="#796E61" hasExtra="1" letLight="1" />
   <tile num="29" name="Piggy Bank" color="#9C546C" hasExtra="1" letLight="1" />

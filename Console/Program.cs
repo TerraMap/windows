@@ -49,6 +49,7 @@ namespace TerraMap
 				var height = world.WorldHeightinTiles;
 				var stride = (width * pixelFormat.BitsPerPixel + 7) / 8;
 				var pixels = new byte[stride * height];
+				var maskPixels = new byte[stride * height];
 
 				var writeableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
 
@@ -73,11 +74,11 @@ namespace TerraMap
 					objectTypeToHighlight.ItemInfo = world.StaticData.ItemInfos.Values.FirstOrDefault(t => t.Name.ToLower() == name);
 				}
 
-        ObjectInfoViewModel[] objectTypesToHighlight = null;
-        if (objectTypeToHighlight != null)
-          objectTypesToHighlight = new ObjectInfoViewModel[] { objectTypeToHighlight };
+				ObjectInfoViewModel[] objectTypesToHighlight = null;
+				if (objectTypeToHighlight != null)
+					objectTypesToHighlight = new ObjectInfoViewModel[] { objectTypeToHighlight };
 
-        world.WritePixelData(pixels, stride, objectTypesToHighlight);
+				world.WritePixelData(pixels, stride);
 
 				Int32Rect rect;
 
@@ -86,6 +87,37 @@ namespace TerraMap
 					var offset = rect.Y * width * 4;
 
 					writeableBitmap.WritePixels(rect, pixels, stride, offset);
+				}
+
+				if (objectTypesToHighlight != null)
+				{
+					Console.WriteLine("Writing selected item mask data...");
+
+					world.WritePixelData(maskPixels, stride, objectTypesToHighlight);
+
+					var maskWriteableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+
+					while (world.UpdatedRectangles.TryDequeue(out rect))
+					{
+						var offset = rect.Y * width * 4;
+
+						maskWriteableBitmap.WritePixels(rect, maskPixels, stride, offset);
+					}
+
+					var destRect = new Rect(0, 0, width, height);
+					var point = new Point(0, 0);
+
+					byte alpha = (byte)(255 * 0.75);
+
+					maskWriteableBitmap.ForEach((x, y, color) =>
+					{
+						if (color == Colors.Black)
+							return Color.FromArgb(alpha, color.R, color.G, color.B);
+						else
+							return color;
+					});
+
+					writeableBitmap.Blit(destRect, maskWriteableBitmap, destRect, WriteableBitmapExtensions.BlendMode.Alpha);
 				}
 
 				Console.WriteLine("Writing image file...");

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Windows.Media;
 using System.Xml;
 
 namespace TerraMap.Data
 {
 	public struct WallInfo
-  {
-    public int Id;
+	{
+		public int Id;
 		public string Name;
 		public UInt32 ColorValue;
 		public Int16 Blend;
@@ -18,32 +18,32 @@ namespace TerraMap.Data
 		{
 			var wallNodeList = xml.GetElementsByTagName("wall");
 
-      return Read(wallNodeList);
-    }
+			return Read(wallNodeList);
+		}
 
-    public static List<WallInfo> Read(XmlNodeList wallNodeList)
-    {
+		public static List<WallInfo> Read(XmlNodeList wallNodeList)
+		{
 			var wallInfoList = new List<WallInfo>();
 
 			for (int i = 0; i < wallNodeList.Count; i++)
 			{
 				var wallNode = wallNodeList[i];
 
-        int id = 0;
+				int id = 0;
 
-        if (wallNode.Attributes["num"] != null)
-          id = Convert.ToInt32(wallNode.Attributes["num"].Value);
+				if (wallNode.Attributes["num"] != null)
+					id = Convert.ToInt32(wallNode.Attributes["num"].Value);
 
 				var wallInfo = new WallInfo();
 
-        wallInfo.Id = id;
+				wallInfo.Id = id;
 				wallInfo.Name = wallNode.Attributes["name"].Value;
 
 				if (wallNode.Attributes["color"] != null)
 				{
 					wallInfo.ColorName = wallNode.Attributes["color"].Value;
 					wallInfo.ColorValue = TileInfos.ParseColor(wallInfo.ColorName);
-					wallInfo.Color = ColorTranslator.FromHtml(wallInfo.ColorName);
+					wallInfo.Color = (Color)ColorConverter.ConvertFromString(wallInfo.ColorName);
 				}
 				else
 				{

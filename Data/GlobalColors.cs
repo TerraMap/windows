@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Xml;
 
 namespace TerraMap.Data
@@ -31,25 +31,25 @@ namespace TerraMap.Data
 				switch (id)
 				{
 					case "sky":
-						globalColors.SkyColor = ColorTranslator.FromHtml(color);
+						globalColors.SkyColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
 					case "earth":
-						globalColors.EarthColor = ColorTranslator.FromHtml(color);
+						globalColors.EarthColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
 					case "rock":
-						globalColors.RockColor = ColorTranslator.FromHtml(color);
+						globalColors.RockColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
 					case "hell":
-						globalColors.HellColor = ColorTranslator.FromHtml(color);
+						globalColors.HellColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
 					case "water":
-						globalColors.WaterColor = ColorTranslator.FromHtml(color);
+						globalColors.WaterColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
 					case "lava":
-						globalColors.LavaColor = ColorTranslator.FromHtml(color);
+						globalColors.LavaColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
 					case "honey":
-						globalColors.HoneyColor = ColorTranslator.FromHtml(color);
+						globalColors.HoneyColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
 				}
 			}
