@@ -340,14 +340,16 @@ namespace TerraMap
 		public void BeginLoading(string status, bool isProgressIndeterminate = false)
 		{
 			this.Status = status;
+			if(this.world != null)
+				this.world.Status = status;
 			this.IsProgressIndeterminate = isProgressIndeterminate;
-			this.IsLoaded = false;
+			//this.IsLoaded = false;
 			this.IsLoading = true;
 		}
 
 		public void EndLoading()
 		{
-			this.IsLoaded = true;
+			//this.IsLoaded = true;
 			this.IsLoading = false;
 
 			CommandManager.InvalidateRequerySuggested();

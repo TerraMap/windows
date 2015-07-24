@@ -112,5 +112,15 @@ namespace TerraMap
 		{
 			this.searchBox.Text = "";
 		}
+
+		private void OnCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = true;
+		}
+
+		private void OnExecutedClose(object sender, ExecutedRoutedEventArgs e)
+		{
+			this.Close();
+		}
 	}
 }

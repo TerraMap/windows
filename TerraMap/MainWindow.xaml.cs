@@ -224,6 +224,8 @@ namespace TerraMap
 				this.Canvas.Width = world.WorldWidthinTiles;
 				this.Canvas.Height = world.WorldHeightinTiles;
 
+				this.viewModel.IsLoaded = true;
+
 				world.Status = "Drawing map";
 
 				width = world.WorldWidthinTiles;
@@ -606,6 +608,8 @@ namespace TerraMap
 					break;
 
 				this.viewModel.ProgressValue += this.viewModel.World.WorldHeightinTiles;
+
+				this.viewModel.World.Status = string.Format("Checking tile {0:N0} of {1:N0} ({2:P0})...", this.viewModel.ProgressValue, this.viewModel.ProgressMaximum, (float)this.viewModel.ProgressValue / (float)this.viewModel.ProgressMaximum);
 			}
 
 			if (matchingTile == null)
@@ -722,34 +726,28 @@ namespace TerraMap
 			// load tile viewmodels
 			foreach (var tileInfo in staticData.TileInfos)
 			{
-				var existingObjectInfo = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == tileInfo.Name && v.Type == "Tile");
-
-				if (existingObjectInfo == null)
+				if (!string.IsNullOrEmpty(tileInfo.Name))
 				{
-					if (!string.IsNullOrEmpty(tileInfo.Name))
-					{
-						this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = tileInfo, Name = tileInfo.Name });
-					}
-				}
-				else
-				{
-					existingObjectInfo.TileInfo = tileInfo;
+					this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = tileInfo, Name = tileInfo.Name });
 				}
 
 				foreach (var variant in tileInfo.Variants)
 				{
-					var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name && v.Type == "Tile");
+					string name = variant.Name;
 
-					if (existingVariantViewModel == null)
+					var variantViewModel = new ObjectInfoViewModel() { TileInfo = variant, Name = name };
+
+          var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name && v.Type == "Tile");
+
+					if (existingVariantViewModel != null)
 					{
-						if (!string.IsNullOrEmpty(variant.Name))
-						{
-							this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = variant, Name = variant.Name });
-						}
+						if (name != tileInfo.Name)
+							variantViewModel.ParentName = tileInfo.Name;
 					}
-					else
+
+					if (!string.IsNullOrEmpty(name))
 					{
-						existingVariantViewModel.TileInfo = variant;
+						this.viewModel.ObjectInfoViewModels.Add(variantViewModel);
 					}
 				}
 			}
@@ -1123,7 +1121,24 @@ namespace TerraMap
 			if (tileInfo == null)
 				return;
 
-			e.Accepted = tileInfo.Name.ToLower().Contains(this.searchBox.Text.ToLower());
+			var searchText = this.searchBox.Text.ToLower();
+
+			if (tileInfo.Name.ToLower().Contains(searchText)) {
+				e.Accepted = true;
+				return;
+			}
+
+			if(tileInfo.Type.ToLower().Contains(searchText))
+			{
+				e.Accepted = true;
+				return;
+			}
+
+			if(!string.IsNullOrWhiteSpace(tileInfo.ParentName) && tileInfo.ParentName.ToLower().Contains(searchText))
+			{
+				e.Accepted = true;
+				return;
+			}
 		}
 
 		private void OnCheckAll(object sender, RoutedEventArgs e)

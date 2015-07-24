@@ -104,6 +104,31 @@ namespace TerraMap.Data
 			}
 		}
 
+		private string parentName;
+
+		public string ParentName
+		{
+			get { return parentName; }
+			set
+			{
+				parentName = value;
+				RaisePropertyChanged();
+				this.HasParentName = !string.IsNullOrWhiteSpace(parentName);
+			}
+		}
+
+		private bool hasParentName;
+
+		public bool HasParentName
+		{
+			get { return hasParentName; }
+			set
+			{
+				hasParentName = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		private bool isSelected;
 
 		public bool IsSelected

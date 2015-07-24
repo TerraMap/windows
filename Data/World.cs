@@ -576,6 +576,8 @@ namespace TerraMap.Data
 
 		private void LoadFileFormatHeader(BinaryReader reader, out bool[] importance, out int[] positions)
 		{
+			this.Status = "Reading file format header...";
+
 			this.Version = reader.ReadInt32();
 
 			if (this.Version >= 135)
@@ -648,6 +650,8 @@ namespace TerraMap.Data
 
 		public void ReadHeader(BinaryReader reader, bool skipVersion = false)
 		{
+			this.Status = "Reading world header...";
+
 			var properties = typeof(World).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
 			foreach (var property in properties)
@@ -814,6 +818,8 @@ namespace TerraMap.Data
 
 		private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
 		{
+			this.Status = "Reading tiles...";
+
 			this.Tiles = new Tile[this.WorldWidthinTiles, this.WorldHeightinTiles];
 
 			this.totalTileCount = this.WorldHeightinTiles * this.WorldWidthinTiles;
@@ -1016,6 +1022,8 @@ namespace TerraMap.Data
 
 				this.ProgressMaximum = this.totalTileCount;
 				this.ProgressValue = tilesProcessed;
+
+				this.Status = string.Format("Reading tile {0:N0} of {1:N0} ({2:P0})...", progressValue, progressMaximum, (float)progressValue / (float)progressMaximum);
 			}
 		}
 
@@ -1405,6 +1413,11 @@ namespace TerraMap.Data
 
 				this.ProgressMaximum = totalTileCount;
 				this.ProgressValue = tilesProcessed;
+
+				if (objectTypesToHighlight == null)
+					this.Status = string.Format("Drawing tile {0:N0} of {1:N0} ({2:P0})...", progressValue, progressMaximum, (float)progressValue / (float)progressMaximum);
+				else
+					this.Status = string.Format("Highlighting tile {0:N0} of {1:N0} ({2:P0})...", progressValue, progressMaximum, (float)progressValue / (float)progressMaximum);
 			}
 			);
 		}

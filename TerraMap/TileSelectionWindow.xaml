@@ -5,73 +5,99 @@
 		  xmlns:local="clr-namespace:TerraMap"
         Title="Select block or item - TerraMap" Height="300" Width="360"
 		  Loaded="OnLoaded" Icon="Resources/App.ico">
-	<Window.Resources>
-		<CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}" Filter="OnFilter">
-			<CollectionViewSource.SortDescriptions>
-				<ComponentModel:SortDescription Direction="Ascending" PropertyName="Name"/>
-			</CollectionViewSource.SortDescriptions>
-		</CollectionViewSource>
-		<Style TargetType="Button">
-			<Setter Property="Margin" Value="2" />
-			<Setter Property="Padding" Value="2" />
-		</Style>
-	</Window.Resources>
-	<DockPanel>
-		<Grid DockPanel.Dock="Top">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
-			<TextBlock Grid.Column="0" Margin="2">Name:</TextBlock>
-			<TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
-			<Button Grid.Column="2" Click="OnSearchBoxClear" ToolTip="Clear">
-				<local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
-			</Button>
-			<Button Grid.Column="3" Click="OnCheckAll">Check All</Button>
-			<Button Grid.Column="4" Click="OnUncheckAll">Uncheck All</Button>
-		</Grid>
-		<Grid DockPanel.Dock="Bottom">
-			<!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+  <Window.Resources>
+    <CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}" Filter="OnFilter">
+      <CollectionViewSource.SortDescriptions>
+        <ComponentModel:SortDescription Direction="Ascending" PropertyName="Name"/>
+      </CollectionViewSource.SortDescriptions>
+    </CollectionViewSource>
+    <Style TargetType="Button">
+      <Setter Property="Margin" Value="2" />
+      <Setter Property="Padding" Value="2" />
+    </Style>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+  </Window.Resources>
+  <Window.CommandBindings>
+    <CommandBinding Command="Close" CanExecute="OnCanExecuteClose" Executed="OnExecutedClose" />
+  </Window.CommandBindings>
+  <Window.InputBindings>
+    <KeyBinding Key="Esc" Command="Close" />
+  </Window.InputBindings>
+  <DockPanel>
+    <Grid DockPanel.Dock="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <TextBlock Grid.Column="0" Margin="2">Name:</TextBlock>
+      <TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
+      <Button Grid.Column="2" Click="OnSearchBoxClear" ToolTip="Clear">
+        <local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
+      </Button>
+      <Button Grid.Column="3" Click="OnCheckAll">Check All</Button>
+      <Button Grid.Column="4" Click="OnUncheckAll">Uncheck All</Button>
+    </Grid>
+    <Grid DockPanel.Dock="Bottom">
+      <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 				<Button IsDefault="True" Click="OnSaveSet" HorizontalAlignment="Left">Save Set...</Button>
 				<Button IsDefault="True" Click="OnCustomize" HorizontalAlignment="Left">_Customize...</Button>
 			</StackPanel>-->
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button IsDefault="True" Click="OnAccept" MinWidth="75">_OK</Button>
-				<Button IsCancel="True" Click="OnCancel" Visibility="Collapsed">_Cancel</Button>
-			</StackPanel>
-		</Grid>
-		<ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name" 
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button IsDefault="True" Click="OnAccept" MinWidth="75">_OK</Button>
+        <Button IsCancel="True" Click="OnCancel" Visibility="Collapsed">_Cancel</Button>
+      </StackPanel>
+    </Grid>
+    <ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name" 
 						  local:ItemActivation.ActivationMode="Mouse,Keyboard" local:ItemActivation.ItemActivate="OnItemActivate"
 						  VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
 						  BorderThickness="1" Margin="2" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<CheckBox IsChecked="{Binding IsSelected}" Margin="2">
-						<TextBlock><Run Text="{Binding Name}"/> (<Run Text="{Binding Type, Mode=OneWay}" />)</TextBlock>
-					</CheckBox>
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<VirtualizingStackPanel IsVirtualizing="True" />
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
-			<ItemsControl.Template>
-				<ControlTemplate>
-					<Border BorderThickness="{TemplateBinding Border.BorderThickness}"
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <CheckBox IsChecked="{Binding IsSelected}" Margin="2">
+            <StackPanel Orientation="Horizontal">
+              <StackPanel.Resources>
+                <Style x:Key="labelTextBlock" TargetType="TextBlock">
+                  <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                  <Setter Property="Margin" Value="2" />
+                </Style>
+                <Style TargetType="Border">
+                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                  <Setter Property="CornerRadius" Value="2" />
+                  <Setter Property="Margin" Value="4,0,0,0" />
+                </Style>
+              </StackPanel.Resources>
+              <TextBlock Text="{Binding Name, Mode=OneWay}"/>
+              <Border Visibility="{Binding HasParentName, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="{Binding ParentName, Mode=OneWay}" Style="{StaticResource labelTextBlock}" />
+              </Border>
+              <Border>
+                <TextBlock Text="{Binding Type, Mode=OneWay}" Style="{StaticResource labelTextBlock}" />
+              </Border>
+            </StackPanel>
+          </CheckBox>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <VirtualizingStackPanel IsVirtualizing="True" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.Template>
+        <ControlTemplate>
+          <Border BorderThickness="{TemplateBinding Border.BorderThickness}"
 							  Padding="{TemplateBinding Control.Padding}"
 							  BorderBrush="{TemplateBinding Border.BorderBrush}"
 							  Background="{TemplateBinding Panel.Background}"
 							  SnapsToDevicePixels="True">
-						<ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
-							<ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-						</ScrollViewer>
-					</Border>
-				</ControlTemplate>
-			</ItemsControl.Template>
-		</ItemsControl>
-	</DockPanel>
+            <ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+              <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+            </ScrollViewer>
+          </Border>
+        </ControlTemplate>
+      </ItemsControl.Template>
+    </ItemsControl>
+  </DockPanel>
 </local:OwnedWindow>

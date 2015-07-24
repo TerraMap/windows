@@ -264,8 +264,7 @@
           <local:AutoGreyableImage Width="16" Source="Resources/Properties.png" />
         </Button>
       </ToolBar>
-      <ToolBar Band="0" BandIndex="1" Name="View"
-						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
+      <ToolBar Band="0" BandIndex="1" Name="View">
         <Button Command="local:Commands.ZoomToOriginal" ToolTip="Zoom to 100%">
           <local:AutoGreyableImage Source="Resources/zoomOriginal.png" Width="16" />
         </Button>
@@ -338,7 +337,26 @@
                   <DataTemplate>
                     <CheckBox IsChecked="{Binding IsSelected}" Margin="2" Checked="OnItemChecked" Unchecked="OnItemChecked"
 													 IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
-                      <TextBlock><Run Text="{Binding Name, Mode=OneWay}"/> (<Run Text="{Binding Type, Mode=OneWay}" />)</TextBlock>
+                      <StackPanel Orientation="Horizontal">
+                        <StackPanel.Resources>
+                          <Style x:Key="labelTextBlock" TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            <Setter Property="Margin" Value="2" />
+                          </Style>
+                          <Style TargetType="Border">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                            <Setter Property="CornerRadius" Value="2" />
+                            <Setter Property="Margin" Value="4,0,0,0" />
+                          </Style>
+                        </StackPanel.Resources>
+                        <TextBlock Text="{Binding Name, Mode=OneWay}"/>
+                        <Border Visibility="{Binding HasParentName, Converter={StaticResource BooleanToVisibilityConverter}}">
+                          <TextBlock Text="{Binding ParentName, Mode=OneWay}" Style="{StaticResource labelTextBlock}" />
+                        </Border>
+                        <Border>
+                          <TextBlock Text="{Binding Type, Mode=OneWay}" Style="{StaticResource labelTextBlock}" />
+                        </Border>
+                      </StackPanel>
                     </CheckBox>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
