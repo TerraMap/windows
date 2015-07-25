@@ -1,4 +1,18 @@
-SET version=1.3.6
+@ECHO OFF
+
+if "%~1"=="" (
+  echo NO PARAM
+	EXIT /B 1
+) else (
+  echo PARAM: %1
+)
+
+SET version=%1
+
+BuildVersionHelper.exe %version%
+
+"C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe"
+
 SET targetDir="Releases\TerraMap-%version%\"
 mkdir %targetDir%
 copy "TerraMap\bin\Debug\CommandLine.dll" %targetDir%

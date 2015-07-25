@@ -1,13 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraMap", "TerraMap\TerraMap.csproj", "{C76EDE7A-CB52-4290-B972-419D1C4D1C4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{215115FC-2270-4105-8F7B-3DEA4F267520}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{89543A8A-9514-43BC-976B-A9D3001D43C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8BDD7BFF-6D54-4E49-A448-105DEDF08376}"
+	ProjectSection(SolutionItems) = preProject
+		build.bat = build.bat
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVersionHelper", "BuildVersionHelper\BuildVersionHelper.csproj", "{2D2F85AE-F75C-4A58-890A-5F3D3B93E21B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +34,10 @@ Global
 		{89543A8A-9514-43BC-976B-A9D3001D43C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89543A8A-9514-43BC-976B-A9D3001D43C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89543A8A-9514-43BC-976B-A9D3001D43C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D2F85AE-F75C-4A58-890A-5F3D3B93E21B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D2F85AE-F75C-4A58-890A-5F3D3B93E21B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D2F85AE-F75C-4A58-890A-5F3D3B93E21B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D2F85AE-F75C-4A58-890A-5F3D3B93E21B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
