@@ -734,20 +734,24 @@ namespace TerraMap.Data
 				return;
 
 			this.SavedAngler = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.SavedAngler), Value = this.SavedAngler });
 
 			if (Version < 101)
 				return;
 
 			this.AnglerQuest = reader.ReadInt32();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.AnglerQuest), Value = this.AnglerQuest });
 
 			if (Version < 104)
 				return;
 
 			this.SavedStylist = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.SavedStylist), Value = this.SavedStylist });
 
 			if (Version >= 129)
 			{
 				this.SavedTaxCollector = reader.ReadBoolean();
+				this.Properties.Add(new WorldProperty() { Name = nameof(this.SavedTaxCollector), Value = this.SavedTaxCollector });
 			}
 
 			if (Version < 107)
@@ -756,6 +760,7 @@ namespace TerraMap.Data
 			else
 			{
 				this.InvasionSizeStart = reader.ReadInt32();
+				this.Properties.Add(new WorldProperty() { Name = nameof(this.InvasionSizeStart), Value = this.InvasionSizeStart });
 			}
 
 			if (Version < 108)
@@ -766,6 +771,7 @@ namespace TerraMap.Data
 			{
 				this.TempCultistDelay = reader.ReadInt32();
 			}
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.TempCultistDelay), Value = this.TempCultistDelay });
 
 			if (Version < 109)
 				return;
@@ -788,32 +794,67 @@ namespace TerraMap.Data
 				return;
 
 			this.FastForwardTime = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.FastForwardTime), Value = this.FastForwardTime });
 
 			if (Version < 131)
 				return;
 
 			this.DownedFishron = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedFishron), Value = this.DownedFishron });
+
 			this.DownedMartians = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedMartians), Value = this.DownedMartians });
+
 			this.DownedAncientCultist = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedAncientCultist), Value = this.DownedAncientCultist });
+
 			this.DownedMoonlord = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedMoonlord), Value = this.DownedMoonlord });
+
 			this.DownedHalloweenKing = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedHalloweenKing), Value = this.DownedHalloweenKing });
+
 			this.DownedHalloweenTree = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedHalloweenTree), Value = this.DownedHalloweenTree });
+
 			this.DownedChristmasIceQueen = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedChristmasIceQueen), Value = this.DownedChristmasIceQueen });
+
 			this.DownedChristmasSantank = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedChristmasSantank), Value = this.DownedChristmasSantank });
+
 			this.DownedChristmasTree = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedChristmasTree), Value = this.DownedChristmasTree });
 
 			if (Version < 140)
 				return;
 
 			this.DownedTowerSolar = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedTowerSolar), Value = this.DownedTowerSolar });
+
 			this.DownedTowerVortex = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedTowerVortex), Value = this.DownedTowerVortex });
+
 			this.DownedTowerNebula = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedTowerNebula), Value = this.DownedTowerNebula });
+
 			this.DownedTowerStardust = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.DownedTowerStardust), Value = this.DownedTowerStardust });
+
 			this.TowerActiveSolar = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.TowerActiveSolar), Value = this.TowerActiveSolar });
+
 			this.TowerActiveVortex = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.TowerActiveVortex), Value = this.TowerActiveVortex });
+
 			this.TowerActiveNebula = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.TowerActiveNebula), Value = this.TowerActiveNebula });
+
 			this.TowerActiveStardust = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.TowerActiveStardust), Value = this.TowerActiveStardust });
+
 			this.LunarApocalypseIsUp = reader.ReadBoolean();
+			this.Properties.Add(new WorldProperty() { Name = nameof(this.LunarApocalypseIsUp), Value = this.LunarApocalypseIsUp });
 		}
 
 		private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
