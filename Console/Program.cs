@@ -35,6 +35,8 @@ namespace TerraMap
 
 				world.StaticData = StaticData.Read(staticDataFilename);
 
+				var objectTypesToHighlight = GetObjectTypesToHighlight(world, options);
+
 				Console.WriteLine("Reading world...");
 
 				world.Read(options.InputFile);
@@ -53,31 +55,6 @@ namespace TerraMap
 
 				var writeableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
 
-				ObjectInfoViewModel objectTypeToHighlight = null;
-
-				if (options.TileId != null)
-				{
-					objectTypeToHighlight = new ObjectInfoViewModel();
-					objectTypeToHighlight.TileInfo = world.StaticData.TileInfos[options.TileId.Value];
-				}
-				else if (options.ItemId != null)
-				{
-					objectTypeToHighlight = new ObjectInfoViewModel();
-					objectTypeToHighlight.ItemInfo = world.StaticData.ItemInfos[options.TileId.Value];
-				}
-				else if (!string.IsNullOrEmpty(options.Name))
-				{
-					string name = options.Name.ToLower();
-
-					objectTypeToHighlight = new ObjectInfoViewModel();
-					objectTypeToHighlight.TileInfo = world.StaticData.TileInfos[name];
-					objectTypeToHighlight.ItemInfo = world.StaticData.ItemInfos.Values.FirstOrDefault(t => t.Name.ToLower() == name);
-				}
-
-				ObjectInfoViewModel[] objectTypesToHighlight = null;
-				if (objectTypeToHighlight != null)
-					objectTypesToHighlight = new ObjectInfoViewModel[] { objectTypeToHighlight };
-
 				world.WritePixelData(pixels, stride);
 
 				Int32Rect rect;
@@ -89,7 +66,7 @@ namespace TerraMap
 					writeableBitmap.WritePixels(rect, pixels, stride, offset);
 				}
 
-				if (objectTypesToHighlight != null)
+				if (objectTypesToHighlight.Count > 0)
 				{
 					Console.WriteLine("Writing selected item mask data...");
 
@@ -139,6 +116,86 @@ namespace TerraMap
 				Debug.WriteLine(ex);
 				Console.Error.WriteLine(ex);
 			}
+		}
+
+		private static List<ObjectInfoViewModel> GetObjectTypesToHighlight(World world, Options options)
+		{
+			var objectTypesToHighlight = new List<ObjectInfoViewModel>();
+
+			if (options.TileIds != null)
+			{
+				foreach (var tileIdString in options.TileIds)
+				{
+					var tileId = 0;
+					if (!int.TryParse(tileIdString, out tileId))
+					{
+						Console.WriteLine("Invalid tile ID specified on command line: " + tileIdString);
+						continue;
+					}
+
+					if (tileId < 0 || tileId >= world.StaticData.TileInfos.Count)
+					{
+						Console.WriteLine("Invalid tile ID specified on command line: " + tileId);
+						continue;
+					}
+
+					objectTypesToHighlight.Add(
+						new ObjectInfoViewModel()
+						{
+							TileInfo = world.StaticData.TileInfos[tileId]
+						});
+				}
+			}
+
+			if (options.ItemIds != null)
+			{
+				foreach (var itemIdString in options.ItemIds)
+				{
+					var itemId = 0;
+					if (!int.TryParse(itemIdString, out itemId))
+					{
+						Console.WriteLine("Invalid item ID specified on command line: " + itemIdString);
+						continue;
+					}
+
+					if (itemId < 0 || itemId >= world.StaticData.ItemInfos.Count)
+					{
+						Console.WriteLine("Invalid item ID specified on command line: " + itemId);
+						continue;
+					}
+
+					objectTypesToHighlight.Add(
+						new ObjectInfoViewModel()
+						{
+							ItemInfo = world.StaticData.ItemInfos[itemId]
+						});
+				}
+			}
+
+			if (options.Names != null)
+			{
+				foreach (var name in options.Names)
+				{
+					string lowerName = name.ToLower();
+
+					var tileInfo = world.StaticData.TileInfos[name];
+					var itemInfo = world.StaticData.ItemInfos.Values.FirstOrDefault(t => t.Name.ToLower() == name);
+
+					if (tileInfo == null && itemInfo == null)
+					{
+						Console.WriteLine("Invalid tile and/or item name specified on command line: " + name);
+						continue;
+					}
+
+					objectTypesToHighlight.Add(new ObjectInfoViewModel()
+					{
+						TileInfo = tileInfo,
+						ItemInfo = itemInfo,
+					});
+				}
+			}
+
+			return objectTypesToHighlight;
 		}
 	}
 }

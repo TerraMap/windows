@@ -12,26 +12,33 @@ namespace TerraMap
 	{
 		[Option('i', "input", Required = true, HelpText = "Input wld file to be processed.")]
 		public string InputFile { get; set; }
-
+		
 		[Option('o', "output", Required = true, HelpText = "Output png file to be created/overwritten.")]
 		public string OutputFile { get; set; }
 
-		[Option('t', "tileId", MutuallyExclusiveSet = "highlight", Required = false, HelpText = "ID (number) of a tile to highlight.")]
-		public int? TileId { get; set; }
+		[OptionList('t', "tileId", Required = false, HelpText = "ID numbers of tiles to highlight, separated by semicolons (-t \"1;2;3\").", Separator = ';')]
+		public IEnumerable<string> TileIds { get; set; }
 
-		[Option('m', "itemId", MutuallyExclusiveSet = "highlight", Required = false, HelpText = "ID (number) of an item to highlight.")]
-		public int? ItemId { get; set; }
+		[OptionList('m', "itemId", Required = false, HelpText = "ID numbers of items to highlight, separated by semicolons (-m \"1;2;3\").", Separator = ';')]
+		public IEnumerable<string> ItemIds { get; set; }
 
-		[Option('n', "name", MutuallyExclusiveSet = "highlight", Required = false, HelpText = "Name of a tile and/or item to highlight.")]
-		public string Name { get; set; }
-
+		[OptionList('n', "name", Required = false, HelpText = "Tile and/or item names to highlight, separated by semicolons (-n \"Ebonstone;Ebonsand;Corrupted Vine\").", Separator = ';')]
+		public IEnumerable<string> Names { get; set; }
+		
 		[ParserState]
 		public IParserState LastParserState { get; set; }
 
 		[HelpOption]
 		public string GetUsage()
 		{
-			return HelpText.AutoBuild(this, (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+			var help = HelpText.AutoBuild(this, (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+			help.AddPostOptionsLine("Examples:\n");
+			help.AddPostOptionsLine("terramapcmd -i \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.wld\" -o \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.png\"\n");
+			help.AddPostOptionsLine("terramapcmd -i \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.wld\" -o \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.png\" -n \"Ebonstone;Ebonsand;Corrupted Vine\"\n");
+			help.AddPostOptionsLine("terramapcmd -i \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.wld\" -o \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.png\" -t \"23;25;32\"\n");
+			help.AddPostOptionsLine("terramapcmd -i \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.wld\" -o \"C:\\Users\\Jason\\Documents\\My Games\\Terraria\\Worlds\\World1.png\" -m \"23;25;32\"\n");
+
+			return help;
 		}
 	}
 }
