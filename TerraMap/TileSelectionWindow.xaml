@@ -1,10 +1,10 @@
 ﻿<local:OwnedWindow x:Class="TerraMap.TileSelectionWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		  xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-		  xmlns:local="clr-namespace:TerraMap"
-        Title="Select block or item - TerraMap" Height="300" Width="360"
-		  Loaded="OnLoaded" Icon="Resources/App.ico">
+									 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+									 xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+									 xmlns:local="clr-namespace:TerraMap"
+									 Title="Select block or item - TerraMap" Height="300" Width="360"
+									 Loaded="OnLoaded" Icon="Resources/App.ico">
   <Window.Resources>
     <CollectionViewSource x:Key="tileInfoViewSource" Source="{Binding ObjectInfoViewModels}" Filter="OnFilter">
       <CollectionViewSource.SortDescriptions>
