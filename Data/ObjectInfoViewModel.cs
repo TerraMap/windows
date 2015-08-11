@@ -9,7 +9,7 @@ using TerraMap.Data;
 
 namespace TerraMap.Data
 {
-	public class ObjectInfoViewModel : INotifyPropertyChanged
+	public class ObjectInfoViewModel : ViewModelBase
 	{
 		private ItemInfo itemInfo;
 
@@ -179,13 +179,5 @@ namespace TerraMap.Data
 					return this.wallInfo.Id;
 			}
 		}
-
-		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			if (this.PropertyChanged != null)
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }

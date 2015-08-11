@@ -117,6 +117,30 @@ namespace TerraMap
 			}
 		}
 
+		private MapFileViewModel selectedMapFile;
+
+		public MapFileViewModel SelectedMapFile
+		{
+			get { return selectedMapFile; }
+			set
+			{
+				selectedMapFile = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private ObservableCollection<MapFileViewModel> mapFiles = new ObservableCollection<MapFileViewModel>();
+
+		public ObservableCollection<MapFileViewModel> MapFiles
+		{
+			get { return mapFiles; }
+			set
+			{
+				mapFiles = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		private string tileName;
 
 		public string TileName
@@ -285,6 +309,18 @@ namespace TerraMap
 			}
 		}
 
+		private WriteableBitmap writeableBitmapFog;
+
+		public WriteableBitmap WriteableBitmapFog
+		{
+			get { return writeableBitmapFog; }
+			set
+			{
+				writeableBitmapFog = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		private double maskOpacity = 0.75;
 
 		public double MaskOpacity
@@ -293,6 +329,18 @@ namespace TerraMap
 			set
 			{
 				maskOpacity = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private double fogOpacity = 1.0;
+
+		public double FogOpacity
+		{
+			get { return fogOpacity; }
+			set
+			{
+				fogOpacity = value;
 				RaisePropertyChanged();
 			}
 		}

@@ -1,9 +1,8 @@
 ﻿using System.IO;
-using TerraMap.Data;
 
-namespace TerraMap
+namespace TerraMap.Data
 {
-	public class WorldFileViewModel : ViewModelBase
+	public class MapFileViewModel : ViewModelBase
 	{
 		private FileInfo fileInfo;
 

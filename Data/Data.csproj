@@ -79,6 +79,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="ItemInfo.cs" />
     <Compile Include="ItemPrefix.cs" />
+    <Compile Include="MapFileViewModel.cs" />
     <Compile Include="MapHelper.cs" />
     <Compile Include="NPC.cs" />
     <Compile Include="ObjectInfo.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="TileInfo.cs" />
     <Compile Include="TileInfos.cs" />
     <Compile Include="Set.cs" />
+    <Compile Include="ViewModelBase.cs" />
     <Compile Include="WallInfo.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

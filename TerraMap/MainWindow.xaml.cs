@@ -35,17 +35,21 @@ namespace TerraMap
 
 		MainWindowViewModel viewModel = new MainWindowViewModel();
 		private bool ignoreSelectedWorldFileChanges;
+		private bool ignoreSelectedMapFileChanges;
 
 		Storyboard indicatorStoryboard;
 		Storyboard highlightStoryboard;
 
 		int width, height, stride;
 		byte[] pixels;
-		PixelFormat pixelFormat = PixelFormats.Bgr32;
+		PixelFormat pixelFormat = PixelFormats.Bgra32;
 
 		byte[] maskPixels;
+		byte[] fogPixels;
 
 		bool isChoosingBlocks = false;
+
+		bool allSpoilers = false;
 
 		#endregion
 
@@ -153,6 +157,48 @@ namespace TerraMap
 			return cloudPaths;
 		}
 
+		private void LoadMapFiles()
+		{
+			try
+			{
+				ignoreSelectedMapFileChanges = true;
+
+				var currentMapFile = this.viewModel.SelectedMapFile;
+
+				this.viewModel.MapFiles.Clear();
+
+				this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(No Spoilers)" });
+
+				if (this.viewModel.World == null || this.viewModel.SelectedWorldFile == null)
+				{
+					this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(All Spoilers)" });
+
+					return;
+				}
+
+				foreach(var mapFile in this.viewModel.World.GetPlayerMapFiles())
+				{
+					this.viewModel.MapFiles.Add(mapFile);
+				}
+
+				this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(All Spoilers)" });
+
+				if (currentMapFile != null)
+				{
+					currentMapFile = this.viewModel.MapFiles.FirstOrDefault(f => f.Name == currentMapFile.Name);
+
+					this.viewModel.SelectedMapFile = currentMapFile;
+				}
+
+				if (this.viewModel.SelectedMapFile == null)
+					this.viewModel.SelectedMapFile = this.viewModel.MapFiles.First();
+			}
+			finally
+			{
+				ignoreSelectedMapFileChanges = false;
+			}
+		}
+
 		private string GetWorldsPath()
 		{
 			string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -224,6 +270,10 @@ namespace TerraMap
 				this.Canvas.Width = world.WorldWidthinTiles;
 				this.Canvas.Height = world.WorldHeightinTiles;
 
+				this.LoadMapFiles();
+
+				this.LoadMapFile();
+
 				this.viewModel.IsLoaded = true;
 
 				world.Status = "Drawing map";
@@ -233,9 +283,15 @@ namespace TerraMap
 				stride = (width * pixelFormat.BitsPerPixel + 7) / 8;
 				pixels = new byte[stride * height];
 				maskPixels = new byte[stride * height];
+				fogPixels = new byte[stride * height];
 
 				viewModel.WriteableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
 				viewModel.WriteableBitmapMask = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+				viewModel.WriteableBitmapFog = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+
+				allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
+
+				await world.WritePixelDataAsync(fogPixels, stride, fog: true, allSpoilers: allSpoilers);
 
 				await world.WritePixelDataAsync(pixels, stride);
 
@@ -262,6 +318,28 @@ namespace TerraMap
 			finally
 			{
 				this.viewModel.EndLoading();
+			}
+		}
+
+		private void LoadMapFile()
+		{
+			MapHelper.tileLight = null;
+
+			if (this.viewModel.SelectedMapFile.FileInfo != null)
+			{
+				allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
+
+				try
+				{
+					using (var stream = new FileStream(this.viewModel.SelectedMapFile.FileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+					{
+						using (var reader = new BinaryReader(stream))
+						{
+							MapHelper.LoadMapVersion2(reader, this.viewModel.World);
+						}
+					}
+				}
+				catch (Exception) { }
 			}
 		}
 
@@ -311,9 +389,9 @@ namespace TerraMap
 
 			if (this.viewModel.IsHighlighting)
 				world.Status = string.Format(
-					"Highlighted {0:N0} out of {1:N0} blocks ({2:P0}) in {3:N1} seconds", 
-					this.viewModel.HighlightedTileCount, 
-					this.viewModel.TotalTileCount, 
+					"Highlighted {0:N0} out of {1:N0} blocks ({2:P0}) in {3:N1} seconds",
+					this.viewModel.HighlightedTileCount,
+					this.viewModel.TotalTileCount,
 					(float)this.viewModel.HighlightedTileCount / (float)this.viewModel.TotalTileCount,
 					elapsed.TotalSeconds);
 			else
@@ -322,6 +400,40 @@ namespace TerraMap
 			//if (this.viewModel.IsHighlighting)
 			//	highlightStoryboard.Begin();
 
+			this.viewModel.EndLoading();
+		}
+
+		private async Task UpdateFog()
+		{
+			if (this.viewModel.IsLoading || this.isChoosingBlocks)
+				return;
+
+			var world = this.viewModel.World;
+			if (world == null)
+				return;
+			
+			var start = DateTime.Now;
+
+			this.viewModel.BeginLoading("Updating map");
+			this.viewModel.ProgressValue = 0;
+
+			var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
+			timer.Start();
+
+			allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
+
+			await world.WritePixelDataAsync(fogPixels, stride, fog: true, allSpoilers: allSpoilers);
+
+			timer.Stop();
+
+			this.Update();
+
+			world.Status = "";
+
+			var elapsed = DateTime.Now - start;
+			
+			world.Status = string.Format("Updated fog for {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+			
 			this.viewModel.EndLoading();
 		}
 
@@ -338,6 +450,7 @@ namespace TerraMap
 			{
 				var offset = rect.Y * width * 4;
 
+				viewModel.WriteableBitmapFog.WritePixels(rect, fogPixels, stride, offset);
 				viewModel.WriteableBitmap.WritePixels(rect, pixels, stride, offset);
 				viewModel.WriteableBitmapMask.WritePixels(rect, maskPixels, stride, offset);
 			}
@@ -742,7 +855,7 @@ namespace TerraMap
 
 					var variantViewModel = new ObjectInfoViewModel() { TileInfo = variant, Name = name };
 
-          var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name && v.Type == "Tile");
+					var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name && v.Type == "Tile");
 
 					if (existingVariantViewModel != null)
 					{
@@ -890,7 +1003,22 @@ namespace TerraMap
 			var x = (int)position.X;
 			var y = (int)position.Y;
 
+			if (x < 0 || x >= this.viewModel.World.WorldWidthinTiles ||
+					y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
+				return;
+
 			string name = world.GetTileName(x, y);
+
+			if (!allSpoilers)
+			{
+				var light = 0;
+
+				if(MapHelper.tileLight != null)
+					light = MapHelper.tileLight[x][y];
+
+				if (light < 128)
+					name = "(No spoilers)";
+			}
 
 			this.viewModel.TileName = name;
 
@@ -917,6 +1045,17 @@ namespace TerraMap
 			if (x < 0 || x >= this.viewModel.World.WorldWidthinTiles ||
 					y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
 				return;
+
+			if (!allSpoilers)
+			{
+				var light = 0;
+
+				if (MapHelper.tileLight != null)
+					light = MapHelper.tileLight[x][y];
+
+				if (light < 128)
+					return;
+			}
 
 			var chest = this.viewModel.World.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
 			if (chest != null)
@@ -976,6 +1115,16 @@ namespace TerraMap
 			await this.Open(this.viewModel.SelectedWorldFile.FileInfo);
 		}
 
+		private async void OnSelectedMapFileChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (ignoreSelectedMapFileChanges || this.viewModel.IsLoading || this.viewModel.SelectedMapFile == null)
+				return;
+
+			this.LoadMapFile();
+
+			await this.UpdateFog();
+    }
+
 		private void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
 		{
 			this.LoadWorldFiles();
@@ -984,6 +1133,11 @@ namespace TerraMap
 		private void OnWorldsDropDownOpened(object sender, EventArgs e)
 		{
 			this.LoadWorldFiles();
+		}
+
+		private void OnMapsDropDownOpened(object sender, EventArgs e)
+		{
+			this.LoadMapFiles();
 		}
 
 		private async void OnToggleIsHighlighting(object sender, RoutedEventArgs e)
@@ -1128,18 +1282,19 @@ namespace TerraMap
 
 			var searchText = this.searchBox.Text.ToLower();
 
-			if (tileInfo.Name.ToLower().Contains(searchText)) {
-				e.Accepted = true;
-				return;
-			}
-
-			if(tileInfo.Type.ToLower().Contains(searchText))
+			if (tileInfo.Name.ToLower().Contains(searchText))
 			{
 				e.Accepted = true;
 				return;
 			}
 
-			if(!string.IsNullOrWhiteSpace(tileInfo.ParentName) && tileInfo.ParentName.ToLower().Contains(searchText))
+			if (tileInfo.Type.ToLower().Contains(searchText))
+			{
+				e.Accepted = true;
+				return;
+			}
+
+			if (!string.IsNullOrWhiteSpace(tileInfo.ParentName) && tileInfo.ParentName.ToLower().Contains(searchText))
 			{
 				e.Accepted = true;
 				return;

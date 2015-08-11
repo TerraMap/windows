@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TerraMap
+namespace TerraMap.Data
 {
 	public class ViewModelBase : INotifyPropertyChanged
 	{

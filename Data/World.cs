@@ -1394,15 +1394,15 @@ namespace TerraMap.Data
 			return new Rect(left, top, right - left, bottom - top);
 		}
 
-		public async Task WritePixelDataAsync(byte[] pixelData, int rawStride, IEnumerable<ObjectInfoViewModel> objectTypesToHighlight = null)
+		public async Task WritePixelDataAsync(byte[] pixelData, int rawStride, IEnumerable<ObjectInfoViewModel> objectTypesToHighlight = null, bool fog = false, bool allSpoilers = false)
 		{
 			await Task.Factory.StartNew(() =>
 			{
-				this.WritePixelData(pixelData, rawStride, objectTypesToHighlight);
+				this.WritePixelData(pixelData, rawStride, objectTypesToHighlight, fog, allSpoilers);
 			});
 		}
 
-		public void WritePixelData(byte[] buffer, int rawStride, IEnumerable<ObjectInfoViewModel> objectTypesToHighlight = null)
+		public void WritePixelData(byte[] buffer, int rawStride, IEnumerable<ObjectInfoViewModel> objectTypesToHighlight = null, bool fog = false, bool allSpoilers = false)
 		{
 			int totalTileCount = this.WorldWidthinTiles * this.WorldHeightinTiles;
 			int tilesProcessed = 0;
@@ -1422,7 +1422,22 @@ namespace TerraMap.Data
 
 					Color color = tile.Color;
 
-					if (objectTypesToHighlight != null)
+					if (fog)
+					{
+						byte light = 0;
+
+						if (allSpoilers)
+						{
+							light = 255;
+						}
+						else if (MapHelper.tileLight != null)
+						{
+							light = MapHelper.tileLight[x][y];
+						}
+
+						color = Color.FromArgb((byte)(255 - light), 0, 0, 0);
+					}
+					else if (objectTypesToHighlight != null)
 					{
 						var tileMatches = IsTileMatch(objectTypesToHighlight, x, y, tile);
 
@@ -1634,6 +1649,59 @@ namespace TerraMap.Data
 			}
 
 			return name;
+		}
+
+		public List<MapFileViewModel> GetPlayerMapFiles()
+		{
+			var playerMapFiles = new List<MapFileViewModel>();
+
+			string filename = this.Id + ".map";
+
+			string user = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\Players");
+			var directory = new DirectoryInfo(user);
+
+			foreach (var playerDirectory in directory.GetDirectories())
+			{
+				var playerName = playerDirectory.Name;
+
+				var playerMapFilename = Path.Combine(playerDirectory.FullName, filename);
+
+				if (File.Exists(playerMapFilename))
+					playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
+			}
+
+			string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+			userdataPath = Path.Combine(userdataPath, "Steam");
+			userdataPath = Path.Combine(userdataPath, "userdata");
+
+			if (Directory.Exists(userdataPath))
+			{
+				foreach (var userDir in Directory.GetDirectories(userdataPath))
+				{
+					// Each user could have a Terraria directory
+					var cloudPath = Path.Combine(userDir, "105600");
+					cloudPath = Path.Combine(cloudPath, "remote");
+					cloudPath = Path.Combine(cloudPath, "players");
+
+					if (!Directory.Exists(cloudPath))
+						continue;
+
+					directory = new DirectoryInfo(cloudPath);
+
+					foreach (var playerDirectory in directory.GetDirectories())
+					{
+						var playerName = playerDirectory.Name;
+
+						var playerMapFilename = Path.Combine(playerDirectory.FullName, filename);
+
+						if (File.Exists(playerMapFilename))
+							playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename), Cloud = true });
+					}
+				}
+			}
+
+			return playerMapFiles;
 		}
 
 		public override string ToString()

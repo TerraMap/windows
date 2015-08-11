@@ -148,7 +148,6 @@
     <Compile Include="TileSelectionWindow.xaml.cs">
       <DependentUpon>TileSelectionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModelBase.cs" />
     <Compile Include="WindowControlBox.cs" />
     <Compile Include="WorldFileViewModel.cs" />
     <Compile Include="WorldPropertiesWindow.xaml.cs">

@@ -9,7 +9,7 @@
         xmlns:data="clr-namespace:TerraMap.Data;assembly=TerraMap.Data"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         WindowState="Maximized" Loaded="OnLoaded"
-        Title="TerraMap" Height="480" Width="800" 
+        Title="TerraMap" Height="480" Width="1024" 
         Icon="Resources/App.ico">
   <Window.DataContext>
     <local:MainWindowViewModel TileName="Gold Chest" Status="Status" Position="3, 300" ProgressValue="100" ProgressMaximum="100" IsLoading="True">
@@ -241,7 +241,19 @@
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
         <TextBlock VerticalAlignment="Center">Worlds:</TextBlock>
         <ComboBox ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
-				SelectionChanged="OnSelectedWorldFileChanged" DropDownOpened="OnWorldsDropDownOpened">
+					SelectionChanged="OnSelectedWorldFileChanged" DropDownOpened="OnWorldsDropDownOpened">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" />
+                <Image Source="Resources/Cloud.png" Width="16" Visibility="{Binding Cloud, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="4,0,0,0" ToolTip="Cloud" />
+              </StackPanel>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TextBlock VerticalAlignment="Center">Players:</TextBlock>
+        <ComboBox ItemsSource="{Binding MapFiles}" SelectedItem="{Binding SelectedMapFile}" 
+					SelectionChanged="OnSelectedMapFileChanged" DropDownOpened="OnMapsDropDownOpened">
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <StackPanel Orientation="Horizontal">
@@ -444,6 +456,8 @@
         <Image x:Name="Map" Source="{Binding WriteableBitmap}"
 						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
         <Image x:Name="Mask" Source="{Binding WriteableBitmapMask}" Opacity="{Binding MaskOpacity}"
+						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
+        <Image x:Name="Fog" Source="{Binding WriteableBitmapFog}" Opacity="{Binding FogOpacity}"
 						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
         <Canvas x:Name="Canvas" Width="360" Height="240">
           <Rectangle x:Name="Indicator" Fill="Transparent" Stroke="Red" StrokeThickness="1" Width="3" Height="3" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
