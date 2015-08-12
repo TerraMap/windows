@@ -1430,9 +1430,9 @@ namespace TerraMap.Data
 						{
 							light = 255;
 						}
-						else if (MapHelper.tileLight != null)
+						else
 						{
-							light = MapHelper.tileLight[x][y];
+							light = MapHelper.GetTileLight(x, y);
 						}
 
 						color = Color.FromArgb((byte)(255 - light), 0, 0, 0);

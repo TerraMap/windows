@@ -986,7 +986,27 @@ namespace TerraMap.Data
       return liquidColors[liquidType];
     }
 
-		public static byte[][] tileLight;
+		private static byte[][] tileLight;
+
+		public static bool IsTileLit(int x, int y)
+		{
+			return GetTileLight(x, y) > 0;
+		}
+
+		public static void ResetTileLight()
+		{
+			tileLight = null;
+		}
+
+    public static byte GetTileLight(int x, int y)
+		{
+			byte light = 0;
+
+			if (tileLight != null)
+				light = tileLight[x][y];
+
+			return light;
+		}
 
 		// Terraria.Map.MapHelper
 		public static void LoadMapVersion2(BinaryReader fileIO, World world)

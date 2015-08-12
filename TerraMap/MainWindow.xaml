@@ -99,15 +99,45 @@
   <DockPanel>
     <Menu DockPanel.Dock="Top" IsMainMenu="True">
       <MenuItem Header="_File">
-        <MenuItem Header="Open World" ItemsSource="{Binding WorldFiles}" SubmenuOpened="OnWorldsDropDownOpened">
+        <MenuItem Header="Open _World" ItemsSource="{Binding WorldFiles}" SubmenuOpened="OnWorldsDropDownOpened">
           <MenuItem.ItemTemplate>
             <DataTemplate>
-              <TextBlock Text="{Binding Name}" ToolTip="{Binding FullName}" />
+              <TextBlock Text="{Binding Name}" ToolTip="{Binding FileInfo.FullName}" />
             </DataTemplate>
           </MenuItem.ItemTemplate>
           <MenuItem.Resources>
             <Style TargetType="MenuItem">
               <EventSetter Event="Click" Handler="OnOpenWorldFile" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Cloud}" Value="True">
+                  <Setter Property="Icon">
+                    <Setter.Value>
+                      <Image Source="Resources/Cloud.png" Width="16" />
+                    </Setter.Value>
+                  </Setter>
+								</DataTrigger>
+							</Style.Triggers>
+            </Style>
+          </MenuItem.Resources>
+        </MenuItem>
+        <MenuItem Header="Open _Player" ItemsSource="{Binding MapFiles}" SubmenuOpened="OnMapsDropDownOpened">
+          <MenuItem.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" ToolTip="{Binding FileInfo.FullName}" />
+            </DataTemplate>
+          </MenuItem.ItemTemplate>
+          <MenuItem.Resources>
+            <Style TargetType="MenuItem">
+              <EventSetter Event="Click" Handler="OnOpenMapFile" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Cloud}" Value="True">
+                  <Setter Property="Icon">
+                    <Setter.Value>
+                      <Image Source="Resources/Cloud.png" Width="16" />
+                    </Setter.Value>
+                  </Setter>
+                </DataTrigger>
+              </Style.Triggers>
             </Style>
           </MenuItem.Resources>
         </MenuItem>

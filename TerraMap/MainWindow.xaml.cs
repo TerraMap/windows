@@ -173,10 +173,12 @@ namespace TerraMap
 				{
 					this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(All Spoilers)" });
 
+					this.viewModel.SelectedMapFile = this.viewModel.MapFiles.FirstOrDefault();
+
 					return;
 				}
 
-				foreach(var mapFile in this.viewModel.World.GetPlayerMapFiles())
+				foreach (var mapFile in this.viewModel.World.GetPlayerMapFiles())
 				{
 					this.viewModel.MapFiles.Add(mapFile);
 				}
@@ -323,7 +325,7 @@ namespace TerraMap
 
 		private void LoadMapFile()
 		{
-			MapHelper.tileLight = null;
+			MapHelper.ResetTileLight();
 
 			if (this.viewModel.SelectedMapFile.FileInfo != null)
 			{
@@ -411,7 +413,7 @@ namespace TerraMap
 			var world = this.viewModel.World;
 			if (world == null)
 				return;
-			
+
 			var start = DateTime.Now;
 
 			this.viewModel.BeginLoading("Updating map");
@@ -431,9 +433,9 @@ namespace TerraMap
 			world.Status = "";
 
 			var elapsed = DateTime.Now - start;
-			
+
 			world.Status = string.Format("Updated fog for {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
-			
+
 			this.viewModel.EndLoading();
 		}
 
@@ -826,6 +828,7 @@ namespace TerraMap
 			this.CheckForUpdates();
 
 			this.LoadWorldFiles();
+			this.LoadMapFiles();
 
 			var staticDataFileInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
 
@@ -1009,16 +1012,8 @@ namespace TerraMap
 
 			string name = world.GetTileName(x, y);
 
-			if (!allSpoilers)
-			{
-				var light = 0;
-
-				if(MapHelper.tileLight != null)
-					light = MapHelper.tileLight[x][y];
-
-				if (light < 128)
-					name = "(No spoilers)";
-			}
+			if (!allSpoilers && !MapHelper.IsTileLit(x, y))
+				name = "(No spoilers)";
 
 			this.viewModel.TileName = name;
 
@@ -1046,16 +1041,8 @@ namespace TerraMap
 					y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
 				return;
 
-			if (!allSpoilers)
-			{
-				var light = 0;
-
-				if (MapHelper.tileLight != null)
-					light = MapHelper.tileLight[x][y];
-
-				if (light < 128)
-					return;
-			}
+			if (!allSpoilers && !MapHelper.IsTileLit(x, y))
+				return;
 
 			var chest = this.viewModel.World.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
 			if (chest != null)
@@ -1107,6 +1094,22 @@ namespace TerraMap
 			await this.Open(worldFile.FileInfo);
 		}
 
+		private void OnOpenMapFile(object sender, RoutedEventArgs e)
+		{
+			if (this.viewModel.IsLoading)
+				return;
+
+			var element = sender as FrameworkElement;
+			if (element == null)
+				return;
+
+			var mapFile = element.DataContext as MapFileViewModel;
+			if (mapFile == null)
+				return;
+
+			this.viewModel.SelectedMapFile = mapFile;
+		}
+
 		private async void OnSelectedWorldFileChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ignoreSelectedWorldFileChanges || this.viewModel.IsLoading || this.viewModel.SelectedWorldFile == null)
@@ -1123,7 +1126,7 @@ namespace TerraMap
 			this.LoadMapFile();
 
 			await this.UpdateFog();
-    }
+		}
 
 		private void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
 		{
