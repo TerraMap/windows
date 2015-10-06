@@ -96,7 +96,7 @@
     <KeyBinding Gesture="Ctrl+8" Command="local:Commands.HighlightSet" CommandParameter="8" />
     <KeyBinding Gesture="Ctrl+9" Command="local:Commands.HighlightSet" CommandParameter="9" />
   </Window.InputBindings>
-  <DockPanel>
+  <DockPanel LastChildFill="True">
     <Menu DockPanel.Dock="Top" IsMainMenu="True">
       <MenuItem Header="_File">
         <MenuItem Header="Open _World" ItemsSource="{Binding WorldFiles}" SubmenuOpened="OnWorldsDropDownOpened">
@@ -115,8 +115,8 @@
                       <Image Source="Resources/Cloud.png" Width="16" />
                     </Setter.Value>
                   </Setter>
-								</DataTrigger>
-							</Style.Triggers>
+                </DataTrigger>
+              </Style.Triggers>
             </Style>
           </MenuItem.Resources>
         </MenuItem>
@@ -481,22 +481,29 @@
       </Border>
     </Popup>
 
-    <ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
-      <Grid x:Name="Grid">
-        <Image x:Name="Map" Source="{Binding WriteableBitmap}"
+    <Grid>
+      <ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
+        <Grid x:Name="Grid">
+          <Image x:Name="Map" Source="{Binding WriteableBitmap}"
 						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
-        <Image x:Name="Mask" Source="{Binding WriteableBitmapMask}" Opacity="{Binding MaskOpacity}"
+          <Image x:Name="Mask" Source="{Binding WriteableBitmapMask}" Opacity="{Binding MaskOpacity}"
 						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
-        <Image x:Name="Fog" Source="{Binding WriteableBitmapFog}" Opacity="{Binding FogOpacity}"
+          <Image x:Name="Fog" Source="{Binding WriteableBitmapFog}" Opacity="{Binding FogOpacity}"
 						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
-        <Canvas x:Name="Canvas" Width="360" Height="240">
-          <Rectangle x:Name="Indicator" Fill="Transparent" Stroke="Red" StrokeThickness="1" Width="3" Height="3" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
-            <Rectangle.RenderTransform>
-              <ScaleTransform />
-            </Rectangle.RenderTransform>
-          </Rectangle>
-        </Canvas>
-      </Grid>
-    </ext:ZoomControl>
+          <Canvas x:Name="Canvas" Width="360" Height="240">
+            <Rectangle x:Name="Indicator" Fill="Transparent" Stroke="Red" StrokeThickness="1" Width="3" Height="3" Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
+              <Rectangle.RenderTransform>
+                <ScaleTransform />
+              </Rectangle.RenderTransform>
+            </Rectangle>
+          </Canvas>
+        </Grid>
+      </ext:ZoomControl>
+      <Border HorizontalAlignment="Center" VerticalAlignment="Center" 
+                 Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                 Padding="4" CornerRadius="4" Visibility="{Binding InstructionsVisibility}">
+        <TextBlock Text="{Binding Instructions}" />
+      </Border>
+    </Grid>
   </DockPanel>
 </Window>

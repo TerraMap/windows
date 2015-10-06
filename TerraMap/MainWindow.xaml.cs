@@ -27,1589 +27,1607 @@ using WPFExtensions.Controls;
 
 namespace TerraMap
 {
-	public partial class MainWindow : Window
-	{
-		#region Variables
+  public partial class MainWindow : Window
+  {
+    #region Variables
 
-		CollectionViewSource tileInfoViewSource;
+    CollectionViewSource tileInfoViewSource;
 
-		MainWindowViewModel viewModel = new MainWindowViewModel();
-		private bool ignoreSelectedWorldFileChanges;
-		private bool ignoreSelectedMapFileChanges;
+    MainWindowViewModel viewModel = new MainWindowViewModel();
+    private bool ignoreSelectedWorldFileChanges;
+    private bool ignoreSelectedMapFileChanges;
 
-		Storyboard indicatorStoryboard;
-		Storyboard highlightStoryboard;
+    Storyboard indicatorStoryboard;
+    Storyboard highlightStoryboard;
 
-		int width, height, stride;
-		byte[] pixels;
-		PixelFormat pixelFormat = PixelFormats.Bgra32;
+    int width, height, stride;
+    byte[] pixels;
+    PixelFormat pixelFormat = PixelFormats.Bgra32;
 
-		byte[] maskPixels;
-		byte[] fogPixels;
+    byte[] maskPixels;
+    byte[] fogPixels;
 
-		bool isChoosingBlocks = false;
-
-		bool allSpoilers = false;
-
-		#endregion
-
-		#region Constructors
-
-		public MainWindow()
-		{
-			InitializeComponent();
-
-			viewModel = (MainWindowViewModel)this.DataContext;
-			viewModel.World = null;
-			viewModel.IsLoading = false;
-			viewModel.IsLoaded = false;
-			viewModel.Status = null;
-			viewModel.Position = null;
-			viewModel.TileName = null;
-
-			indicatorStoryboard = (Storyboard)this.FindResource("indicatorStoryboard");
-			highlightStoryboard = (Storyboard)this.FindResource("highlightStoryboard");
+    bool isChoosingBlocks = false;
+
+    bool allSpoilers = false;
+
+    #endregion
+
+    #region Constructors
+
+    public MainWindow()
+    {
+      InitializeComponent();
+
+      viewModel = (MainWindowViewModel)this.DataContext;
+      viewModel.World = null;
+      viewModel.IsLoading = false;
+      viewModel.IsLoaded = false;
+      viewModel.Status = null;
+      viewModel.Position = null;
+      viewModel.TileName = null;
+
+      indicatorStoryboard = (Storyboard)this.FindResource("indicatorStoryboard");
+      highlightStoryboard = (Storyboard)this.FindResource("highlightStoryboard");
 
-			tileInfoViewSource = (CollectionViewSource)this.FindResource("tileInfoViewSource");
-		}
-
-		#endregion
+      tileInfoViewSource = (CollectionViewSource)this.FindResource("tileInfoViewSource");
+    }
+
+    #endregion
 
-		private void HandleException(Exception ex)
-		{
-			ExceptionWindow.ShowDialog(ex, this);
-		}
+    private void HandleException(Exception ex)
+    {
+      ExceptionWindow.ShowDialog(ex, this);
+    }
 
-		private void LoadWorldFiles()
-		{
-			try
-			{
-				ignoreSelectedWorldFileChanges = true;
+    private void LoadWorldFiles()
+    {
+      try
+      {
+        ignoreSelectedWorldFileChanges = true;
 
-				var currentWorldFile = this.viewModel.SelectedWorldFile;
+        var currentWorldFile = this.viewModel.SelectedWorldFile;
 
-				this.viewModel.WorldFiles.Clear();
+        this.viewModel.WorldFiles.Clear();
 
-				var path = this.GetWorldsPath();
+        var path = this.GetWorldsPath();
 
-				foreach (var filename in Directory.GetFiles(path, "*.wld"))
-				{
-					string name = World.GetWorldName(filename);
-					this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name });
-				}
+        foreach (var filename in Directory.GetFiles(path, "*.wld"))
+        {
+          string name = World.GetWorldName(filename);
+          this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name });
+        }
 
-				var cloudPaths = GetCloudPaths();
+        var cloudPaths = GetCloudPaths();
 
-				foreach (var cloudPath in cloudPaths)
-				{
-					foreach (var filename in Directory.GetFiles(cloudPath, "*.wld"))
-					{
-						string name = World.GetWorldName(filename);
-						this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name, Cloud = true });
-					}
-				}
-
-				if (currentWorldFile != null)
-				{
-					currentWorldFile = this.viewModel.WorldFiles.FirstOrDefault(f => f.FileInfo.FullName == currentWorldFile.FileInfo.FullName);
-
-					this.viewModel.SelectedWorldFile = currentWorldFile;
-				}
-			}
-			finally
-			{
-				ignoreSelectedWorldFileChanges = false;
-			}
-		}
+        foreach (var cloudPath in cloudPaths)
+        {
+          foreach (var filename in Directory.GetFiles(cloudPath, "*.wld"))
+          {
+            string name = World.GetWorldName(filename);
+            this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name, Cloud = true });
+          }
+        }
+
+        if (currentWorldFile != null)
+        {
+          currentWorldFile = this.viewModel.WorldFiles.FirstOrDefault(f => f.FileInfo.FullName == currentWorldFile.FileInfo.FullName);
+
+          this.viewModel.SelectedWorldFile = currentWorldFile;
+        }
+      }
+      finally
+      {
+        ignoreSelectedWorldFileChanges = false;
+      }
+    }
 
-		private IEnumerable<string> GetCloudPaths()
-		{
-			List<string> cloudPaths = new List<string>();
+    private IEnumerable<string> GetCloudPaths()
+    {
+      List<string> cloudPaths = new List<string>();
 
-			string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+      string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-			try
-			{
-				userdataPath = Path.Combine(userdataPath, "Steam");
-				userdataPath = Path.Combine(userdataPath, "userdata");
-
-				if (Directory.Exists(userdataPath))
-				{
-					foreach (var userDir in Directory.GetDirectories(userdataPath))
-					{
-						// Each user could have a Terraria directory
-						var cloudPath = Path.Combine(userDir, "105600");
-						cloudPath = Path.Combine(cloudPath, "remote");
-						cloudPath = Path.Combine(cloudPath, "worlds");
+      try
+      {
+        userdataPath = Path.Combine(userdataPath, "Steam");
+        userdataPath = Path.Combine(userdataPath, "userdata");
+
+        if (Directory.Exists(userdataPath))
+        {
+          foreach (var userDir in Directory.GetDirectories(userdataPath))
+          {
+            // Each user could have a Terraria directory
+            var cloudPath = Path.Combine(userDir, "105600");
+            cloudPath = Path.Combine(cloudPath, "remote");
+            cloudPath = Path.Combine(cloudPath, "worlds");
 
-						if (!Directory.Exists(cloudPath))
-							continue;
+            if (!Directory.Exists(cloudPath))
+              continue;
 
-						cloudPaths.Add(cloudPath);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				HandleException(ex);
-			}
+            cloudPaths.Add(cloudPath);
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        HandleException(ex);
+      }
 
-			return cloudPaths;
-		}
+      return cloudPaths;
+    }
 
-		private void LoadMapFiles()
-		{
-			try
-			{
-				ignoreSelectedMapFileChanges = true;
+    private void LoadMapFiles()
+    {
+      try
+      {
+        ignoreSelectedMapFileChanges = true;
 
-				var currentMapFile = this.viewModel.SelectedMapFile;
+        var currentMapFile = this.viewModel.SelectedMapFile;
 
-				this.viewModel.MapFiles.Clear();
+        this.viewModel.MapFiles.Clear();
 
-				this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(No Spoilers)" });
+        this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(No Spoilers)" });
 
-				if (this.viewModel.World == null || this.viewModel.SelectedWorldFile == null)
-				{
-					this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(All Spoilers)" });
+        if (this.viewModel.World == null || this.viewModel.SelectedWorldFile == null)
+        {
+          this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(All Spoilers)" });
 
-					this.viewModel.SelectedMapFile = this.viewModel.MapFiles.FirstOrDefault();
+          this.viewModel.SelectedMapFile = this.viewModel.MapFiles.FirstOrDefault();
 
-					return;
-				}
+          return;
+        }
 
-				foreach (var mapFile in this.viewModel.World.GetPlayerMapFiles())
-				{
-					this.viewModel.MapFiles.Add(mapFile);
-				}
+        foreach (var mapFile in this.viewModel.World.GetPlayerMapFiles())
+        {
+          this.viewModel.MapFiles.Add(mapFile);
+        }
 
-				this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(All Spoilers)" });
+        this.viewModel.MapFiles.Add(new MapFileViewModel() { FileInfo = null, Name = "(All Spoilers)" });
 
-				if (currentMapFile != null)
-				{
-					currentMapFile = this.viewModel.MapFiles.FirstOrDefault(f => f.Name == currentMapFile.Name);
+        if (currentMapFile != null)
+        {
+          currentMapFile = this.viewModel.MapFiles.FirstOrDefault(f => f.Name == currentMapFile.Name);
 
-					this.viewModel.SelectedMapFile = currentMapFile;
-				}
+          this.viewModel.SelectedMapFile = currentMapFile;
+        }
 
-				if (this.viewModel.SelectedMapFile == null)
-					this.viewModel.SelectedMapFile = this.viewModel.MapFiles.First();
-			}
-			finally
-			{
-				ignoreSelectedMapFileChanges = false;
-			}
-		}
+        if (this.viewModel.SelectedMapFile == null)
+          this.viewModel.SelectedMapFile = this.viewModel.MapFiles.First();
+      }
+      finally
+      {
+        ignoreSelectedMapFileChanges = false;
+      }
+    }
 
-		private string GetWorldsPath()
-		{
-			string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+    private string GetWorldsPath()
+    {
+      string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-			path = Path.Combine(path, "My Games");
-			path = Path.Combine(path, "Terraria");
-			path = Path.Combine(path, "Worlds");
-			return path;
-		}
+      path = Path.Combine(path, "My Games");
+      path = Path.Combine(path, "Terraria");
+      path = Path.Combine(path, "Worlds");
+      return path;
+    }
 
-		private async Task Open()
-		{
-			string path = this.GetWorldsPath();
+    private async Task Open()
+    {
+      string path = this.GetWorldsPath();
 
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "World Files (*.wld)|*.wld|World Backup Files (*.bak)|*.*.bak|All Files (*.*)|*.*";
+      OpenFileDialog dialog = new OpenFileDialog();
+      dialog.Filter = "World Files (*.wld)|*.wld|World Backup Files (*.bak)|*.*.bak|All Files (*.*)|*.*";
 
-			if (Directory.Exists(path))
-				dialog.InitialDirectory = path;
+      if (Directory.Exists(path))
+        dialog.InitialDirectory = path;
 
-			var result = dialog.ShowDialog() ?? false;
-			if (!result)
-				return;
+      var result = dialog.ShowDialog() ?? false;
+      if (!result)
+        return;
 
-			await this.Open(dialog.FileName);
-		}
+      await this.Open(dialog.FileName);
+    }
 
-		private async Task Open(FileInfo fileInfo)
-		{
-			await this.Open(fileInfo.FullName);
-		}
+    private async Task Open(FileInfo fileInfo)
+    {
+      await this.Open(fileInfo.FullName);
+    }
 
-		private async Task Open(string filename)
-		{
-			var start = DateTime.Now;
+    private async Task Open(string filename)
+    {
+      var start = DateTime.Now;
 
-			this.viewModel.TileName = null;
+      this.viewModel.TileName = null;
 
-			this.viewModel.SelectedWorldFile = this.viewModel.WorldFiles.FirstOrDefault(w => w.FileInfo.FullName == filename);
+      this.viewModel.SelectedWorldFile = this.viewModel.WorldFiles.FirstOrDefault(w => w.FileInfo.FullName == filename);
 
-			this.Title = "World Info - " + filename;
+      this.Title = "World Info - " + filename;
 
-			this.viewModel.Filename = filename;
+      this.viewModel.Filename = filename;
 
-			var world = new World();
+      var world = new World();
 
-			world.StaticData = this.viewModel.StaticData;
+      world.StaticData = this.viewModel.StaticData;
 
-			this.viewModel.World = world;
+      this.viewModel.World = world;
 
-			this.viewModel.NPCs.Clear();
+      this.viewModel.NPCs.Clear();
+      
+      this.viewModel.InstructionsVisibility = Visibility.Collapsed;
 
-			this.viewModel.ProgressValue = 0;
-			this.viewModel.BeginLoading("Reading world...");
-			try
-			{
-				var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
-				timer.Start();
+      this.viewModel.ProgressValue = 0;
+      this.viewModel.BeginLoading("Reading world...");
+      try
+      {
+        var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
+        timer.Start();
 
-				await world.ReadAsync(filename);
+        await world.ReadAsync(filename);
 
-				this.Title = "TerraMap - " + world.Name;
+        this.Title = "TerraMap - " + world.Name;
 
-				this.viewModel.TotalTileCount = world.TotalTileCount;
+        this.viewModel.TotalTileCount = world.TotalTileCount;
 
-				this.Grid.Width = world.WorldWidthinTiles;
-				this.Grid.Height = world.WorldHeightinTiles;
+        this.Grid.Width = world.WorldWidthinTiles;
+        this.Grid.Height = world.WorldHeightinTiles;
 
-				this.Canvas.Width = world.WorldWidthinTiles;
-				this.Canvas.Height = world.WorldHeightinTiles;
+        this.Canvas.Width = world.WorldWidthinTiles;
+        this.Canvas.Height = world.WorldHeightinTiles;
 
-				this.LoadMapFiles();
+        this.LoadMapFiles();
 
-				this.LoadMapFile();
+        this.LoadMapFile();
 
-				this.viewModel.IsLoaded = true;
+        this.viewModel.IsLoaded = true;
 
-				world.Status = "Drawing map";
+        world.Status = "Drawing map";
 
-				width = world.WorldWidthinTiles;
-				height = world.WorldHeightinTiles;
-				stride = (width * pixelFormat.BitsPerPixel + 7) / 8;
-				pixels = new byte[stride * height];
-				maskPixels = new byte[stride * height];
-				fogPixels = new byte[stride * height];
+        width = world.WorldWidthinTiles;
+        height = world.WorldHeightinTiles;
+        stride = (width * pixelFormat.BitsPerPixel + 7) / 8;
+        pixels = new byte[stride * height];
+        maskPixels = new byte[stride * height];
+        fogPixels = new byte[stride * height];
 
-				viewModel.WriteableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
-				viewModel.WriteableBitmapMask = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
-				viewModel.WriteableBitmapFog = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+        viewModel.WriteableBitmap = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+        viewModel.WriteableBitmapMask = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
+        viewModel.WriteableBitmapFog = new WriteableBitmap(width, height, 96, 96, pixelFormat, null);
 
-				allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
+        allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
 
-				await world.WritePixelDataAsync(fogPixels, stride, fog: true, allSpoilers: allSpoilers);
+        await world.WritePixelDataAsync(fogPixels, stride, fog: true, allSpoilers: allSpoilers);
 
-				await world.WritePixelDataAsync(pixels, stride);
+        await world.WritePixelDataAsync(pixels, stride);
 
-				var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
+        var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
 
-				if (this.viewModel.IsHighlighting)
-					await world.WritePixelDataAsync(maskPixels, stride, selectedObjectInfoViewModels);
-				else
-					await world.WritePixelDataAsync(maskPixels, stride);
+        if (this.viewModel.IsHighlighting)
+          await world.WritePixelDataAsync(maskPixels, stride, selectedObjectInfoViewModels);
+        else
+          await world.WritePixelDataAsync(maskPixels, stride);
 
-				foreach (var npc in world.NPCs.OrderBy(n => n.Type))
-					viewModel.NPCs.Add(npc);
+        foreach (var npc in world.NPCs.OrderBy(n => n.Type))
+          viewModel.NPCs.Add(npc);
 
-				timer.Stop();
+        timer.Stop();
 
-				this.Update();
+        this.Update();
 
-				world.Status = "";
+        world.Status = "";
 
-				var elapsed = DateTime.Now - start;
+        if (this.viewModel.SelectedMapFile == null || this.viewModel.SelectedMapFile.Name == "(No Spoilers)")
+        {
+          this.viewModel.Instructions = "Please select a player or (All Spoilers) from the Players list.";
+          this.viewModel.InstructionsVisibility = Visibility.Visible;
+        }
 
-				world.Status = world.Status = string.Format("Loaded {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
-			}
-			finally
-			{
-				this.viewModel.EndLoading();
-			}
-		}
+        var elapsed = DateTime.Now - start;
 
-		private void LoadMapFile()
-		{
-			MapHelper.ResetTileLight();
+        world.Status = world.Status = string.Format("Loaded {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+      }
+      finally
+      {
+        this.viewModel.EndLoading();
+      }
+    }
 
-			if (this.viewModel.SelectedMapFile.FileInfo != null)
-			{
-				allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
+    private void LoadMapFile()
+    {
+      MapHelper.ResetTileLight();
 
-				try
-				{
-					using (var stream = new FileStream(this.viewModel.SelectedMapFile.FileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-					{
-						using (var reader = new BinaryReader(stream))
-						{
-							MapHelper.LoadMapVersion2(reader, this.viewModel.World);
-						}
-					}
-				}
-				catch (Exception) { }
-			}
-		}
+      if (this.viewModel.SelectedMapFile == null || this.viewModel.SelectedMapFile.Name == "(No Spoilers)")
+      {
+        this.viewModel.Instructions = "Please select a player or (All Spoilers) from the Players list.";
+        this.viewModel.InstructionsVisibility = Visibility.Visible;
+      }
+      else
+      {
+        this.viewModel.InstructionsVisibility = Visibility.Collapsed;
+      }
 
-		private async Task Refresh()
-		{
-			await this.Open(this.viewModel.Filename);
-		}
+      if (this.viewModel.SelectedMapFile.FileInfo != null)
+      {
+        allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
 
-		private void ShowProperties()
-		{
-			new WorldPropertiesWindow() { DataContext = this.viewModel.World, Owner = this }.Show();
-		}
+        try
+        {
+          using (var stream = new FileStream(this.viewModel.SelectedMapFile.FileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+          {
+            using (var reader = new BinaryReader(stream))
+            {
+              MapHelper.LoadMapVersion2(reader, this.viewModel.World);
+            }
+          }
+        }
+        catch (Exception) { }
+      }
+    }
 
-		private async Task UpdateHighlight()
-		{
-			if (this.viewModel.IsLoading || this.isChoosingBlocks)
-				return;
+    private async Task Refresh()
+    {
+      await this.Open(this.viewModel.Filename);
+    }
 
-			var world = this.viewModel.World;
-			if (world == null)
-				return;
+    private void ShowProperties()
+    {
+      new WorldPropertiesWindow() { DataContext = this.viewModel.World, Owner = this }.Show();
+    }
 
-			//highlightStoryboard.Stop();
+    private async Task UpdateHighlight()
+    {
+      if (this.viewModel.IsLoading || this.isChoosingBlocks)
+        return;
 
-			var start = DateTime.Now;
+      var world = this.viewModel.World;
+      if (world == null)
+        return;
 
-			this.viewModel.BeginLoading("Updating map");
-			this.viewModel.ProgressValue = 0;
+      //highlightStoryboard.Stop();
 
-			var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
-			timer.Start();
+      var start = DateTime.Now;
 
-			var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
+      this.viewModel.BeginLoading("Updating map");
+      this.viewModel.ProgressValue = 0;
 
-			if (this.viewModel.IsHighlighting)
-				await world.WritePixelDataAsync(maskPixels, stride, selectedObjectInfoViewModels);
-			else
-				await world.WritePixelDataAsync(maskPixels, stride);
+      var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
+      timer.Start();
 
-			timer.Stop();
+      var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
 
-			this.Update();
+      if (this.viewModel.IsHighlighting)
+        await world.WritePixelDataAsync(maskPixels, stride, selectedObjectInfoViewModels);
+      else
+        await world.WritePixelDataAsync(maskPixels, stride);
 
-			world.Status = "";
+      timer.Stop();
 
-			var elapsed = DateTime.Now - start;
+      this.Update();
 
-			if (this.viewModel.IsHighlighting)
-				world.Status = string.Format(
-					"Highlighted {0:N0} out of {1:N0} blocks ({2:P0}) in {3:N1} seconds",
-					this.viewModel.HighlightedTileCount,
-					this.viewModel.TotalTileCount,
-					(float)this.viewModel.HighlightedTileCount / (float)this.viewModel.TotalTileCount,
-					elapsed.TotalSeconds);
-			else
-				world.Status = string.Format("Updated {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+      world.Status = "";
 
-			//if (this.viewModel.IsHighlighting)
-			//	highlightStoryboard.Begin();
+      var elapsed = DateTime.Now - start;
 
-			this.viewModel.EndLoading();
-		}
+      if (this.viewModel.IsHighlighting)
+        world.Status = string.Format(
+          "Highlighted {0:N0} out of {1:N0} blocks ({2:P0}) in {3:N1} seconds",
+          this.viewModel.HighlightedTileCount,
+          this.viewModel.TotalTileCount,
+          (float)this.viewModel.HighlightedTileCount / (float)this.viewModel.TotalTileCount,
+          elapsed.TotalSeconds);
+      else
+        world.Status = string.Format("Updated {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
 
-		private async Task UpdateFog()
-		{
-			if (this.viewModel.IsLoading || this.isChoosingBlocks)
-				return;
+      //if (this.viewModel.IsHighlighting)
+      //	highlightStoryboard.Begin();
 
-			var world = this.viewModel.World;
-			if (world == null)
-				return;
+      this.viewModel.EndLoading();
+    }
 
-			var start = DateTime.Now;
+    private async Task UpdateFog()
+    {
+      if (this.viewModel.IsLoading || this.isChoosingBlocks)
+        return;
 
-			this.viewModel.BeginLoading("Updating map");
-			this.viewModel.ProgressValue = 0;
+      var world = this.viewModel.World;
+      if (world == null)
+        return;
 
-			var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
-			timer.Start();
+      var start = DateTime.Now;
 
-			allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
+      this.viewModel.BeginLoading("Updating map");
+      this.viewModel.ProgressValue = 0;
 
-			await world.WritePixelDataAsync(fogPixels, stride, fog: true, allSpoilers: allSpoilers);
+      var timer = new DispatcherTimer(TimeSpan.FromMilliseconds(20), DispatcherPriority.Background, this.OnDispatcherTimerTick, this.Dispatcher);
+      timer.Start();
 
-			timer.Stop();
+      allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
 
-			this.Update();
+      await world.WritePixelDataAsync(fogPixels, stride, fog: true, allSpoilers: allSpoilers);
 
-			world.Status = "";
+      timer.Stop();
 
-			var elapsed = DateTime.Now - start;
+      this.Update();
 
-			world.Status = string.Format("Updated fog for {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+      world.Status = "";
 
-			this.viewModel.EndLoading();
-		}
+      var elapsed = DateTime.Now - start;
 
-		private void Update()
-		{
-			this.viewModel.Status = viewModel.World.Status;
-			this.viewModel.ProgressMaximum = viewModel.World.ProgressMaximum;
-			this.viewModel.ProgressValue = viewModel.World.ProgressValue;
-			this.viewModel.HighlightedTileCount = viewModel.World.HighlightedTileCount;
+      world.Status = string.Format("Updated fog for {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
 
-			Int32Rect rect;
+      this.viewModel.EndLoading();
+    }
 
-			while (viewModel.World.UpdatedRectangles.TryDequeue(out rect))
-			{
-				var offset = rect.Y * width * 4;
+    private void Update()
+    {
+      this.viewModel.Status = viewModel.World.Status;
+      this.viewModel.ProgressMaximum = viewModel.World.ProgressMaximum;
+      this.viewModel.ProgressValue = viewModel.World.ProgressValue;
+      this.viewModel.HighlightedTileCount = viewModel.World.HighlightedTileCount;
 
-				viewModel.WriteableBitmapFog.WritePixels(rect, fogPixels, stride, offset);
-				viewModel.WriteableBitmap.WritePixels(rect, pixels, stride, offset);
-				viewModel.WriteableBitmapMask.WritePixels(rect, maskPixels, stride, offset);
-			}
-		}
+      Int32Rect rect;
 
-		private void UpdateAll()
-		{
-			var rect = new Int32Rect(0, 0, this.width, this.height);
-			viewModel.WriteableBitmap.WritePixels(rect, pixels, stride, 0);
-		}
+      while (viewModel.World.UpdatedRectangles.TryDequeue(out rect))
+      {
+        var offset = rect.Y * width * 4;
 
-		private void Save()
-		{
-			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.Filter = "PNG Images (*.png)|*.png";
-			var result = dialog.ShowDialog() ?? false;
-			if (!result)
-				return;
+        viewModel.WriteableBitmapFog.WritePixels(rect, fogPixels, stride, offset);
+        viewModel.WriteableBitmap.WritePixels(rect, pixels, stride, offset);
+        viewModel.WriteableBitmapMask.WritePixels(rect, maskPixels, stride, offset);
+      }
+    }
 
-			this.Save(dialog.FileName);
-		}
+    private void UpdateAll()
+    {
+      var rect = new Int32Rect(0, 0, this.width, this.height);
+      viewModel.WriteableBitmap.WritePixels(rect, pixels, stride, 0);
+    }
 
-		private void Save(string filename)
-		{
-			FileInfo fileInfo = new FileInfo(filename);
-			if (fileInfo.Exists && fileInfo.Extension == ".wld")
-			{
-				MessageBox.Show(this, "I'm sorry, Dave. I'm afraid I can't do that.\r\n\r\nYou don't want me overwriting your .wld file.  Please make sure to specify a filename that ends with png.  :)", "TerraMap");
-				return;
-			}
+    private void Save()
+    {
+      SaveFileDialog dialog = new SaveFileDialog();
+      dialog.Filter = "PNG Images (*.png)|*.png";
+      var result = dialog.ShowDialog() ?? false;
+      if (!result)
+        return;
 
-			var bitmap = this.viewModel.WriteableBitmap;
-			var mask = this.viewModel.WriteableBitmapMask;
+      this.Save(dialog.FileName);
+    }
 
-			var output = BitmapFactory.New(bitmap.PixelWidth, bitmap.PixelHeight);
+    private void Save(string filename)
+    {
+      FileInfo fileInfo = new FileInfo(filename);
+      if (fileInfo.Exists && fileInfo.Extension == ".wld")
+      {
+        MessageBox.Show(this, "I'm sorry, Dave. I'm afraid I can't do that.\r\n\r\nYou don't want me overwriting your .wld file.  Please make sure to specify a filename that ends with png.  :)", "TerraMap");
+        return;
+      }
 
-			var rect = new Rect(0, 0, bitmap.PixelWidth, bitmap.PixelHeight);
-			var point = new Point(0, 0);
+      var bitmap = this.viewModel.WriteableBitmap;
+      var mask = this.viewModel.WriteableBitmapMask;
 
-			output.Blit(rect, bitmap, rect);
+      var output = BitmapFactory.New(bitmap.PixelWidth, bitmap.PixelHeight);
 
-			byte alpha = (byte)(255 * this.viewModel.MaskOpacity);
+      var rect = new Rect(0, 0, bitmap.PixelWidth, bitmap.PixelHeight);
+      var point = new Point(0, 0);
 
-			mask.ForEach((x, y, color) =>
-			{
-				if (color == Colors.Black)
-					return Color.FromArgb(alpha, color.R, color.G, color.B);
-				else
-					return color;
-			});
+      output.Blit(rect, bitmap, rect);
 
-			output.Blit(rect, mask, rect, WriteableBitmapExtensions.BlendMode.Alpha);
+      byte alpha = (byte)(255 * this.viewModel.MaskOpacity);
 
-			using (var stream = new FileStream(filename, FileMode.Create))
-			{
-				var encoder = new PngBitmapEncoder();
-				encoder.Frames.Add(BitmapFrame.Create(output));
-				encoder.Save(stream);
-				stream.Close();
-			}
-		}
+      mask.ForEach((x, y, color) =>
+      {
+        if (color == Colors.Black)
+          return Color.FromArgb(alpha, color.R, color.G, color.B);
+        else
+          return color;
+      });
 
-		private void ClearCurrentTileHit()
-		{
-			this.viewModel.CurrentTileHitTestInfo = null;
+      output.Blit(rect, mask, rect, WriteableBitmapExtensions.BlendMode.Alpha);
 
-			this.Indicator.Visibility = Visibility.Collapsed;
-		}
+      using (var stream = new FileStream(filename, FileMode.Create))
+      {
+        var encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(output));
+        encoder.Save(stream);
+        stream.Close();
+      }
+    }
 
-		private void NavigateToSpawn()
-		{
-			this.NavigateTo(this.viewModel.World.SpawnX, this.viewModel.World.SpawnY);
-		}
+    private void ClearCurrentTileHit()
+    {
+      this.viewModel.CurrentTileHitTestInfo = null;
 
-		private void NavigateToDungeon()
-		{
-			this.NavigateTo(this.viewModel.World.DungeonX, this.viewModel.World.DungeonY);
-		}
+      this.Indicator.Visibility = Visibility.Collapsed;
+    }
 
-		private void NavigateToNpc(NPC npc)
-		{
-			this.NavigateTo(npc.X / 16, npc.Y / 16);
-		}
+    private void NavigateToSpawn()
+    {
+      this.NavigateTo(this.viewModel.World.SpawnX, this.viewModel.World.SpawnY);
+    }
 
-		private void NavigateTo(int x, int y)
-		{
-			this.zoomControl.TranslateX = (-x + this.zoomControl.ActualWidth / 2) * this.zoomControl.Zoom;
-			this.zoomControl.TranslateY = (-y + this.zoomControl.ActualHeight / 2) * this.zoomControl.Zoom;
-		}
+    private void NavigateToDungeon()
+    {
+      this.NavigateTo(this.viewModel.World.DungeonX, this.viewModel.World.DungeonY);
+    }
 
-		private void NavigateTo(float x, float y)
-		{
-			this.zoomControl.TranslateX = (-x + this.zoomControl.ActualWidth / 2) * this.zoomControl.Zoom;
-			this.zoomControl.TranslateY = (-y + this.zoomControl.ActualHeight / 2) * this.zoomControl.Zoom;
-		}
+    private void NavigateToNpc(NPC npc)
+    {
+      this.NavigateTo(npc.X / 16, npc.Y / 16);
+    }
 
-		private async Task FindTile(SearchDirection direction)
-		{
-			this.viewModel.BeginLoading("Finding tile...");
+    private void NavigateTo(int x, int y)
+    {
+      this.zoomControl.TranslateX = (-x + this.zoomControl.ActualWidth / 2) * this.zoomControl.Zoom;
+      this.zoomControl.TranslateY = (-y + this.zoomControl.ActualHeight / 2) * this.zoomControl.Zoom;
+    }
 
-			TileHitTestInfo tileHitTestInfo = null;
+    private void NavigateTo(float x, float y)
+    {
+      this.zoomControl.TranslateX = (-x + this.zoomControl.ActualWidth / 2) * this.zoomControl.Zoom;
+      this.zoomControl.TranslateY = (-y + this.zoomControl.ActualHeight / 2) * this.zoomControl.Zoom;
+    }
 
-			var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
+    private async Task FindTile(SearchDirection direction)
+    {
+      this.viewModel.BeginLoading("Finding tile...");
 
-			if (direction == SearchDirection.Forwards)
-			{
-				tileHitTestInfo = await this.FindNextTileAsync(selectedObjectInfoViewModels, start: this.viewModel.CurrentTileHitTestInfo);
-				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindNextTileAsync(selectedObjectInfoViewModels, end: this.viewModel.CurrentTileHitTestInfo);
-			}
-			else
-			{
-				tileHitTestInfo = await this.FindPreviousTileAsync(selectedObjectInfoViewModels, start: this.viewModel.CurrentTileHitTestInfo);
-				if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
-					tileHitTestInfo = await this.FindPreviousTileAsync(selectedObjectInfoViewModels, end: this.viewModel.CurrentTileHitTestInfo);
-			}
+      TileHitTestInfo tileHitTestInfo = null;
 
-			this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
+      var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
 
-			this.viewModel.EndLoading();
+      if (direction == SearchDirection.Forwards)
+      {
+        tileHitTestInfo = await this.FindNextTileAsync(selectedObjectInfoViewModels, start: this.viewModel.CurrentTileHitTestInfo);
+        if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
+          tileHitTestInfo = await this.FindNextTileAsync(selectedObjectInfoViewModels, end: this.viewModel.CurrentTileHitTestInfo);
+      }
+      else
+      {
+        tileHitTestInfo = await this.FindPreviousTileAsync(selectedObjectInfoViewModels, start: this.viewModel.CurrentTileHitTestInfo);
+        if (tileHitTestInfo == null && this.viewModel.CurrentTileHitTestInfo != null)
+          tileHitTestInfo = await this.FindPreviousTileAsync(selectedObjectInfoViewModels, end: this.viewModel.CurrentTileHitTestInfo);
+      }
 
-			if (tileHitTestInfo == null)
-			{
-				this.Indicator.Visibility = Visibility.Collapsed;
-				return;
-			}
+      this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
 
-			this.Indicator.Visibility = Visibility.Visible;
-			Canvas.SetLeft(this.Indicator, tileHitTestInfo.X - 1);
-			Canvas.SetTop(this.Indicator, tileHitTestInfo.Y - 1);
+      this.viewModel.EndLoading();
 
-			indicatorStoryboard.Begin();
+      if (tileHitTestInfo == null)
+      {
+        this.Indicator.Visibility = Visibility.Collapsed;
+        return;
+      }
 
-			if (this.zoomControl.Zoom < 1)
-				this.zoomControl.Zoom = 1;
+      this.Indicator.Visibility = Visibility.Visible;
+      Canvas.SetLeft(this.Indicator, tileHitTestInfo.X - 1);
+      Canvas.SetTop(this.Indicator, tileHitTestInfo.Y - 1);
 
-			this.zoomControl.Mode = ZoomControlModes.Custom;
+      indicatorStoryboard.Begin();
 
-			this.NavigateTo(tileHitTestInfo.X, tileHitTestInfo.Y);
-		}
+      if (this.zoomControl.Zoom < 1)
+        this.zoomControl.Zoom = 1;
 
-		private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
-		{
-			return Task.Factory.StartNew<TileHitTestInfo>(() =>
-			{
-				return this.FindPreviousTile(targetObjectTypes, start, end);
-			});
-		}
+      this.zoomControl.Mode = ZoomControlModes.Custom;
 
-		private TileHitTestInfo FindPreviousTile(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
-		{
-			Tile matchingTile = null;
-			int tileX = 0;
-			int tileY = 0;
+      this.NavigateTo(tileHitTestInfo.X, tileHitTestInfo.Y);
+    }
 
-			bool foundStartTile = false;
+    private Task<TileHitTestInfo> FindPreviousTileAsync(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
+    {
+      return Task.Factory.StartNew<TileHitTestInfo>(() =>
+      {
+        return this.FindPreviousTile(targetObjectTypes, start, end);
+      });
+    }
 
-			int startX = this.viewModel.World.WorldWidthinTiles - 1;
-			int startY = this.viewModel.World.WorldHeightinTiles - 1;
+    private TileHitTestInfo FindPreviousTile(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
+    {
+      Tile matchingTile = null;
+      int tileX = 0;
+      int tileY = 0;
 
-			if (start != null)
-			{
-				startX = start.X;
-				startY = start.Y;
-			}
+      bool foundStartTile = false;
 
-			this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
-			this.viewModel.ProgressValue = this.viewModel.World.WorldHeightinTiles * (startX - 1) + startY;
+      int startX = this.viewModel.World.WorldWidthinTiles - 1;
+      int startY = this.viewModel.World.WorldHeightinTiles - 1;
 
-			for (int x = startX; x > -1; x--)
-			{
-				for (int y = startY; y > -1; y--)
-				{
-					if (end != null && end.X == x && end.Y == y)
-						return null;
+      if (start != null)
+      {
+        startX = start.X;
+        startY = start.Y;
+      }
 
-					var tile = this.viewModel.World.Tiles[x, y];
+      this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
+      this.viewModel.ProgressValue = this.viewModel.World.WorldHeightinTiles * (startX - 1) + startY;
 
-					if (start != null && !foundStartTile)
-					{
-						if (tile == start.Tile)
-							foundStartTile = true;
+      for (int x = startX; x > -1; x--)
+      {
+        for (int y = startY; y > -1; y--)
+        {
+          if (end != null && end.X == x && end.Y == y)
+            return null;
 
-						continue;
-					}
+          var tile = this.viewModel.World.Tiles[x, y];
 
-					if (start != null && tile == start.Tile)
-						continue;
+          if (start != null && !foundStartTile)
+          {
+            if (tile == start.Tile)
+              foundStartTile = true;
 
-					if (this.viewModel.World.IsTileMatch(targetObjectTypes, x, y, tile, start))
-					{
-						tileX = x;
-						tileY = y;
-						matchingTile = tile;
-						break;
-					}
-				}
+            continue;
+          }
 
-				startY = this.viewModel.World.WorldHeightinTiles - 1;
+          if (start != null && tile == start.Tile)
+            continue;
 
-				if (matchingTile != null)
-					break;
+          if (this.viewModel.World.IsTileMatch(targetObjectTypes, x, y, tile, start))
+          {
+            tileX = x;
+            tileY = y;
+            matchingTile = tile;
+            break;
+          }
+        }
 
-				this.viewModel.ProgressValue -= this.viewModel.World.WorldHeightinTiles;
-			}
+        startY = this.viewModel.World.WorldHeightinTiles - 1;
 
-			if (matchingTile == null)
-				return null;
+        if (matchingTile != null)
+          break;
 
-			return new TileHitTestInfo(matchingTile, tileX, tileY);
-		}
+        this.viewModel.ProgressValue -= this.viewModel.World.WorldHeightinTiles;
+      }
 
-		private Task<TileHitTestInfo> FindNextTileAsync(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
-		{
-			return Task.Factory.StartNew<TileHitTestInfo>(() =>
-			{
-				return this.FindNextTile(targetObjectTypes, start, end);
-			});
-		}
+      if (matchingTile == null)
+        return null;
 
-		private TileHitTestInfo FindNextTile(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
-		{
-			Tile matchingTile = null;
-			int tileX = 0;
-			int tileY = 0;
+      return new TileHitTestInfo(matchingTile, tileX, tileY);
+    }
 
-			bool foundStartTile = false;
+    private Task<TileHitTestInfo> FindNextTileAsync(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
+    {
+      return Task.Factory.StartNew<TileHitTestInfo>(() =>
+      {
+        return this.FindNextTile(targetObjectTypes, start, end);
+      });
+    }
 
-			int startX = 0;
-			int startY = 0;
+    private TileHitTestInfo FindNextTile(ObjectInfoViewModel[] targetObjectTypes, TileHitTestInfo start = null, TileHitTestInfo end = null)
+    {
+      Tile matchingTile = null;
+      int tileX = 0;
+      int tileY = 0;
 
-			if (start != null)
-			{
-				startX = start.X;
-				startY = start.Y;
-			}
+      bool foundStartTile = false;
 
-			this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
-			this.viewModel.ProgressValue = this.viewModel.World.WorldHeightinTiles * (startX - 1) + startY;
+      int startX = 0;
+      int startY = 0;
 
-			for (int x = startX; x < this.viewModel.World.WorldWidthinTiles; x++)
-			{
-				for (int y = startY; y < this.viewModel.World.WorldHeightinTiles; y++)
-				{
-					if (end != null && end.X == x && end.Y == y)
-						return null;
+      if (start != null)
+      {
+        startX = start.X;
+        startY = start.Y;
+      }
 
-					var tile = this.viewModel.World.Tiles[x, y];
+      this.viewModel.ProgressMaximum = this.viewModel.TotalTileCount;
+      this.viewModel.ProgressValue = this.viewModel.World.WorldHeightinTiles * (startX - 1) + startY;
 
-					if (start != null && !foundStartTile)
-					{
-						if (tile == start.Tile)
-							foundStartTile = true;
+      for (int x = startX; x < this.viewModel.World.WorldWidthinTiles; x++)
+      {
+        for (int y = startY; y < this.viewModel.World.WorldHeightinTiles; y++)
+        {
+          if (end != null && end.X == x && end.Y == y)
+            return null;
 
-						continue;
-					}
+          var tile = this.viewModel.World.Tiles[x, y];
 
-					if (start != null && tile == start.Tile)
-						continue;
+          if (start != null && !foundStartTile)
+          {
+            if (tile == start.Tile)
+              foundStartTile = true;
+
+            continue;
+          }
 
-					if (this.viewModel.World.IsTileMatch(targetObjectTypes, x, y, tile, start))
-					{
-						tileX = x;
-						tileY = y;
-						matchingTile = tile;
-						break;
-					}
-				}
+          if (start != null && tile == start.Tile)
+            continue;
 
-				startY = 0;
+          if (this.viewModel.World.IsTileMatch(targetObjectTypes, x, y, tile, start))
+          {
+            tileX = x;
+            tileY = y;
+            matchingTile = tile;
+            break;
+          }
+        }
 
-				if (matchingTile != null)
-					break;
+        startY = 0;
 
-				this.viewModel.ProgressValue += this.viewModel.World.WorldHeightinTiles;
+        if (matchingTile != null)
+          break;
 
-				this.viewModel.World.Status = string.Format("Checking tile {0:N0} of {1:N0} ({2:P0})...", this.viewModel.ProgressValue, this.viewModel.ProgressMaximum, (float)this.viewModel.ProgressValue / (float)this.viewModel.ProgressMaximum);
-			}
+        this.viewModel.ProgressValue += this.viewModel.World.WorldHeightinTiles;
 
-			if (matchingTile == null)
-				return null;
+        this.viewModel.World.Status = string.Format("Checking tile {0:N0} of {1:N0} ({2:P0})...", this.viewModel.ProgressValue, this.viewModel.ProgressMaximum, (float)this.viewModel.ProgressValue / (float)this.viewModel.ProgressMaximum);
+      }
 
-			return new TileHitTestInfo(matchingTile, tileX, tileY);
-		}
+      if (matchingTile == null)
+        return null;
 
-		private async Task ChooseTileInfo()
-		{
-			try
-			{
-				this.isChoosingBlocks = true;
+      return new TileHitTestInfo(matchingTile, tileX, tileY);
+    }
 
-				var newViewModel = new MainWindowViewModel();
-				newViewModel.ObjectInfoViewModels = this.viewModel.ObjectInfoViewModels;
+    private async Task ChooseTileInfo()
+    {
+      try
+      {
+        this.isChoosingBlocks = true;
 
-				var window = new TileSelectionWindow(this);
-				window.DataContext = newViewModel;
+        var newViewModel = new MainWindowViewModel();
+        newViewModel.ObjectInfoViewModels = this.viewModel.ObjectInfoViewModels;
 
-				var result = window.ShowDialog() ?? false;
-				if (!result)
-				{
-					this.isChoosingBlocks = false;
+        var window = new TileSelectionWindow(this);
+        window.DataContext = newViewModel;
 
-					return;
-				}
+        var result = window.ShowDialog() ?? false;
+        if (!result)
+        {
+          this.isChoosingBlocks = false;
 
-				this.isChoosingBlocks = false;
+          return;
+        }
 
-				if (this.viewModel.IsHighlighting)
-					await this.UpdateHighlight();
-			}
-			finally
-			{
-				this.isChoosingBlocks = false;
-			}
-		}
+        this.isChoosingBlocks = false;
 
-		private void CheckForUpdates(bool isUserInitiated = false)
-		{
-			try
-			{
-				this.viewModel.IsCheckingForUpdate = true;
-				this.viewModel.UpdateVisibility = Visibility.Collapsed;
-				this.viewModel.NewRelease = null;
+        if (this.viewModel.IsHighlighting)
+          await this.UpdateHighlight();
+      }
+      finally
+      {
+        this.isChoosingBlocks = false;
+      }
+    }
 
-				var updatesUrl = @"https://terramap.codeplex.com/project/feeds/rss?ProjectRSSFeed=codeplex%3a%2f%2frelease%2fterramap";
-				var updatesUri = new Uri(updatesUrl);
+    private void CheckForUpdates(bool isUserInitiated = false)
+    {
+      try
+      {
+        this.viewModel.IsCheckingForUpdate = true;
+        this.viewModel.UpdateVisibility = Visibility.Collapsed;
+        this.viewModel.NewRelease = null;
 
-				var webClient = new WebClient();
-				webClient.OpenReadCompleted += OnCheckForUpdatesComplete;
-				webClient.OpenReadAsync(updatesUri, isUserInitiated);
-			}
-			catch (Exception ex)
-			{
-				if (isUserInitiated)
-				{
-					ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
-				}
-				else
-				{
-					Debug.WriteLine(ex);
-				}
-			}
-		}
+        var updatesUrl = @"https://terramap.codeplex.com/project/feeds/rss?ProjectRSSFeed=codeplex%3a%2f%2frelease%2fterramap";
+        var updatesUri = new Uri(updatesUrl);
 
-		private void SetIsSelected(bool isSelected)
-		{
-			if (tileInfoViewSource == null || tileInfoViewSource.View == null)
-				return;
+        var webClient = new WebClient();
+        webClient.OpenReadCompleted += OnCheckForUpdatesComplete;
+        webClient.OpenReadAsync(updatesUri, isUserInitiated);
+      }
+      catch (Exception ex)
+      {
+        if (isUserInitiated)
+        {
+          ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
+        }
+        else
+        {
+          Debug.WriteLine(ex);
+        }
+      }
+    }
 
-			foreach (var item in tileInfoViewSource.View.OfType<ObjectInfoViewModel>())
-			{
-				item.IsSelected = isSelected;
-			}
-		}
+    private void SetIsSelected(bool isSelected)
+    {
+      if (tileInfoViewSource == null || tileInfoViewSource.View == null)
+        return;
 
-		private async Task HighlightSet(ObjectInfoSetViewModel objectInfoSetViewModel)
-		{
-			this.SetIsSelected(false);
+      foreach (var item in tileInfoViewSource.View.OfType<ObjectInfoViewModel>())
+      {
+        item.IsSelected = isSelected;
+      }
+    }
 
-			objectInfoSetViewModel.IsSelected = true;
+    private async Task HighlightSet(ObjectInfoSetViewModel objectInfoSetViewModel)
+    {
+      this.SetIsSelected(false);
 
-			this.CheckObjectInfoSet(objectInfoSetViewModel);
+      objectInfoSetViewModel.IsSelected = true;
 
-			this.viewModel.IsHighlighting = true;
+      this.CheckObjectInfoSet(objectInfoSetViewModel);
 
-			await this.UpdateHighlight();
-		}
+      this.viewModel.IsHighlighting = true;
 
-		#region Event Handlers
+      await this.UpdateHighlight();
+    }
 
-		private async void OnLoaded(object sender, RoutedEventArgs e)
-		{
-			this.CheckForUpdates();
+    #region Event Handlers
 
-			this.LoadWorldFiles();
-			this.LoadMapFiles();
+    private async void OnLoaded(object sender, RoutedEventArgs e)
+    {
+      this.CheckForUpdates();
 
-			var staticDataFileInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
+      this.LoadWorldFiles();
+      this.LoadMapFiles();
 
-			string staticDataFilename = Path.Combine(staticDataFileInfo.DirectoryName, "tiles.xml");
+      var staticDataFileInfo = new FileInfo(Assembly.GetExecutingAssembly().Location);
 
-			var staticData = await StaticData.ReadAsync(staticDataFilename);
+      string staticDataFilename = Path.Combine(staticDataFileInfo.DirectoryName, "tiles.xml");
 
-			this.viewModel.StaticData = staticData;
-
-			this.viewModel.ObjectInfoViewModels = new ObservableCollection<ObjectInfoViewModel>();
-
-			// load item viewmodels
-			foreach (var itemInfo in staticData.ItemInfos.Values.Where(i => !string.IsNullOrEmpty(i.Name)))
-				this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { ItemInfo = itemInfo, Name = itemInfo.Name });
-
-			// load tile viewmodels
-			foreach (var tileInfo in staticData.TileInfos)
-			{
-				if (!string.IsNullOrEmpty(tileInfo.Name))
-				{
-					this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = tileInfo, Name = tileInfo.Name });
-				}
-
-				foreach (var variant in tileInfo.Variants)
-				{
-					string name = variant.Name;
-
-					var variantViewModel = new ObjectInfoViewModel() { TileInfo = variant, Name = name };
-
-					var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name && v.Type == "Tile");
-
-					if (existingVariantViewModel != null)
-					{
-						if (name != tileInfo.Name)
-							variantViewModel.ParentName = tileInfo.Name;
-					}
-
-					if (!string.IsNullOrEmpty(name))
-					{
-						this.viewModel.ObjectInfoViewModels.Add(variantViewModel);
-					}
-				}
-			}
-
-			this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Red Wire", IsRedWire = true });
-			this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Green Wire", IsGreenWire = true });
-			this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Blue Wire", IsBlueWire = true });
-
-			// load wall viewmodels
-			foreach (var wallInfo in staticData.WallInfos)
-			{
-				var existingObjectInfo = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == wallInfo.Name && v.Type == "Wall");
-
-				if (existingObjectInfo == null)
-				{
-					if (!string.IsNullOrEmpty(wallInfo.Name))
-					{
-						this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { WallInfo = wallInfo, Name = wallInfo.Name });
-					}
-				}
-				else
-				{
-					existingObjectInfo.WallInfo = wallInfo;
-				}
-			}
-
-			// load tile sets
-			string tileSetsFilename = Path.Combine(staticDataFileInfo.DirectoryName, "sets.xml");
-
-			viewModel.SetsFilename = tileSetsFilename;
-
-			// if the user has not created their own customized sets.xml file, load the default one we ship with
-			if (!System.IO.File.Exists(tileSetsFilename))
-				tileSetsFilename = Path.Combine(staticDataFileInfo.DirectoryName, "sets-default.xml");
-
-			viewModel.Sets = new ObservableCollection<ObjectInfoSetViewModel>();
-
-			var sets = await Set.ReadAsync(tileSetsFilename);
-
-			int number = 1;
-
-			foreach (var set in sets)
-			{
-				var setViewModel = new ObjectInfoSetViewModel() { Name = set.Name };
-
-				foreach (var tileInfo in set.TileInfos)
-				{
-					if (string.IsNullOrWhiteSpace(tileInfo.Name))
-					{
-						foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.TileInfo != null && o.TileInfo.Id == tileInfo.Id))
-							setViewModel.ObjectInfoViewModels.Add(objectInfo);
-					}
-					else
-					{
-						foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.TileInfo != null && o.TileInfo.Name == tileInfo.Name))
-							setViewModel.ObjectInfoViewModels.Add(objectInfo);
-					}
-				}
-
-				foreach (var wallInfo in set.WallInfos)
-				{
-					if (string.IsNullOrWhiteSpace(wallInfo.Name))
-					{
-						foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.WallInfo.Id == wallInfo.Id))
-							setViewModel.ObjectInfoViewModels.Add(objectInfo);
-					}
-					else
-					{
-						foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.WallInfo.Name == wallInfo.Name))
-							setViewModel.ObjectInfoViewModels.Add(objectInfo);
-					}
-				}
-
-				foreach (var itemInfo in set.ItemInfos)
-				{
-					if (string.IsNullOrWhiteSpace(itemInfo.Name))
-					{
-						foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.ItemInfo != null && o.ItemInfo.Id == itemInfo.Id))
-							setViewModel.ObjectInfoViewModels.Add(objectInfo);
-					}
-					else
-					{
-						foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.ItemInfo != null && o.ItemInfo.Name == itemInfo.Name))
-							setViewModel.ObjectInfoViewModels.Add(objectInfo);
-					}
-				}
-
-				this.viewModel.ObjectInfoViewModels.Add(setViewModel);
-
-				if (number < 10)
-					setViewModel.InputGestureText = "Ctrl+" + number;
-
-				this.viewModel.Sets.Add(setViewModel);
-
-				number++;
-			}
-
-			var args = App.Current.Properties["Args"] as string[];
-			if (args != null && args.Length > 0)
-			{
-				string filename = args[0];
-
-				var uri = new Uri(filename);
-				filename = uri.LocalPath;
-
-				await this.Open(filename);
-			}
-		}
-
-		private void OnDispatcherTimerTick(object sender, EventArgs e)
-		{
-			this.Update();
-		}
-
-		private async void OnSelectedTileInfoChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (this.viewModel.IsLoading)
-				return;
-
-			if (this.viewModel.IsHighlighting)
-				await this.UpdateHighlight();
-		}
-
-		private void OnZoomControlMouseMove(object sender, MouseEventArgs e)
-		{
-			if (this.viewModel.IsLoading || !this.viewModel.IsLoaded)
-				return;
-
-			var world = this.viewModel.World;
-			if (world == null)
-				return;
-
-			var position = e.GetPosition(this.Canvas);
-
-			var x = (int)position.X;
-			var y = (int)position.Y;
-
-			if (x < 0 || x >= this.viewModel.World.WorldWidthinTiles ||
-					y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
-				return;
-
-			string name = world.GetTileName(x, y);
-
-			if (!allSpoilers && !MapHelper.IsTileLit(x, y))
-				name = "(No spoilers)";
-
-			this.viewModel.TileName = name;
-
-			if (string.IsNullOrEmpty(name))
-				this.viewModel.Position = null;
-			else
-				this.viewModel.Position = string.Format("{0}, {1}", x, y);
-		}
-
-		private void OnZoomControlMouseRightButtonUp(object sender, MouseButtonEventArgs e)
-		{
-			if (this.viewModel.IsLoading || !this.viewModel.IsLoaded)
-				return;
-
-			var world = this.viewModel.World;
-			if (world == null)
-				return;
-
-			var position = e.GetPosition(this.Canvas);
-
-			var x = (int)position.X;
-			var y = (int)position.Y;
-
-			if (x < 0 || x >= this.viewModel.World.WorldWidthinTiles ||
-					y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
-				return;
-
-			if (!allSpoilers && !MapHelper.IsTileLit(x, y))
-				return;
-
-			var chest = this.viewModel.World.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
-			if (chest != null)
-			{
-				var itemNames = chest.Items.Select(i =>
-						{
-							if (i.Count > 1)
-								return string.Concat(i.Name, " (", i.Count, ")");
-							else
-								return i.Name;
-						}).ToArray();
-
-				this.viewModel.CurrentChestItemNames = itemNames;
-
-				this.popup.IsOpen = true;
-			}
-
-			var sign = this.viewModel.World.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
-			if (sign != null)
-			{
-				this.viewModel.CurrentChestItemNames = new string[] { sign.Text };
-				this.popup.IsOpen = true;
-			}
-
-			var tile = this.viewModel.World.Tiles[x, y];
-
-			var tileHitTestInfo = new TileHitTestInfo(tile, x, y);
-
-			this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
-
-			this.Indicator.Visibility = Visibility.Visible;
-			Canvas.SetLeft(this.Indicator, tileHitTestInfo.X - 1);
-			Canvas.SetTop(this.Indicator, tileHitTestInfo.Y - 1);
-		}
-
-		private async void OnOpenWorldFile(object sender, RoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoading)
-				return;
-
-			var element = sender as FrameworkElement;
-			if (element == null)
-				return;
-
-			var worldFile = element.DataContext as WorldFileViewModel;
-			if (worldFile == null)
-				return;
-
-			await this.Open(worldFile.FileInfo);
-		}
-
-		private void OnOpenMapFile(object sender, RoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoading)
-				return;
-
-			var element = sender as FrameworkElement;
-			if (element == null)
-				return;
-
-			var mapFile = element.DataContext as MapFileViewModel;
-			if (mapFile == null)
-				return;
-
-			this.viewModel.SelectedMapFile = mapFile;
-		}
-
-		private async void OnSelectedWorldFileChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ignoreSelectedWorldFileChanges || this.viewModel.IsLoading || this.viewModel.SelectedWorldFile == null)
-				return;
-
-			await this.Open(this.viewModel.SelectedWorldFile.FileInfo);
-		}
-
-		private async void OnSelectedMapFileChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (ignoreSelectedMapFileChanges || this.viewModel.IsLoading || this.viewModel.SelectedMapFile == null)
-				return;
-
-			this.LoadMapFile();
-
-			await this.UpdateFog();
-		}
-
-		private void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
-		{
-			this.LoadWorldFiles();
-		}
-
-		private void OnWorldsDropDownOpened(object sender, EventArgs e)
-		{
-			this.LoadWorldFiles();
-		}
-
-		private void OnMapsDropDownOpened(object sender, EventArgs e)
-		{
-			this.LoadMapFiles();
-		}
-
-		private async void OnToggleIsHighlighting(object sender, RoutedEventArgs e)
-		{
-			this.viewModel.IsHighlighting = !this.viewModel.IsHighlighting;
-
-			await this.UpdateHighlight();
-		}
-
-		private async void OnToggleInvertHighlight(object sender, RoutedEventArgs e)
-		{
-			if (this.viewModel.World != null)
-				this.viewModel.World.InvertHighlight = !this.viewModel.World.InvertHighlight;
-
-			await this.UpdateHighlight();
-		}
-
-		private async void OnIsHighlightingChanged(object sender, RoutedEventArgs e)
-		{
-			await this.UpdateHighlight();
-		}
-
-		private void OnNavigateToNpc(object sender, RoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoading)
-				return;
-
-			var element = sender as FrameworkElement;
-			if (element == null)
-				return;
-
-			var npc = element.DataContext as NPC;
-			if (npc == null)
-				return;
-
-			this.NavigateToNpc(npc);
-		}
-
-		private void OnCheckForUpdates(object sender, RoutedEventArgs e)
-		{
-			this.CheckForUpdates(true);
-		}
-
-		private void OnShowAboutWindow(object sender, RoutedEventArgs e)
-		{
-			new AboutWindow() { Owner = this }.ShowDialog();
-		}
-
-		private void OnUpdateClicked(object sender, RoutedEventArgs e)
-		{
-			if (this.viewModel.NewRelease == null)
-				return;
-
-			Process.Start(this.viewModel.NewRelease.Url);
-		}
-
-		private void OnCheckForUpdatesComplete(object sender, OpenReadCompletedEventArgs e)
-		{
-			var isUserInitiated = false;
-
-			try
-			{
-				if (e.UserState is bool)
-					isUserInitiated = (bool)e.UserState;
-
-				if (e.Cancelled)
-					return;
-
-				if (e.Error != null)
-				{
-					if (isUserInitiated)
-					{
-						ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", e.Error));
-					}
-					else
-					{
-						Debug.WriteLine(e.Error);
-					}
-
-					return;
-				}
-
-				var releases = new List<ReleaseInfo>();
-
-				using (var stream = e.Result)
-				{
-					releases = ReleaseInfo.FromRssStream(stream);
-				}
-
-				var currentVersion = Assembly.GetEntryAssembly().GetName().Version;
-
-				if (releases == null || releases.Count < 1)
-				{
-					if (isUserInitiated)
-						MessageBox.Show("No updates found.", "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
-
-					return;
-				}
-
-				var newRelease = ReleaseInfo.GetLatest(releases, ReleaseStatus.Alpha);
-
-				if (newRelease.Version > currentVersion)
-				{
-					this.viewModel.UpdateVisibility = Visibility.Visible;
-					this.viewModel.NewRelease = newRelease;
-				}
-				else if (isUserInitiated)
-				{
-					MessageBox.Show(string.Format("Version {0}\r\n\r\nTerraMap is up to date.", currentVersion), "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
-				}
-			}
-			catch (Exception ex)
-			{
-				if (isUserInitiated)
-				{
-					ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
-				}
-				else
-				{
-					Debug.WriteLine(ex);
-				}
-			}
-			finally
-			{
-				this.viewModel.IsCheckingForUpdate = false;
-			}
-		}
-
-		private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
-		{
-			this.tileInfoViewSource.View.Refresh();
-			this.tileInfoViewSource.View.MoveCurrentToFirst();
-		}
-
-		private void OnFilter(object sender, FilterEventArgs e)
-		{
-			e.Accepted = false;
-
-			var tileInfo = e.Item as ObjectInfoViewModel;
-			if (tileInfo == null)
-				return;
-
-			var searchText = this.searchBox.Text.ToLower();
-
-			if (tileInfo.Name.ToLower().Contains(searchText))
-			{
-				e.Accepted = true;
-				return;
-			}
-
-			if (tileInfo.Type.ToLower().Contains(searchText))
-			{
-				e.Accepted = true;
-				return;
-			}
-
-			if (!string.IsNullOrWhiteSpace(tileInfo.ParentName) && tileInfo.ParentName.ToLower().Contains(searchText))
-			{
-				e.Accepted = true;
-				return;
-			}
-		}
-
-		private void OnCheckAll(object sender, RoutedEventArgs e)
-		{
-			this.SetIsSelected(true);
-		}
-
-		private void OnUncheckAll(object sender, RoutedEventArgs e)
-		{
-			this.SetIsSelected(false);
-		}
-
-		private void OnItemChecked(object sender, RoutedEventArgs e)
-		{
-			var checkBox = sender as CheckBox;
-			if (checkBox == null)
-				return;
-
-			var objectInfoSetViewModel = checkBox.DataContext as ObjectInfoSetViewModel;
-			if (objectInfoSetViewModel == null)
-				return;
-
-			this.CheckObjectInfoSet(objectInfoSetViewModel);
-		}
-
-		private void CheckObjectInfoSet(ObjectInfoSetViewModel objectInfoSetViewModel)
-		{
-			if (objectInfoSetViewModel == null)
-				return;
-
-			foreach (var objectInfoViewModel in objectInfoSetViewModel.ObjectInfoViewModels)
-			{
-				objectInfoViewModel.IsSelected = objectInfoSetViewModel.IsSelected;
-			}
-		}
-
-		private void OnBlocksPopupOpened(object sender, EventArgs e)
-		{
-			if (this.searchBox.Focusable)
-				this.searchBox.Focus();
-		}
-
-		private async void OnApplyBlockSelection(object sender, RoutedEventArgs e)
-		{
-			if (this.viewModel.IsHighlighting)
-				await this.UpdateHighlight();
-		}
-
-		private async void OnSetClicked(object sender, EventArgs e)
-		{
-			var menuItem = sender as MenuItem;
-			if (menuItem == null)
-				return;
-
-			var objectInfoSetViewModel = menuItem.DataContext as ObjectInfoSetViewModel;
-			if (objectInfoSetViewModel == null)
-				return;
-
-			await HighlightSet(objectInfoSetViewModel);
-		}
-
-		private void OnEditSets(object sender, RoutedEventArgs e)
-		{
-			var window = new SetsWindow();
-			window.Owner = this;
-			window.DataContext = this.viewModel;
-			window.ShowDialog();
-
-			Set.Save(this.viewModel.Sets, this.viewModel.SetsFilename);
-
-			this.ReorderSets();
-		}
-
-		private void ReorderSets()
-		{
-			int number = 1;
-
-			foreach (var set in this.viewModel.Sets)
-			{
-				if (number < 10)
-					set.InputGestureText = "Ctrl+" + number;
-				number++;
-			}
-		}
-
-		#endregion
-
-		#region Command Event Handlers
-
-		private void OnOpenCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (!this.viewModel.IsLoading)
-				e.CanExecute = true;
-		}
-
-		private async void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			await this.Open();
-		}
-
-
-		private void OnSaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnSaveExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.Save();
-		}
-
-
-		private void OnRefreshCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private async void OnRefreshExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			await this.Refresh();
-		}
-
-
-		private void OnPropertiesCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnPropertiesExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.ShowProperties();
-		}
-
-
-		private void OnZoomToOriginalCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnZoomToOriginalExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.zoomControl.Zoom = 1;
-		}
-
-
-		private void OnZoomToFitCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnZoomToFitExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.zoomControl.ZoomToFill();
-		}
-
-
-		private void OnDecreaseZoomCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnDecreaseZoomExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.zoomControl.ZoomOut();
-		}
-
-
-		private void OnIncreaseZoomCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnIncreaseZoomExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.zoomControl.ZoomIn();
-		}
-
-
-		private void OnFindCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			//if (this.viewModel.IsLoaded)
-			e.CanExecute = true;
-		}
-
-		private async void OnFindExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			await this.ChooseTileInfo();
-		}
-
-
-		private void OnPreviousPageCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private async void OnPreviousPageExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			await this.FindTile(SearchDirection.Backwards);
-		}
-
-
-		private void OnBrowseStopCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded && this.viewModel.CurrentTileHitTestInfo != null)
-				e.CanExecute = true;
-		}
-
-		private void OnBrowseStopExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.ClearCurrentTileHit();
-		}
-
-
-		private void OnNextPageCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private async void OnNextPageExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			await this.FindTile(SearchDirection.Forwards);
-		}
-
-		private void OnNavigateToSpawnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnNavigateToSpawnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.NavigateToSpawn();
-		}
-
-		private void OnNavigateToDungeonCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (this.viewModel.IsLoaded)
-				e.CanExecute = true;
-		}
-
-		private void OnNavigateToDungeonExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.NavigateToDungeon();
-		}
-
-		private void OnCloseCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = true;
-		}
-
-		private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.Close();
-		}
-
-		private void OnSearchBoxClear(object sender, RoutedEventArgs e)
-		{
-			this.searchBox.Text = "";
-		}
-
-		private void OnCanExecuteHighlightSet(object sender, CanExecuteRoutedEventArgs e)
-		{
-			if (!this.viewModel.IsLoaded)
-				return;
-
-			string parameter = e.Parameter as string;
-			if (string.IsNullOrWhiteSpace(parameter))
-				return;
-
-			int number = 0;
-
-			if (!int.TryParse(parameter, out number))
-				return;
-
-			e.CanExecute = number > 0 && this.viewModel.Sets.Count >= number;
-		}
-
-		private async void OnExecutedHighlightSet(object sender, ExecutedRoutedEventArgs e)
-		{
-			if (!this.viewModel.IsLoaded)
-				return;
-
-			string parameter = e.Parameter as string;
-			if (string.IsNullOrWhiteSpace(parameter))
-				return;
-
-			int number = 0;
-
-			if (!int.TryParse(parameter, out number))
-				return;
-
-			if (number < 1 || this.viewModel.Sets.Count < number)
-				return;
-
-			var set = this.viewModel.Sets[number - 1];
-
-			await this.HighlightSet(set);
-		}
-
-		#endregion
-	}
+      var staticData = await StaticData.ReadAsync(staticDataFilename);
+
+      this.viewModel.StaticData = staticData;
+
+      this.viewModel.ObjectInfoViewModels = new ObservableCollection<ObjectInfoViewModel>();
+
+      // load item viewmodels
+      foreach (var itemInfo in staticData.ItemInfos.Values.Where(i => !string.IsNullOrEmpty(i.Name)))
+        this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { ItemInfo = itemInfo, Name = itemInfo.Name });
+
+      // load tile viewmodels
+      foreach (var tileInfo in staticData.TileInfos)
+      {
+        if (!string.IsNullOrEmpty(tileInfo.Name))
+        {
+          this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { TileInfo = tileInfo, Name = tileInfo.Name });
+        }
+
+        foreach (var variant in tileInfo.Variants)
+        {
+          string name = variant.Name;
+
+          var variantViewModel = new ObjectInfoViewModel() { TileInfo = variant, Name = name };
+
+          var existingVariantViewModel = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == variant.Name && v.Type == "Tile");
+
+          if (existingVariantViewModel != null)
+          {
+            if (name != tileInfo.Name)
+              variantViewModel.ParentName = tileInfo.Name;
+          }
+
+          if (!string.IsNullOrEmpty(name))
+          {
+            this.viewModel.ObjectInfoViewModels.Add(variantViewModel);
+          }
+        }
+      }
+
+      this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Red Wire", IsRedWire = true });
+      this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Green Wire", IsGreenWire = true });
+      this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Blue Wire", IsBlueWire = true });
+
+      // load wall viewmodels
+      foreach (var wallInfo in staticData.WallInfos)
+      {
+        var existingObjectInfo = this.viewModel.ObjectInfoViewModels.FirstOrDefault(v => v.Name == wallInfo.Name && v.Type == "Wall");
+
+        if (existingObjectInfo == null)
+        {
+          if (!string.IsNullOrEmpty(wallInfo.Name))
+          {
+            this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { WallInfo = wallInfo, Name = wallInfo.Name });
+          }
+        }
+        else
+        {
+          existingObjectInfo.WallInfo = wallInfo;
+        }
+      }
+
+      // load tile sets
+      string tileSetsFilename = Path.Combine(staticDataFileInfo.DirectoryName, "sets.xml");
+
+      viewModel.SetsFilename = tileSetsFilename;
+
+      // if the user has not created their own customized sets.xml file, load the default one we ship with
+      if (!System.IO.File.Exists(tileSetsFilename))
+        tileSetsFilename = Path.Combine(staticDataFileInfo.DirectoryName, "sets-default.xml");
+
+      viewModel.Sets = new ObservableCollection<ObjectInfoSetViewModel>();
+
+      var sets = await Set.ReadAsync(tileSetsFilename);
+
+      int number = 1;
+
+      foreach (var set in sets)
+      {
+        var setViewModel = new ObjectInfoSetViewModel() { Name = set.Name };
+
+        foreach (var tileInfo in set.TileInfos)
+        {
+          if (string.IsNullOrWhiteSpace(tileInfo.Name))
+          {
+            foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.TileInfo != null && o.TileInfo.Id == tileInfo.Id))
+              setViewModel.ObjectInfoViewModels.Add(objectInfo);
+          }
+          else
+          {
+            foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.TileInfo != null && o.TileInfo.Name == tileInfo.Name))
+              setViewModel.ObjectInfoViewModels.Add(objectInfo);
+          }
+        }
+
+        foreach (var wallInfo in set.WallInfos)
+        {
+          if (string.IsNullOrWhiteSpace(wallInfo.Name))
+          {
+            foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.WallInfo.Id == wallInfo.Id))
+              setViewModel.ObjectInfoViewModels.Add(objectInfo);
+          }
+          else
+          {
+            foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.WallInfo.Name == wallInfo.Name))
+              setViewModel.ObjectInfoViewModels.Add(objectInfo);
+          }
+        }
+
+        foreach (var itemInfo in set.ItemInfos)
+        {
+          if (string.IsNullOrWhiteSpace(itemInfo.Name))
+          {
+            foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.ItemInfo != null && o.ItemInfo.Id == itemInfo.Id))
+              setViewModel.ObjectInfoViewModels.Add(objectInfo);
+          }
+          else
+          {
+            foreach (var objectInfo in this.viewModel.ObjectInfoViewModels.Where(o => o.ItemInfo != null && o.ItemInfo.Name == itemInfo.Name))
+              setViewModel.ObjectInfoViewModels.Add(objectInfo);
+          }
+        }
+
+        this.viewModel.ObjectInfoViewModels.Add(setViewModel);
+
+        if (number < 10)
+          setViewModel.InputGestureText = "Ctrl+" + number;
+
+        this.viewModel.Sets.Add(setViewModel);
+
+        number++;
+      }
+
+      var args = App.Current.Properties["Args"] as string[];
+      if (args != null && args.Length > 0)
+      {
+        string filename = args[0];
+
+        var uri = new Uri(filename);
+        filename = uri.LocalPath;
+
+        await this.Open(filename);
+      }
+    }
+
+    private void OnDispatcherTimerTick(object sender, EventArgs e)
+    {
+      this.Update();
+    }
+
+    private async void OnSelectedTileInfoChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (this.viewModel.IsLoading)
+        return;
+
+      if (this.viewModel.IsHighlighting)
+        await this.UpdateHighlight();
+    }
+
+    private void OnZoomControlMouseMove(object sender, MouseEventArgs e)
+    {
+      if (this.viewModel.IsLoading || !this.viewModel.IsLoaded)
+        return;
+
+      var world = this.viewModel.World;
+      if (world == null)
+        return;
+
+      var position = e.GetPosition(this.Canvas);
+
+      var x = (int)position.X;
+      var y = (int)position.Y;
+
+      if (x < 0 || x >= this.viewModel.World.WorldWidthinTiles ||
+          y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
+        return;
+
+      string name = world.GetTileName(x, y);
+
+      if (!allSpoilers && !MapHelper.IsTileLit(x, y))
+        name = "(No spoilers)";
+
+      this.viewModel.TileName = name;
+
+      if (string.IsNullOrEmpty(name))
+        this.viewModel.Position = null;
+      else
+        this.viewModel.Position = string.Format("{0}, {1}", x, y);
+    }
+
+    private void OnZoomControlMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+      if (this.viewModel.IsLoading || !this.viewModel.IsLoaded)
+        return;
+
+      var world = this.viewModel.World;
+      if (world == null)
+        return;
+
+      var position = e.GetPosition(this.Canvas);
+
+      var x = (int)position.X;
+      var y = (int)position.Y;
+
+      if (x < 0 || x >= this.viewModel.World.WorldWidthinTiles ||
+          y < 0 || y >= this.viewModel.World.WorldHeightinTiles)
+        return;
+
+      if (!allSpoilers && !MapHelper.IsTileLit(x, y))
+        return;
+
+      var chest = this.viewModel.World.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+      if (chest != null)
+      {
+        var itemNames = chest.Items.Select(i =>
+            {
+              if (i.Count > 1)
+                return string.Concat(i.Name, " (", i.Count, ")");
+              else
+                return i.Name;
+            }).ToArray();
+
+        this.viewModel.CurrentChestItemNames = itemNames;
+
+        this.popup.IsOpen = true;
+      }
+
+      var sign = this.viewModel.World.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+      if (sign != null)
+      {
+        this.viewModel.CurrentChestItemNames = new string[] { sign.Text };
+        this.popup.IsOpen = true;
+      }
+
+      var tile = this.viewModel.World.Tiles[x, y];
+
+      var tileHitTestInfo = new TileHitTestInfo(tile, x, y);
+
+      this.viewModel.CurrentTileHitTestInfo = tileHitTestInfo;
+
+      this.Indicator.Visibility = Visibility.Visible;
+      Canvas.SetLeft(this.Indicator, tileHitTestInfo.X - 1);
+      Canvas.SetTop(this.Indicator, tileHitTestInfo.Y - 1);
+    }
+
+    private async void OnOpenWorldFile(object sender, RoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoading)
+        return;
+
+      var element = sender as FrameworkElement;
+      if (element == null)
+        return;
+
+      var worldFile = element.DataContext as WorldFileViewModel;
+      if (worldFile == null)
+        return;
+
+      await this.Open(worldFile.FileInfo);
+    }
+
+    private void OnOpenMapFile(object sender, RoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoading)
+        return;
+
+      var element = sender as FrameworkElement;
+      if (element == null)
+        return;
+
+      var mapFile = element.DataContext as MapFileViewModel;
+      if (mapFile == null)
+        return;
+
+      this.viewModel.SelectedMapFile = mapFile;
+    }
+
+    private async void OnSelectedWorldFileChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (ignoreSelectedWorldFileChanges || this.viewModel.IsLoading || this.viewModel.SelectedWorldFile == null)
+        return;
+
+      await this.Open(this.viewModel.SelectedWorldFile.FileInfo);
+    }
+
+    private async void OnSelectedMapFileChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (ignoreSelectedMapFileChanges || this.viewModel.IsLoading || this.viewModel.SelectedMapFile == null)
+        return;
+
+      this.LoadMapFile();
+
+      await this.UpdateFog();
+    }
+
+    private void OnWorldsSubmenuOpened(object sender, RoutedEventArgs e)
+    {
+      this.LoadWorldFiles();
+    }
+
+    private void OnWorldsDropDownOpened(object sender, EventArgs e)
+    {
+      this.LoadWorldFiles();
+    }
+
+    private void OnMapsDropDownOpened(object sender, EventArgs e)
+    {
+      this.LoadMapFiles();
+    }
+
+    private async void OnToggleIsHighlighting(object sender, RoutedEventArgs e)
+    {
+      this.viewModel.IsHighlighting = !this.viewModel.IsHighlighting;
+
+      await this.UpdateHighlight();
+    }
+
+    private async void OnToggleInvertHighlight(object sender, RoutedEventArgs e)
+    {
+      if (this.viewModel.World != null)
+        this.viewModel.World.InvertHighlight = !this.viewModel.World.InvertHighlight;
+
+      await this.UpdateHighlight();
+    }
+
+    private async void OnIsHighlightingChanged(object sender, RoutedEventArgs e)
+    {
+      await this.UpdateHighlight();
+    }
+
+    private void OnNavigateToNpc(object sender, RoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoading)
+        return;
+
+      var element = sender as FrameworkElement;
+      if (element == null)
+        return;
+
+      var npc = element.DataContext as NPC;
+      if (npc == null)
+        return;
+
+      this.NavigateToNpc(npc);
+    }
+
+    private void OnCheckForUpdates(object sender, RoutedEventArgs e)
+    {
+      this.CheckForUpdates(true);
+    }
+
+    private void OnShowAboutWindow(object sender, RoutedEventArgs e)
+    {
+      new AboutWindow() { Owner = this }.ShowDialog();
+    }
+
+    private void OnUpdateClicked(object sender, RoutedEventArgs e)
+    {
+      if (this.viewModel.NewRelease == null)
+        return;
+
+      Process.Start(this.viewModel.NewRelease.Url);
+    }
+
+    private void OnCheckForUpdatesComplete(object sender, OpenReadCompletedEventArgs e)
+    {
+      var isUserInitiated = false;
+
+      try
+      {
+        if (e.UserState is bool)
+          isUserInitiated = (bool)e.UserState;
+
+        if (e.Cancelled)
+          return;
+
+        if (e.Error != null)
+        {
+          if (isUserInitiated)
+          {
+            ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", e.Error));
+          }
+          else
+          {
+            Debug.WriteLine(e.Error);
+          }
+
+          return;
+        }
+
+        var releases = new List<ReleaseInfo>();
+
+        using (var stream = e.Result)
+        {
+          releases = ReleaseInfo.FromRssStream(stream);
+        }
+
+        var currentVersion = Assembly.GetEntryAssembly().GetName().Version;
+
+        if (releases == null || releases.Count < 1)
+        {
+          if (isUserInitiated)
+            MessageBox.Show("No updates found.", "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
+
+          return;
+        }
+
+        var newRelease = ReleaseInfo.GetLatest(releases, ReleaseStatus.Alpha);
+
+        if (newRelease.Version > currentVersion)
+        {
+          this.viewModel.UpdateVisibility = Visibility.Visible;
+          this.viewModel.NewRelease = newRelease;
+        }
+        else if (isUserInitiated)
+        {
+          MessageBox.Show(string.Format("Version {0}\r\n\r\nTerraMap is up to date.", currentVersion), "TerraMap Updates", MessageBoxButton.OK, MessageBoxImage.None);
+        }
+      }
+      catch (Exception ex)
+      {
+        if (isUserInitiated)
+        {
+          ExceptionWindow.ShowDialog(new Exception("There was a problem checking for updates", ex));
+        }
+        else
+        {
+          Debug.WriteLine(ex);
+        }
+      }
+      finally
+      {
+        this.viewModel.IsCheckingForUpdate = false;
+      }
+    }
+
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+      this.tileInfoViewSource.View.Refresh();
+      this.tileInfoViewSource.View.MoveCurrentToFirst();
+    }
+
+    private void OnFilter(object sender, FilterEventArgs e)
+    {
+      e.Accepted = false;
+
+      var tileInfo = e.Item as ObjectInfoViewModel;
+      if (tileInfo == null)
+        return;
+
+      var searchText = this.searchBox.Text.ToLower();
+
+      if (tileInfo.Name.ToLower().Contains(searchText))
+      {
+        e.Accepted = true;
+        return;
+      }
+
+      if (tileInfo.Type.ToLower().Contains(searchText))
+      {
+        e.Accepted = true;
+        return;
+      }
+
+      if (!string.IsNullOrWhiteSpace(tileInfo.ParentName) && tileInfo.ParentName.ToLower().Contains(searchText))
+      {
+        e.Accepted = true;
+        return;
+      }
+    }
+
+    private void OnCheckAll(object sender, RoutedEventArgs e)
+    {
+      this.SetIsSelected(true);
+    }
+
+    private void OnUncheckAll(object sender, RoutedEventArgs e)
+    {
+      this.SetIsSelected(false);
+    }
+
+    private void OnItemChecked(object sender, RoutedEventArgs e)
+    {
+      var checkBox = sender as CheckBox;
+      if (checkBox == null)
+        return;
+
+      var objectInfoSetViewModel = checkBox.DataContext as ObjectInfoSetViewModel;
+      if (objectInfoSetViewModel == null)
+        return;
+
+      this.CheckObjectInfoSet(objectInfoSetViewModel);
+    }
+
+    private void CheckObjectInfoSet(ObjectInfoSetViewModel objectInfoSetViewModel)
+    {
+      if (objectInfoSetViewModel == null)
+        return;
+
+      foreach (var objectInfoViewModel in objectInfoSetViewModel.ObjectInfoViewModels)
+      {
+        objectInfoViewModel.IsSelected = objectInfoSetViewModel.IsSelected;
+      }
+    }
+
+    private void OnBlocksPopupOpened(object sender, EventArgs e)
+    {
+      if (this.searchBox.Focusable)
+        this.searchBox.Focus();
+    }
+
+    private async void OnApplyBlockSelection(object sender, RoutedEventArgs e)
+    {
+      if (this.viewModel.IsHighlighting)
+        await this.UpdateHighlight();
+    }
+
+    private async void OnSetClicked(object sender, EventArgs e)
+    {
+      var menuItem = sender as MenuItem;
+      if (menuItem == null)
+        return;
+
+      var objectInfoSetViewModel = menuItem.DataContext as ObjectInfoSetViewModel;
+      if (objectInfoSetViewModel == null)
+        return;
+
+      await HighlightSet(objectInfoSetViewModel);
+    }
+
+    private void OnEditSets(object sender, RoutedEventArgs e)
+    {
+      var window = new SetsWindow();
+      window.Owner = this;
+      window.DataContext = this.viewModel;
+      window.ShowDialog();
+
+      Set.Save(this.viewModel.Sets, this.viewModel.SetsFilename);
+
+      this.ReorderSets();
+    }
+
+    private void ReorderSets()
+    {
+      int number = 1;
+
+      foreach (var set in this.viewModel.Sets)
+      {
+        if (number < 10)
+          set.InputGestureText = "Ctrl+" + number;
+        number++;
+      }
+    }
+
+    #endregion
+
+    #region Command Event Handlers
+
+    private void OnOpenCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (!this.viewModel.IsLoading)
+        e.CanExecute = true;
+    }
+
+    private async void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      await this.Open();
+    }
+
+
+    private void OnSaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnSaveExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.Save();
+    }
+
+
+    private void OnRefreshCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private async void OnRefreshExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      await this.Refresh();
+    }
+
+
+    private void OnPropertiesCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnPropertiesExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.ShowProperties();
+    }
+
+
+    private void OnZoomToOriginalCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnZoomToOriginalExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.zoomControl.Zoom = 1;
+    }
+
+
+    private void OnZoomToFitCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnZoomToFitExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.zoomControl.ZoomToFill();
+    }
+
+
+    private void OnDecreaseZoomCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnDecreaseZoomExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.zoomControl.ZoomOut();
+    }
+
+
+    private void OnIncreaseZoomCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnIncreaseZoomExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.zoomControl.ZoomIn();
+    }
+
+
+    private void OnFindCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      //if (this.viewModel.IsLoaded)
+      e.CanExecute = true;
+    }
+
+    private async void OnFindExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      await this.ChooseTileInfo();
+    }
+
+
+    private void OnPreviousPageCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private async void OnPreviousPageExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      await this.FindTile(SearchDirection.Backwards);
+    }
+
+
+    private void OnBrowseStopCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded && this.viewModel.CurrentTileHitTestInfo != null)
+        e.CanExecute = true;
+    }
+
+    private void OnBrowseStopExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.ClearCurrentTileHit();
+    }
+
+
+    private void OnNextPageCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private async void OnNextPageExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      await this.FindTile(SearchDirection.Forwards);
+    }
+
+    private void OnNavigateToSpawnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnNavigateToSpawnExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.NavigateToSpawn();
+    }
+
+    private void OnNavigateToDungeonCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded)
+        e.CanExecute = true;
+    }
+
+    private void OnNavigateToDungeonExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.NavigateToDungeon();
+    }
+
+    private void OnCloseCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      e.CanExecute = true;
+    }
+
+    private void OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.Close();
+    }
+
+    private void OnSearchBoxClear(object sender, RoutedEventArgs e)
+    {
+      this.searchBox.Text = "";
+    }
+
+    private void OnCanExecuteHighlightSet(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (!this.viewModel.IsLoaded)
+        return;
+
+      string parameter = e.Parameter as string;
+      if (string.IsNullOrWhiteSpace(parameter))
+        return;
+
+      int number = 0;
+
+      if (!int.TryParse(parameter, out number))
+        return;
+
+      e.CanExecute = number > 0 && this.viewModel.Sets.Count >= number;
+    }
+
+    private async void OnExecutedHighlightSet(object sender, ExecutedRoutedEventArgs e)
+    {
+      if (!this.viewModel.IsLoaded)
+        return;
+
+      string parameter = e.Parameter as string;
+      if (string.IsNullOrWhiteSpace(parameter))
+        return;
+
+      int number = 0;
+
+      if (!int.TryParse(parameter, out number))
+        return;
+
+      if (number < 1 || this.viewModel.Sets.Count < number)
+        return;
+
+      var set = this.viewModel.Sets[number - 1];
+
+      await this.HighlightSet(set);
+    }
+
+    #endregion
+  }
 }
