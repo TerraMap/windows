@@ -252,7 +252,7 @@ namespace TerraMap
       this.viewModel.World = world;
 
       this.viewModel.NPCs.Clear();
-      
+
       this.viewModel.InstructionsVisibility = Visibility.Collapsed;
 
       this.viewModel.ProgressValue = 0;
@@ -539,6 +539,44 @@ namespace TerraMap
         encoder.Save(stream);
         stream.Close();
       }
+    }
+
+    private async Task ExportHighlightedTilePositions()
+    {
+      SaveFileDialog dialog = new SaveFileDialog();
+      dialog.Filter = "Tab-Delimited Text Files (*.txt)|*.txt|Comma Separated Values Files (*.csv)|*.csv";
+      var result = dialog.ShowDialog() ?? false;
+      if (!result)
+        return;
+
+      await this.ExportHighlightedTilePositions(dialog.FileName);
+    }
+
+    private async Task ExportHighlightedTilePositions(string filename)
+    {
+      FileInfo fileInfo = new FileInfo(filename);
+      if (fileInfo.Exists && fileInfo.Extension == ".wld")
+      {
+        MessageBox.Show(this, "I'm sorry, Dave. I'm afraid I can't do that.\r\n\r\nYou don't want me overwriting your .wld file.  Please make sure to specify a filename that ends with txt or csv.  :)", "TerraMap");
+        return;
+      }
+      
+      var start = DateTime.Now;
+
+      var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
+
+      allSpoilers = this.viewModel.SelectedMapFile.Name == "(All Spoilers)";
+
+      await this.viewModel.World.WriteHighlightedTilePositionsAsync(filename, selectedObjectInfoViewModels, true, allSpoilers);
+
+      var elapsed = DateTime.Now - start;
+
+      this.viewModel.World.Status = string.Format(
+        "Exported {0:N0} out of {1:N0} blocks ({2:P0}) in {3:N1} seconds",
+        this.viewModel.HighlightedTileCount,
+        this.viewModel.TotalTileCount,
+        (float)this.viewModel.HighlightedTileCount / (float)this.viewModel.TotalTileCount,
+        elapsed.TotalSeconds);
     }
 
     private void ClearCurrentTileHit()
@@ -1043,10 +1081,10 @@ namespace TerraMap
 
       this.viewModel.TileName = name;
 
-      if (string.IsNullOrEmpty(name))
-        this.viewModel.Position = null;
-      else
-        this.viewModel.Position = string.Format("{0}, {1}", x, y);
+      this.viewModel.Position = world.GetPosition(x);
+      this.viewModel.Depth = world.GetDepth(y);
+      
+      this.viewModel.Coordinates = string.Format("{0}, {1}", x, y);
     }
 
     private void OnZoomControlMouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -1440,6 +1478,16 @@ namespace TerraMap
       this.Save();
     }
 
+    private void OnExportHighlightedTilePositionsCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (this.viewModel.IsLoaded && this.viewModel.IsHighlighting)
+        e.CanExecute = true;
+    }
+
+    private void OnExportHighlightedTilePositionsExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      this.ExportHighlightedTilePositions();
+    }
 
     private void OnRefreshCanExecute(object sender, CanExecuteRoutedEventArgs e)
     {

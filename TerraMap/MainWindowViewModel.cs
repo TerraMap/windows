@@ -165,6 +165,30 @@ namespace TerraMap
       }
     }
 
+    private string depth;
+
+    public string Depth
+    {
+      get { return depth; }
+      set
+      {
+        depth = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    private string coordinates;
+
+    public string Coordinates
+    {
+      get { return coordinates; }
+      set
+      {
+        coordinates = value;
+        RaisePropertyChanged();
+      }
+    }
+
     private int progressValue;
 
     public int ProgressValue

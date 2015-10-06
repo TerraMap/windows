@@ -16,6 +16,7 @@ namespace TerraMap
       NavigateToSpawn = new RoutedUICommand();
       NavigateToDungeon = new RoutedUICommand();
       HighlightSet = new RoutedUICommand();
+      ExportHighlightedTilePositions = new RoutedUICommand();
     }
 
     public static RoutedUICommand ZoomToFit { get; private set; }
@@ -25,5 +26,7 @@ namespace TerraMap
     public static RoutedUICommand NavigateToDungeon { get; private set; }
 
     public static RoutedUICommand HighlightSet { get; private set; }
+
+    public static RoutedUICommand ExportHighlightedTilePositions { get; private set; }
   }
 }

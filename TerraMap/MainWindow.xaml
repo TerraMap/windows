@@ -57,6 +57,7 @@
   <Window.CommandBindings>
     <CommandBinding Command="Open" CanExecute="OnOpenCanExecute" Executed="OnOpenExecuted" />
     <CommandBinding Command="Save" CanExecute="OnSaveCanExecute" Executed="OnSaveExecuted" />
+    <CommandBinding Command="local:Commands.ExportHighlightedTilePositions" CanExecute="OnExportHighlightedTilePositionsCanExecute" Executed="OnExportHighlightedTilePositionsExecuted" />
     <CommandBinding Command="Refresh" CanExecute="OnRefreshCanExecute" Executed="OnRefreshExecuted" />
     <CommandBinding Command="Properties" CanExecute="OnPropertiesCanExecute" Executed="OnPropertiesExecuted" />
     <CommandBinding Command="local:Commands.ZoomToOriginal" CanExecute="OnZoomToOriginalCanExecute" Executed="OnZoomToOriginalExecuted" />
@@ -151,7 +152,8 @@
             <local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
           </MenuItem.Icon>
         </MenuItem>
-        <Separator />
+        <MenuItem Command="local:Commands.ExportHighlightedTilePositions" Header="_Export Highlighted Tile Positions..." />
+          <Separator />
         <MenuItem Command="Close" Header="E_xit" InputGestureText="Alt+F4" />
       </MenuItem>
       <MenuItem Header="_View">
@@ -448,8 +450,14 @@
       </ToolBar>
     </ToolBarTray>
     <StatusBar DockPanel.Dock="Bottom">
-      <StatusBarItem DockPanel.Dock="Left">
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Position (from map center)">
         <TextBlock Text="{Binding Position}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Depth (from surface)">
+        <TextBlock Text="{Binding Depth}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="XY Coordinates (from upper-left)">
+        <TextBlock Text="{Binding Coordinates}" />
       </StatusBarItem>
       <StatusBarItem DockPanel.Dock="Left">
         <TextBlock Text="{Binding TileName}" />
