@@ -323,7 +323,15 @@ namespace TerraMap
 
         var elapsed = DateTime.Now - start;
 
-        world.Status = world.Status = string.Format("Loaded {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
+        if (this.viewModel.IsHighlighting)
+          world.Status = string.Format(
+            "Loaded and highlighted {0:N0} out of {1:N0} blocks ({2:P0}) in {3:N1} seconds",
+            this.viewModel.HighlightedTileCount,
+            this.viewModel.TotalTileCount,
+            (float)this.viewModel.HighlightedTileCount / (float)this.viewModel.TotalTileCount,
+            elapsed.TotalSeconds);
+        else
+          world.Status = world.Status = string.Format("Loaded {0:N0} blocks in {1:N1} seconds", this.viewModel.TotalTileCount, elapsed.TotalSeconds);
       }
       finally
       {
