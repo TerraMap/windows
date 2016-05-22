@@ -973,6 +973,9 @@ namespace TerraMap.Data
 
     public static Color GetTileColor(ushort tileType, short u, short v)
     {
+      if (tileType >= tileColors.Count())
+        return Colors.Black;
+
       return tileColors[tileType][0];
     }
 
