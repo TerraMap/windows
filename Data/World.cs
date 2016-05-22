@@ -1197,7 +1197,7 @@ namespace TerraMap.Data
 
     public string GetDepth(int y)
     {
-      var gpsY = y - this.WorldSurfaceY;
+      var gpsY = (y - this.WorldSurfaceY) * 2;
 
       var depth = "below";
       if (gpsY < 0)
@@ -1211,7 +1211,7 @@ namespace TerraMap.Data
 
     public string GetPosition(int x)
     {
-      var gpsX = x - this.WorldWidthinTiles / 2;
+      var gpsX = (x - this.WorldWidthinTiles / 2) * 2;
 
       var direction = "east";
       if (gpsX < 0)
