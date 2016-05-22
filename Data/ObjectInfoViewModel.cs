@@ -92,7 +92,19 @@ namespace TerraMap.Data
 			}
 		}
 
-		private string name;
+    private bool isYellowWire;
+
+    public bool IsYellowWire
+    {
+      get { return isYellowWire; }
+      set
+      {
+        isYellowWire = value;
+        RaisePropertyChanged();
+      }
+    }
+
+    private string name;
 
 		public string Name
 		{

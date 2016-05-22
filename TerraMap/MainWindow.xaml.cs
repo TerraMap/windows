@@ -940,6 +940,7 @@ namespace TerraMap
       this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Red Wire", IsRedWire = true });
       this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Green Wire", IsGreenWire = true });
       this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Blue Wire", IsBlueWire = true });
+      this.viewModel.ObjectInfoViewModels.Add(new ObjectInfoViewModel() { Name = "Yellow Wire", IsYellowWire = true });
 
       // load wall viewmodels
       foreach (var wallInfo in staticData.WallInfos)

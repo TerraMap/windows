@@ -1002,6 +1002,10 @@ namespace TerraMap.Data
             {
               tile.IsActive = false;
             }
+            if ((b & 32) == 32)
+            {
+              tile.IsYellowWirePresent = true;
+            }
           }
           b4 = (byte)((b3 & 192) >> 6);
           int k;
@@ -1607,6 +1611,9 @@ namespace TerraMap.Data
         if (objectTypeToHighlight.IsBlueWire && tile.IsBlueWirePresent)
           return true;
 
+        if (objectTypeToHighlight.IsYellowWire && tile.IsYellowWirePresent)
+          return true;
+
         if (tile.IsWallPresent)
         {
           WallInfo? wallInfo = null;
@@ -1730,6 +1737,10 @@ namespace TerraMap.Data
         if (tile.IsBlueWirePresent)
         {
           name += " (Blue Wire)";
+        }
+        if (tile.IsYellowWirePresent)
+        {
+          name += " (Yellow Wire)";
         }
 
         if (!string.IsNullOrWhiteSpace(name) && name != "Nothing")

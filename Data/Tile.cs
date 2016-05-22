@@ -29,6 +29,7 @@ namespace TerraMap.Data
     public bool IsRedWirePresent { get; set; }
     public bool IsGreenWirePresent { get; set; }
     public bool IsBlueWirePresent { get; set; }
+    public bool IsYellowWirePresent { get; set; }
     public bool IsHalfTile { get; set; }
     public byte Slope { get; set; }
     public bool IsActuatorPresent { get; set; }
@@ -60,6 +61,7 @@ namespace TerraMap.Data
       this.IsRedWirePresent = tile.IsRedWirePresent;
       this.IsGreenWirePresent = tile.IsGreenWirePresent;
       this.IsBlueWirePresent = tile.IsBlueWirePresent;
+      this.IsYellowWirePresent = tile.IsYellowWirePresent;
       this.IsHalfTile = tile.IsHalfTile;
       this.Slope = tile.Slope;
       this.IsActuatorPresent = tile.IsActuatorPresent;

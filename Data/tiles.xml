@@ -2230,6 +2230,35 @@
   <tile num="417" name="Nebula Fragment Block" color="#A057EA" solid="1" blend="0" letLight="1" lightr="0.6" lightg="0.2" lightb="0.6" />
   <tile num="418" name="Stardust Fragment Block" color="#5057B6" solid="1" blend="0" letLight="1" lightr="0.6" lightg="0.6" lightb="0.9" />
 
+  <!-- v1.3.1 -->
+  <tile num="419" name="Logic Gate Lamp" />
+  <tile num="420" name="Logic Gate" />
+  <tile num="421" name="Conveyor Belt Left" />
+  <tile num="422" name="Conveyor Belt Right" />
+  <tile num="423" name="Logic Sensor" />
+  <tile num="424" name="Wire Pipe" />
+  <tile num="425" name="Announcement Box" />
+  <tile num="426" name="Team Block Red" />
+  <tile num="427" name="Team Block Red Platform" />
+  <tile num="428" name="Weighted Pressure Plate" />
+  <tile num="429" name="Wire Bulb" />
+  <tile num="430" name="Team Block Green" />
+  <tile num="431" name="Team Block Blue" />
+  <tile num="432" name="Team Block Yellow" />
+  <tile num="433" name="Team Block Pink" />
+  <tile num="434" name="Team Block White" />
+  <tile num="435" name="Team Block Green Platform" />
+  <tile num="436" name="Team Block Blue Platform" />
+  <tile num="437" name="Team Block Yellow Platform" />
+  <tile num="438" name="Team Block Pink Platform" />
+  <tile num="439" name="Team Block White Platform" />
+  <tile num="440" name="Gem Locks" />
+  <tile num="441" name="Fake Containers" />
+  <tile num="442" name="Projectile Pressure Pad" />
+  <tile num="443" name="Geyser Trap" />
+  <tile num="444" name="Bee Hive" />
+  <tile num="445" name="Pixel Box" />
+  
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
   <wall num="3" name="Stone Wall" color="#3D3A4E" />
@@ -2458,7 +2487,6 @@
   <wall num="222" name="Hallow Sandstone Wall" color="#3E4765" />
   <wall num="223" name="Desert Fossil Wall" color="#572612" />
   <wall num="224" name="Lunar Brick Wall" color="#262424" />
-
 
   <prefix num="1" name="Large" />
   <prefix num="2" name="Massive" />
@@ -6190,6 +6218,136 @@
   <item num="3599" name="Loki's Dye" />
   <item num="3600" name="Shadowflame Hades Dye" />
 
+  <!-- v1.3.1 -->
+  <item num="3601" name="Celestial Sigil" />
+  <item num="3602" name="Logic Gate Lamp Off" />
+  <item num="3603" name="Logic Gate AND" />
+  <item num="3604" name="Logic Gate OR" />
+  <item num="3605" name="Logic Gate NAND" />
+  <item num="3606" name="Logic Gate NOR" />
+  <item num="3607" name="Logic Gate XOR" />
+  <item num="3608" name="Logic Gate NXOR" />
+  <item num="3609" name="Conveyor Belt Left" />
+  <item num="3610" name="Conveyor Belt Right" />
+  <item num="3611" name="Wire Kite" />
+  <item num="3612" name="Yellow Wrench" />
+  <item num="3613" name="Logic Sensor Sun" />
+  <item num="3614" name="Logic Sensor Moon" />
+  <item num="3615" name="Logic Sensor Above" />
+  <item num="3616" name="Wire Pipe" />
+  <item num="3617" name="Announcement Box" />
+  <item num="3618" name="Logic Gate Lamp On" />
+  <item num="3619" name="Mechanical Lens" />
+  <item num="3620" name="Actuation Rod" />
+  <item num="3621" name="Team Block Red" />
+  <item num="3622" name="Team Block Red Platform" />
+  <item num="3623" name="Static Hook" />
+  <item num="3624" name="Actuation Accessory" />
+  <item num="3625" name="Multicolor Wrench" />
+  <item num="3626" name="Weighted Pressure Plate Pink" />
+  <item num="3627" name="Engineering Helmet" />
+  <item num="3628" name="Companion Cube" />
+  <item num="3629" name="Wire Bulb" />
+  <item num="3630" name="Weighted Pressure Plate Orange" />
+  <item num="3631" name="Weighted Pressure Plate Purple" />
+  <item num="3632" name="Weighted Pressure Plate Cyan" />
+  <item num="3633" name="Team Block Green" />
+  <item num="3634" name="Team Block Blue" />
+  <item num="3635" name="Team Block Yellow" />
+  <item num="3636" name="Team Block Pink" />
+  <item num="3637" name="Team Block White" />
+  <item num="3638" name="Team Block Green Platform" />
+  <item num="3639" name="Team Block BlueP latform" />
+  <item num="3640" name="Team Block Yellow Platform" />
+  <item num="3641" name="Team Block Pink Platform" />
+  <item num="3642" name="Team Block White Platform" />
+  <item num="3643" name="Large Amber" />
+  <item num="3644" name="Gem Lock Ruby" />
+  <item num="3645" name="Gem Lock Sapphire" />
+  <item num="3646" name="Gem Lock Emerald" />
+  <item num="3647" name="Gem Lock Topaz" />
+  <item num="3648" name="Gem Lock Amethyst" />
+  <item num="3649" name="Gem Lock Diamond" />
+  <item num="3650" name="Gem Lock Amber" />
+  <item num="3651" name="Squirrel Statue" />
+  <item num="3652" name="Butterfly Statue" />
+  <item num="3653" name="Worm Statue" />
+  <item num="3654" name="Firefly Statue" />
+  <item num="3655" name="Scorpion Statue" />
+  <item num="3656" name="Snail Statue" />
+  <item num="3657" name="Grasshopper Statue" />
+  <item num="3658" name="Mouse Statue" />
+  <item num="3659" name="Duck Statue" />
+  <item num="3660" name="Penguin Statue" />
+  <item num="3661" name="Frog Statue" />
+  <item num="3662" name="Buggy Statue" />
+  <item num="3663" name="Logic Gate Lamp Faulty" />
+  <item num="3664" name="Portal Gun Station" />
+  <item num="3665" name="Fake Chest" />
+  <item num="3666" name="Fake Gold Chest" />
+  <item num="3667" name="Fake Shadow Chest" />
+  <item num="3668" name="Fake Ebonwood Chest" />
+  <item num="3669" name="Fake RichMahogany Chest" />
+  <item num="3670" name="Fake Pearlwood Chest" />
+  <item num="3671" name="Fake Ivy Chest" />
+  <item num="3672" name="Fake Ice Chest" />
+  <item num="3673" name="Fake Living Wood Chest" />
+  <item num="3674" name="Fake Skyware Chest" />
+  <item num="3675" name="Fake Shadewood Chest" />
+  <item num="3676" name="Fake Web Covered Chest" />
+  <item num="3677" name="Fake Lihzahrd Chest" />
+  <item num="3678" name="Fake Water Chest" />
+  <item num="3679" name="Fake JungleChest" />
+  <item num="3680" name="Fake CorruptionChest" />
+  <item num="3681" name="Fake CrimsonChest" />
+  <item num="3682" name="Fake HallowedChest" />
+  <item num="3683" name="Fake FrozenChest" />
+  <item num="3684" name="Fake DynastyChest" />
+  <item num="3685" name="Fake HoneyChest" />
+  <item num="3686" name="Fake SteampunkChest" />
+  <item num="3687" name="Fake PalmWoodChest" />
+  <item num="3688" name="Fake MushroomChest" />
+  <item num="3689" name="Fake BorealWoodChest" />
+  <item num="3690" name="Fake SlimeChest" />
+  <item num="3691" name="Fake GreenDungeonChest" />
+  <item num="3692" name="Fake PinkDungeonChest" />
+  <item num="3693" name="Fake BlueDungeonChest" />
+  <item num="3694" name="Fake BoneChest" />
+  <item num="3695" name="Fake CactusChest" />
+  <item num="3696" name="Fake FleshChest" />
+  <item num="3697" name="Fake ObsidianChest" />
+  <item num="3698" name="Fake PumpkinChest" />
+  <item num="3699" name="Fake SpookyChest" />
+  <item num="3700" name="Fake GlassChest" />
+  <item num="3701" name="Fake MartianChest" />
+  <item num="3702" name="Fake MeteoriteChest" />
+  <item num="3703" name="Fake GraniteChest" />
+  <item num="3704" name="Fake MarbleChest" />
+  <item num="3705" name="Fake newchest1" />
+  <item num="3706" name="Fake newchest2" />
+  <item num="3707" name="Projectile Pressure Pad" />
+  <item num="3708" name="Wall Creeper Statue" />
+  <item num="3709" name="Unicorn Statue" />
+  <item num="3710" name="Drippler Statue" />
+  <item num="3711" name="Wraith Statue" />
+  <item num="3712" name="Bone Skeleton Statue" />
+  <item num="3713" name="Undead Viking Statue" />
+  <item num="3714" name="Medusa Statue" />
+  <item num="3715" name="Harpy Statue" />
+  <item num="3716" name="Pigron Statue" />
+  <item num="3717" name="Hoplite Statue" />
+  <item num="3718" name="Granite Golem Statue" />
+  <item num="3719" name="Zombie Arm Statue" />
+  <item num="3720" name="Blood Zombie Statue" />
+  <item num="3721" name="Angler Tackle Bag" />
+  <item num="3722" name="Geyser Trap" />
+  <item num="3723" name="Ultra Bright Campfire" />
+  <item num="3724" name="Bone Campfire" />
+  <item num="3725" name="Pixel Box" />
+  <item num="3726" name="Logic Sensor Water" />
+  <item num="3727" name="Logic Sensor Lava" />
+  <item num="3728" name="Logic Sensor Honey" />
+  <item num="3729" name="Logic Sensor Liquid" />
 
   <global id="sky" color="#84AAF8" />
   <global id="earth" color="#583D2E" />
