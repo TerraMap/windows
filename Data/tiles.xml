@@ -1466,6 +1466,31 @@
     <var minu="36" name="Dynasty Grandfather Clock" color="#745354" />
   </tile>
   <tile num="105" name="Statue" color="#282828" hasExtra="1" letLight="1">
+    <var minv="54" minu="720" name="Blood Zombie Statue" />
+    <var minv="54" minu="684" name="Armed Zombie Statue" />
+    <var minv="54" minu="648" name="Granite Golem Statue" />
+    <var minv="54" minu="612" name="Hoplite Statue" />
+    <var minv="54" minu="576" name="Pigron Statue" />
+    <var minv="54" minu="540" name="Harpy Statue" />
+    <var minv="54" minu="504" name="Medusa Statue" />
+    <var minv="54" minu="468" name="Undead Viking Statue" />
+    <var minv="54" minu="432" name="Bone Skeleton Statue" />
+    <var minv="54" minu="396" name="Wraith Statue" />
+    <var minv="54" minu="360" name="Drippler Statue" />
+    <var minv="54" minu="324" name="Unicorn Statue" />
+    <var minv="54" minu="288" name="Wall Creeper Statue" />
+    <var minv="54" minu="252" name="Buggy Statue" />
+    <var minv="54" minu="216" name="Frog Statue" />
+    <var minv="54" minu="180" name="Penguin Statue" />
+    <var minv="54" minu="144" name="Duck Statue" />
+    <var minv="54" minu="108" name="Mouse Statue" />
+    <var minv="54" minu="72" name="Grasshopper Statue" />
+    <var minv="54" minu="36" name="Snail Statue" />
+    <var minv="54" minu="0" name="Scorpion Statue" />
+    <var minu="1944" name="Firefly Statue" />
+    <var minu="1908" name="Worm Statue" />
+    <var minu="1872" name="Butterfly Statue" />
+    <var minu="1836" name="Squirrel Statue" />
     <var minu="1800" name="Shark Statue" color="#909490" />
     <var minu="1764" name="Obsidian Vase" color="#545454" />
     <var minu="1728" name="Pink Dungeon Vase" color="#b97197" />
@@ -6368,5 +6393,6 @@
   <global id="wire1" color="#ac0205" />
   <global id="wire2" color="#0257ac" />
   <global id="wire3" color="#2fac02" />
+  <global id="wire4" color="#ffff00" />
 
 </tiles>
