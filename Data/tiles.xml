@@ -2283,6 +2283,23 @@
   <tile num="443" name="Geyser Trap" />
   <tile num="444" name="Bee Hive" />
   <tile num="445" name="Pixel Box" />
+
+  <!-- v1.3.2 -->
+  <tile num="446" name="SillyBalloonPink" />
+  <tile num="447" name="SillyBalloonPurple" />
+  <tile num="448" name="SillyBalloonGreen" />
+  <tile num="449" name="SillyStreamerBlue" />
+  <tile num="450" name="SillyStreamerGreen" />
+  <tile num="451" name="SillyStreamerPink" />
+  <tile num="452" name="SillyBalloonMachine" />
+  <tile num="453" name="SillyBalloonTile" />
+  <tile num="454" name="Pigronata" />
+  <tile num="455" name="PartyMonolith" />
+  <tile num="456" name="PartyBundleOfBalloonTile" />
+  <tile num="457" name="PartyPresent" />
+  <tile num="458" name="SandFallBlock" />
+  <tile num="459" name="SnowFallBlock" />
+  <tile num="460" name="SnowCloud" />
   
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
@@ -2513,6 +2530,14 @@
   <wall num="223" name="Desert Fossil Wall" color="#572612" />
   <wall num="224" name="Lunar Brick Wall" color="#262424" />
 
+  <!-- v1.3.2 -->
+  <wall num="225" name="CogWall" />
+  <wall num="226" name="SandFall" />
+  <wall num="227" name="SnowFall" />
+  <wall num="228" name="SillyBalloonPinkWall" />
+  <wall num="229" name="SillyBalloonPurpleWall" />
+  <wall num="230" name="SillyBalloonGreenWall" />
+  
   <prefix num="1" name="Large" />
   <prefix num="2" name="Massive" />
   <prefix num="3" name="Dangerous" />
@@ -2621,12 +2646,12 @@
   <item num="-27" name="Tin Shortsword" />
   <item num="-26" name="Tin Broadsword" />
   <item num="-25" name="Tin Pickaxe" />
-  <item num="-24" name="Yellow Phasesaber" />
-  <item num="-23" name="White Phasesaber" />
-  <item num="-22" name="Purple Phasesaber" />
-  <item num="-21" name="Green Phasesaber" />
-  <item num="-20" name="Red Phasesaber" />
-  <item num="-19" name="Blue Phasesaber" />
+  <item num="-24" name="Yellow Phasesaber (Old)" />
+  <item num="-23" name="White Phasesaber (Old)" />
+  <item num="-22" name="Purple Phasesaber (Old)" />
+  <item num="-21" name="Green Phasesaber (Old)" />
+  <item num="-20" name="Red Phasesaber (Old)" />
+  <item num="-19" name="Blue Phasesaber (Old)" />
   <item num="-18" name="Copper Bow" />
   <item num="-17" name="Copper Hammer" />
   <item num="-16" name="Copper Axe" />
@@ -6251,7 +6276,7 @@
   <item num="3605" name="Logic Gate NAND" />
   <item num="3606" name="Logic Gate NOR" />
   <item num="3607" name="Logic Gate XOR" />
-  <item num="3608" name="Logic Gate NXOR" />
+  <item num="3608" name="Logic Gate XNOR" />
   <item num="3609" name="Conveyor Belt Left" />
   <item num="3610" name="Conveyor Belt Right" />
   <item num="3611" name="Wire Kite" />
@@ -6374,6 +6399,48 @@
   <item num="3728" name="Logic Sensor Honey" />
   <item num="3729" name="Logic Sensor Liquid" />
 
+  <!-- v1.3.2 -->
+  <item num="3730" name="Party BundleOf Balloons Accessory" />
+  <item num="3731" name="Party Balloon Animal" />
+  <item num="3732" name="Party Hat" />
+  <item num="3733" name="Flower Boy Hat" />
+  <item num="3734" name="Flower Boy Shirt" />
+  <item num="3735" name="Flower Boy Pants" />
+  <item num="3736" name="Silly Balloon Pink" />
+  <item num="3737" name="Silly Balloon Purple" />
+  <item num="3738" name="Silly Balloon Green" />
+  <item num="3739" name="Silly Streamer Blue" />
+  <item num="3740" name="Silly Streamer Green" />
+  <item num="3741" name="Silly Streamer Pink" />
+  <item num="3742" name="Silly Balloon Machine" />
+  <item num="3743" name="Silly Balloon Tied Pink" />
+  <item num="3744" name="Silly Balloon Tied Purple" />
+  <item num="3745" name="Silly Balloon Tied Green" />
+  <item num="3746" name="Pigronata" />
+  <item num="3747" name="Party Monolith" />
+  <item num="3748" name="Party Bundle Of Balloon Tile" />
+  <item num="3749" name="Party Present" />
+  <item num="3750" name="Slice Of Cake" />
+  <item num="3751" name="Cog Wall" />
+  <item num="3752" name="Sand Fall Wall" />
+  <item num="3753" name="Snow Fall Wall" />
+  <item num="3754" name="Sand Fall Block" />
+  <item num="3755" name="Snow Fall Block" />
+  <item num="3756" name="Snow Cloud Block" />
+  <item num="3757" name="Pedguin Hat" />
+  <item num="3758" name="Pedguin Shirt" />
+  <item num="3759" name="Pedguin Pants" />
+  <item num="3760" name="Silly Balloon Pink Wall" />
+  <item num="3761" name="Silly Balloon Purple Wall" />
+  <item num="3762" name="Silly Balloon Green Wall" />
+  <item num="3763" name="Aviator Sunglasses" />
+  <item num="3764" name="Blue Phasesaber" />
+  <item num="3765" name="Red Phasesaber" />
+  <item num="3766" name="Green Phasesaber" />
+  <item num="3767" name="Purple Phasesaber" />
+  <item num="3768" name="White Phasesaber" />
+  <item num="3769" name="Yellow Phasesaber" />
+  
   <global id="sky" color="#84AAF8" />
   <global id="earth" color="#583D2E" />
   <global id="rock" color="#4A433C" />

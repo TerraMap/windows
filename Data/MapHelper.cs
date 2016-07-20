@@ -12,9 +12,9 @@ namespace TerraMap.Data
   // copied from Terraria.MapHelper
   public static class MapHelper
   {
-    static Color[][] tileColors = new Color[446][];
+    static Color[][] tileColors = new Color[461][];
     static Color[] liquidColors;
-    static Color[][] wallColors = new Color[225][];
+    static Color[][] wallColors = new Color[231][];
 
     public static int[] tileOptionCounts;
     public static int[] wallOptionCounts;
@@ -31,10 +31,10 @@ namespace TerraMap.Data
     private static ushort[] snowTypes;
     private static ushort wallRangeStart;
     private static ushort wallRangeEnd;
-    
+
     public static void Initialize()
     {
-      for (int i = 0; i < 446; i++)
+      for (int i = 0; i < tileColors.Length; i++)
       {
         tileColors[i] = new Color[12];
       }
@@ -639,14 +639,35 @@ namespace TerraMap.Data
       tileColors[420][0] = Color.FromRgb(99, 255, 107);
       tileColors[420][1] = Color.FromRgb(99, 255, 107);
       tileColors[420][4] = Color.FromRgb(99, 255, 107);
-      tileColors[420][2] = Color.FromRgb(218, 2, 252);
-      tileColors[420][3] = Color.FromRgb(218, 2, 252);
-      tileColors[420][5] = Color.FromRgb(218, 2, 252);
+      tileColors[420][2] = Color.FromRgb(218, 2, 5);
+      tileColors[420][3] = Color.FromRgb(218, 2, 5);
+      tileColors[420][5] = Color.FromRgb(218, 2, 5);
       tileColors[410][0] = Color.FromRgb(75, 139, 166);
       tileColors[412][0] = Color.FromRgb(75, 139, 166);
       tileColors[443][0] = Color.FromRgb(144, 148, 144);
       tileColors[442][0] = Color.FromRgb(3, 144, 201);
       tileColors[444][0] = Color.FromRgb(191, 176, 124);
+      tileColors[446][0] = Color.FromRgb(255, 66, 152);
+      tileColors[447][0] = Color.FromRgb(179, 132, 255);
+      tileColors[448][0] = Color.FromRgb(0, 206, 180);
+      tileColors[449][0] = Color.FromRgb(91, 186, 240);
+      tileColors[450][0] = Color.FromRgb(92, 240, 91);
+      tileColors[451][0] = Color.FromRgb(240, 91, 147);
+      tileColors[452][0] = Color.FromRgb(255, 150, 181);
+      tileColors[453][0] = Color.FromRgb(179, 132, 255);
+      tileColors[453][1] = Color.FromRgb(0, 206, 180);
+      tileColors[453][2] = Color.FromRgb(255, 66, 152);
+      tileColors[454][0] = Color.FromRgb(174, 16, 176);
+      tileColors[455][0] = Color.FromRgb(48, 225, 110);
+      tileColors[456][0] = Color.FromRgb(179, 132, 255);
+      tileColors[457][0] = Color.FromRgb(150, 164, 206);
+      tileColors[457][1] = Color.FromRgb(255, 132, 184);
+      tileColors[457][2] = Color.FromRgb(74, 255, 232);
+      tileColors[457][3] = Color.FromRgb(215, 159, 255);
+      tileColors[457][4] = Color.FromRgb(229, 219, 234);
+      tileColors[458][0] = Color.FromRgb(211, 198, 111);
+      tileColors[459][0] = Color.FromRgb(190, 223, 232);
+      tileColors[460][0] = Color.FromRgb(141, 163, 181);
       liquidColors = new Color[]
       {
         Color.FromRgb(9, 61, 191),
@@ -654,7 +675,7 @@ namespace TerraMap.Data
         Color.FromRgb(254, 194, 20)
       };
 
-      for (int j = 0; j < 225; j++)
+      for (int j = 0; j < wallColors.Length; j++)
       {
         wallColors[j] = new Color[2];
       }
@@ -674,6 +695,9 @@ namespace TerraMap.Data
       wallColors[153][0] = Color.FromRgb(255, 145, 79);
       wallColors[169][0] = Color.FromRgb(5, 5, 5);
       wallColors[224][0] = Color.FromRgb(57, 55, 52);
+      wallColors[225][0] = Color.FromRgb(68, 68, 68);
+      wallColors[226][0] = Color.FromRgb(148, 138, 74);
+      wallColors[227][0] = Color.FromRgb(95, 137, 191);
       wallColors[170][0] = Color.FromRgb(59, 39, 22);
       wallColors[171][0] = Color.FromRgb(59, 39, 22);
       color = Color.FromRgb(52, 52, 52);
@@ -888,6 +912,9 @@ namespace TerraMap.Data
       wallColors[214][0] = Color.FromRgb(76, 52, 60);
       wallColors[215][0] = Color.FromRgb(89, 48, 59);
       wallColors[223][0] = Color.FromRgb(51, 18, 4);
+      wallColors[228][0] = Color.FromRgb(160, 2, 75);
+      wallColors[229][0] = Color.FromRgb(100, 55, 164);
+      wallColors[230][0] = Color.FromRgb(0, 117, 101);
       Color[] array4 = new Color[256];
       Color color2 = Color.FromRgb(50, 40, 255);
       Color color3 = Color.FromRgb(145, 185, 255);
@@ -917,8 +944,8 @@ namespace TerraMap.Data
       }
       Color color7 = Color.FromRgb(50, 44, 38);
       int num7 = 0;
-      MapHelper.tileOptionCounts = new int[446];
-      for (int n = 0; n < 446; n++)
+      MapHelper.tileOptionCounts = new int[tileColors.Length];
+      for (int n = 0; n < tileColors.Length; n++)
       {
         Color[] array7 = tileColors[n];
         int num8 = 0;
@@ -929,8 +956,8 @@ namespace TerraMap.Data
         MapHelper.tileOptionCounts[n] = num8;
         num7 += num8;
       }
-      MapHelper.wallOptionCounts = new int[225];
-      for (int num9 = 0; num9 < 225; num9++)
+      MapHelper.wallOptionCounts = new int[wallColors.Length];
+      for (int num9 = 0; num9 < wallColors.Length; num9++)
       {
         Color[] array8 = wallColors[num9];
         int num10 = 0;
@@ -946,8 +973,8 @@ namespace TerraMap.Data
       MapHelper.colorLookup[0] = Colors.Transparent;
       ushort num11 = 1;
       MapHelper.tilePosition = num11;
-      MapHelper.tileLookup = new ushort[446];
-      for (int num12 = 0; num12 < 446; num12++)
+      MapHelper.tileLookup = new ushort[tileColors.Length];
+      for (int num12 = 0; num12 < tileColors.Length; num12++)
       {
         if (MapHelper.tileOptionCounts[num12] > 0)
         {
@@ -1038,379 +1065,379 @@ namespace TerraMap.Data
       return liquidColors[liquidType];
     }
 
-		private static byte[][] tileLight;
+    private static byte[][] tileLight;
 
-		public static bool IsTileLit(int x, int y)
-		{
-			return GetTileLight(x, y) > 0;
-		}
+    public static bool IsTileLit(int x, int y)
+    {
+      return GetTileLight(x, y) > 0;
+    }
 
-		public static void ResetTileLight()
-		{
-			tileLight = null;
-		}
+    public static void ResetTileLight()
+    {
+      tileLight = null;
+    }
 
     public static byte GetTileLight(int x, int y)
-		{
-			byte light = 0;
+    {
+      byte light = 0;
 
-			if (tileLight != null)
-				light = tileLight[x][y];
+      if (tileLight != null)
+        light = tileLight[x][y];
 
-			return light;
-		}
+      return light;
+    }
 
-		// Terraria.Map.MapHelper
-		public static void LoadMapVersion2(BinaryReader fileIO, World world)
-		{
-			var version = fileIO.ReadInt32();
+    // Terraria.Map.MapHelper
+    public static void LoadMapVersion2(BinaryReader fileIO, World world)
+    {
+      var version = fileIO.ReadInt32();
 
-			ulong check = fileIO.ReadUInt64();
-			if ((check & 72057594037927935uL) != 27981915666277746uL)
-			{
-				throw new FileFormatException("Expected Re-Logic file format.");
-			}
+      ulong check = fileIO.ReadUInt64();
+      if ((check & 72057594037927935uL) != 27981915666277746uL)
+      {
+        throw new FileFormatException("Expected Re-Logic file format.");
+      }
 
-			var revision = fileIO.ReadUInt32();
-			ulong favorite = fileIO.ReadUInt64();
-			var isFavorite = ((favorite & 1uL) == 1uL);
+      var revision = fileIO.ReadUInt32();
+      ulong favorite = fileIO.ReadUInt64();
+      var isFavorite = ((favorite & 1uL) == 1uL);
 
-			string a = fileIO.ReadString();
-			int num = fileIO.ReadInt32();
-			int num2 = fileIO.ReadInt32();
-			int num3 = fileIO.ReadInt32();
-			if (a != world.Name || num != world.Id || num3 != world.WorldWidthinTiles || num2 != world.WorldHeightinTiles)
-			{
-				throw new Exception("Map meta-data is invalid.");
-			}
+      string a = fileIO.ReadString();
+      int num = fileIO.ReadInt32();
+      int num2 = fileIO.ReadInt32();
+      int num3 = fileIO.ReadInt32();
+      if (a != world.Name || num != world.Id || num3 != world.WorldWidthinTiles || num2 != world.WorldHeightinTiles)
+      {
+        throw new Exception("Map meta-data is invalid.");
+      }
 
-			tileLight = new byte[world.WorldWidthinTiles][];
-			for(int i = 0; i < world.WorldWidthinTiles; i++)
-			{
-				tileLight[i] = new byte[world.WorldHeightinTiles];
-			}
+      tileLight = new byte[world.WorldWidthinTiles][];
+      for (int i = 0; i < world.WorldWidthinTiles; i++)
+      {
+        tileLight[i] = new byte[world.WorldHeightinTiles];
+      }
 
-			short num4 = fileIO.ReadInt16();
-			short num5 = fileIO.ReadInt16();
-			short num6 = fileIO.ReadInt16();
-			short num7 = fileIO.ReadInt16();
-			short num8 = fileIO.ReadInt16();
-			short num9 = fileIO.ReadInt16();
-			bool[] array = new bool[(int)num4];
-			byte b = 0;
-			byte b2 = 128;
-			for (int i = 0; i < (int)num4; i++)
-			{
-				if (b2 == 128)
-				{
-					b = fileIO.ReadByte();
-					b2 = 1;
-				}
-				else
-				{
-					b2 = (byte)(b2 << 1);
-				}
-				if ((b & b2) == b2)
-				{
-					array[i] = true;
-				}
-			}
-			bool[] array2 = new bool[(int)num5];
-			b = 0;
-			b2 = 128;
-			for (int i = 0; i < (int)num5; i++)
-			{
-				if (b2 == 128)
-				{
-					b = fileIO.ReadByte();
-					b2 = 1;
-				}
-				else
-				{
-					b2 = (byte)(b2 << 1);
-				}
-				if ((b & b2) == b2)
-				{
-					array2[i] = true;
-				}
-			}
-			byte[] array3 = new byte[(int)num4];
-			ushort num10 = 0;
-			for (int i = 0; i < (int)num4; i++)
-			{
-				if (array[i])
-				{
-					array3[i] = fileIO.ReadByte();
-				}
-				else
-				{
-					array3[i] = 1;
-				}
-				num10 += (ushort)array3[i];
-			}
-			byte[] array4 = new byte[(int)num5];
-			ushort num11 = 0;
-			for (int i = 0; i < (int)num5; i++)
-			{
-				if (array2[i])
-				{
-					array4[i] = fileIO.ReadByte();
-				}
-				else
-				{
-					array4[i] = 1;
-				}
-				num11 += (ushort)array4[i];
-			}
-			int num12 = (int)(num10 + num11 + (ushort)num6 + (ushort)num7 + (ushort)num8 + (ushort)num9 + 2);
-			ushort[] array5 = new ushort[num12];
-			array5[0] = 0;
-			ushort num13 = 1;
-			ushort num14 = 1;
-			ushort num15 = num14;
-			for (int i = 0; i < 446; i++)
-			{
-				if (i < (int)num4)
-				{
-					int num16 = (int)array3[i];
-					int num17 = MapHelper.tileOptionCounts[i];
-					for (int j = 0; j < num17; j++)
-					{
-						if (j < num16)
-						{
-							array5[(int)num14] = num13;
-							num14 += 1;
-						}
-						num13 += 1;
-					}
-				}
-				else
-				{
-					num13 += (ushort)MapHelper.tileOptionCounts[i];
-				}
-			}
-			ushort num18 = num14;
-			for (int i = 0; i < 225; i++)
-			{
-				if (i < (int)num5)
-				{
-					int num19 = (int)array4[i];
-					int num20 = MapHelper.wallOptionCounts[i];
-					for (int k = 0; k < num20; k++)
-					{
-						if (k < num19)
-						{
-							array5[(int)num14] = num13;
-							num14 += 1;
-						}
-						num13 += 1;
-					}
-				}
-				else
-				{
-					num13 += (ushort)MapHelper.wallOptionCounts[i];
-				}
-			}
-			ushort num21 = num14;
-			for (int i = 0; i < 3; i++)
-			{
-				if (i < (int)num6)
-				{
-					array5[(int)num14] = num13;
-					num14 += 1;
-				}
-				num13 += 1;
-			}
-			ushort num22 = num14;
-			for (int i = 0; i < 256; i++)
-			{
-				if (i < (int)num7)
-				{
-					array5[(int)num14] = num13;
-					num14 += 1;
-				}
-				num13 += 1;
-			}
-			ushort num23 = num14;
-			for (int i = 0; i < 256; i++)
-			{
-				if (i < (int)num8)
-				{
-					array5[(int)num14] = num13;
-					num14 += 1;
-				}
-				num13 += 1;
-			}
-			ushort num24 = num14;
-			for (int i = 0; i < 256; i++)
-			{
-				if (i < (int)num9)
-				{
-					array5[(int)num14] = num13;
-					num14 += 1;
-				}
-				num13 += 1;
-			}
-			ushort num25 = num14;
-			array5[(int)num14] = num13;
-			BinaryReader binaryReader;
+      short num4 = fileIO.ReadInt16();
+      short num5 = fileIO.ReadInt16();
+      short num6 = fileIO.ReadInt16();
+      short num7 = fileIO.ReadInt16();
+      short num8 = fileIO.ReadInt16();
+      short num9 = fileIO.ReadInt16();
+      bool[] array = new bool[(int)num4];
+      byte b = 0;
+      byte b2 = 128;
+      for (int i = 0; i < (int)num4; i++)
+      {
+        if (b2 == 128)
+        {
+          b = fileIO.ReadByte();
+          b2 = 1;
+        }
+        else
+        {
+          b2 = (byte)(b2 << 1);
+        }
+        if ((b & b2) == b2)
+        {
+          array[i] = true;
+        }
+      }
+      bool[] array2 = new bool[(int)num5];
+      b = 0;
+      b2 = 128;
+      for (int i = 0; i < (int)num5; i++)
+      {
+        if (b2 == 128)
+        {
+          b = fileIO.ReadByte();
+          b2 = 1;
+        }
+        else
+        {
+          b2 = (byte)(b2 << 1);
+        }
+        if ((b & b2) == b2)
+        {
+          array2[i] = true;
+        }
+      }
+      byte[] array3 = new byte[(int)num4];
+      ushort num10 = 0;
+      for (int i = 0; i < (int)num4; i++)
+      {
+        if (array[i])
+        {
+          array3[i] = fileIO.ReadByte();
+        }
+        else
+        {
+          array3[i] = 1;
+        }
+        num10 += (ushort)array3[i];
+      }
+      byte[] array4 = new byte[(int)num5];
+      ushort num11 = 0;
+      for (int i = 0; i < (int)num5; i++)
+      {
+        if (array2[i])
+        {
+          array4[i] = fileIO.ReadByte();
+        }
+        else
+        {
+          array4[i] = 1;
+        }
+        num11 += (ushort)array4[i];
+      }
+      int num12 = (int)(num10 + num11 + (ushort)num6 + (ushort)num7 + (ushort)num8 + (ushort)num9 + 2);
+      ushort[] array5 = new ushort[num12];
+      array5[0] = 0;
+      ushort num13 = 1;
+      ushort num14 = 1;
+      ushort num15 = num14;
+      for (int i = 0; i < tileOptionCounts.Length; i++)
+      {
+        if (i < (int)num4)
+        {
+          int num16 = (int)array3[i];
+          int num17 = MapHelper.tileOptionCounts[i];
+          for (int j = 0; j < num17; j++)
+          {
+            if (j < num16)
+            {
+              array5[(int)num14] = num13;
+              num14 += 1;
+            }
+            num13 += 1;
+          }
+        }
+        else
+        {
+          num13 += (ushort)MapHelper.tileOptionCounts[i];
+        }
+      }
+      ushort num18 = num14;
+      for (int i = 0; i < wallOptionCounts.Length; i++)
+      {
+        if (i < (int)num5)
+        {
+          int num19 = (int)array4[i];
+          int num20 = MapHelper.wallOptionCounts[i];
+          for (int k = 0; k < num20; k++)
+          {
+            if (k < num19)
+            {
+              array5[(int)num14] = num13;
+              num14 += 1;
+            }
+            num13 += 1;
+          }
+        }
+        else
+        {
+          num13 += (ushort)MapHelper.wallOptionCounts[i];
+        }
+      }
+      ushort num21 = num14;
+      for (int i = 0; i < 3; i++)
+      {
+        if (i < (int)num6)
+        {
+          array5[(int)num14] = num13;
+          num14 += 1;
+        }
+        num13 += 1;
+      }
+      ushort num22 = num14;
+      for (int i = 0; i < 256; i++)
+      {
+        if (i < (int)num7)
+        {
+          array5[(int)num14] = num13;
+          num14 += 1;
+        }
+        num13 += 1;
+      }
+      ushort num23 = num14;
+      for (int i = 0; i < 256; i++)
+      {
+        if (i < (int)num8)
+        {
+          array5[(int)num14] = num13;
+          num14 += 1;
+        }
+        num13 += 1;
+      }
+      ushort num24 = num14;
+      for (int i = 0; i < 256; i++)
+      {
+        if (i < (int)num9)
+        {
+          array5[(int)num14] = num13;
+          num14 += 1;
+        }
+        num13 += 1;
+      }
+      ushort num25 = num14;
+      array5[(int)num14] = num13;
+      BinaryReader binaryReader;
 
-			DeflateStream input = new DeflateStream(fileIO.BaseStream, CompressionMode.Decompress);
-			binaryReader = new BinaryReader(input);
-			
-			for (int y = 0; y < world.WorldHeightinTiles; y++)
-			{
-				float num26 = (float)y / (float)world.WorldHeightinTiles;
+      DeflateStream input = new DeflateStream(fileIO.BaseStream, CompressionMode.Decompress);
+      binaryReader = new BinaryReader(input);
 
-				for (int x = 0; x < world.WorldWidthinTiles; x++)
-				{
-					byte b3 = binaryReader.ReadByte();
-					byte b4;
-					if ((b3 & 1) == 1)
-					{
-						b4 = binaryReader.ReadByte();
-					}
-					else
-					{
-						b4 = 0;
-					}
-					byte b5 = (byte)((b3 & 14) >> 1);
-					bool flag;
-					switch (b5)
-					{
-						case 0:
-							flag = false;
-							break;
-						case 1:
-						case 2:
-						case 7:
-							flag = true;
-							break;
-						case 3:
-						case 4:
-						case 5:
-							flag = false;
-							break;
-						case 6:
-							flag = false;
-							break;
-						default:
-							flag = false;
-							break;
-					}
-					ushort num27;
-					if (flag)
-					{
-						if ((b3 & 16) == 16)
-						{
-							num27 = binaryReader.ReadUInt16();
-						}
-						else
-						{
-							num27 = (ushort)binaryReader.ReadByte();
-						}
-					}
-					else
-					{
-						num27 = 0;
-					}
-					byte b6;
-					if ((b3 & 32) == 32)
-					{
-						b6 = binaryReader.ReadByte();
-					}
-					else
-					{
-						b6 = 255;
-					}
-					int n;
-					switch ((byte)((b3 & 192) >> 6))
-					{
-						case 0:
-							n = 0;
-							break;
-						case 1:
-							n = (int)binaryReader.ReadByte();
-							break;
-						case 2:
-							n = (int)binaryReader.ReadInt16();
-							break;
-						default:
-							n = 0;
-							break;
-					}
-					if (b5 == 0)
-					{
-						x += n;
-					}
-					else
-					{
-						switch (b5)
-						{
-							case 1:
-								num27 += num15;
-								break;
-							case 2:
-								num27 += num18;
-								break;
-							case 3:
-							case 4:
-							case 5:
-								num27 = (ushort)(num27 + num21 + (ushort)(b5 - 3));
-								break;
-							case 6:
-								if ((double)y < world.WorldSurfaceY)
-								{
-									ushort num28 = (ushort)((double)num7 * ((double)y / world.WorldSurfaceY));
-									num27 = (ushort)(num27 + num22 + num28);
-								}
-								else
-								{
-									num27 = num25;
-								}
-								break;
-							case 7:
-								if ((double)y < world.RockLayerY)
-								{
-									num27 += num23;
-								}
-								else
-								{
-									num27 += num24;
-								}
-								break;
-						}
-						
-						tileLight[x][y] = b6;
+      for (int y = 0; y < world.WorldHeightinTiles; y++)
+      {
+        float num26 = (float)y / (float)world.WorldHeightinTiles;
 
-						//MapTile mapTile = MapTile.Create(array5[(int)num27], b6, (byte)(b4 >> 1 & 31));
-						//Main.Map.SetTile(x, y, ref mapTile);
-						if (b6 == 255)
-						{
-							while (n > 0)
-							{
-								x++;
-								//Main.Map.SetTile(x, y, ref mapTile);
-								tileLight[x][y] = 255;
-								n--;
-							}
-						}
-						else
-						{
-							while (n > 0)
-							{
-								x++;
-								var light = binaryReader.ReadByte();
-								tileLight[x][y] = light;
-								//mapTile = mapTile.WithLight(binaryReader.ReadByte());
-								//Main.Map.SetTile(x, y, ref mapTile);
-								n--;
-							}
-						}
-					}
-				}
-			}
-			binaryReader.Close();
-		}
-	}
+        for (int x = 0; x < world.WorldWidthinTiles; x++)
+        {
+          byte b3 = binaryReader.ReadByte();
+          byte b4;
+          if ((b3 & 1) == 1)
+          {
+            b4 = binaryReader.ReadByte();
+          }
+          else
+          {
+            b4 = 0;
+          }
+          byte b5 = (byte)((b3 & 14) >> 1);
+          bool flag;
+          switch (b5)
+          {
+            case 0:
+              flag = false;
+              break;
+            case 1:
+            case 2:
+            case 7:
+              flag = true;
+              break;
+            case 3:
+            case 4:
+            case 5:
+              flag = false;
+              break;
+            case 6:
+              flag = false;
+              break;
+            default:
+              flag = false;
+              break;
+          }
+          ushort num27;
+          if (flag)
+          {
+            if ((b3 & 16) == 16)
+            {
+              num27 = binaryReader.ReadUInt16();
+            }
+            else
+            {
+              num27 = (ushort)binaryReader.ReadByte();
+            }
+          }
+          else
+          {
+            num27 = 0;
+          }
+          byte b6;
+          if ((b3 & 32) == 32)
+          {
+            b6 = binaryReader.ReadByte();
+          }
+          else
+          {
+            b6 = 255;
+          }
+          int n;
+          switch ((byte)((b3 & 192) >> 6))
+          {
+            case 0:
+              n = 0;
+              break;
+            case 1:
+              n = (int)binaryReader.ReadByte();
+              break;
+            case 2:
+              n = (int)binaryReader.ReadInt16();
+              break;
+            default:
+              n = 0;
+              break;
+          }
+          if (b5 == 0)
+          {
+            x += n;
+          }
+          else
+          {
+            switch (b5)
+            {
+              case 1:
+                num27 += num15;
+                break;
+              case 2:
+                num27 += num18;
+                break;
+              case 3:
+              case 4:
+              case 5:
+                num27 = (ushort)(num27 + num21 + (ushort)(b5 - 3));
+                break;
+              case 6:
+                if ((double)y < world.WorldSurfaceY)
+                {
+                  ushort num28 = (ushort)((double)num7 * ((double)y / world.WorldSurfaceY));
+                  num27 = (ushort)(num27 + num22 + num28);
+                }
+                else
+                {
+                  num27 = num25;
+                }
+                break;
+              case 7:
+                if ((double)y < world.RockLayerY)
+                {
+                  num27 += num23;
+                }
+                else
+                {
+                  num27 += num24;
+                }
+                break;
+            }
+
+            tileLight[x][y] = b6;
+
+            //MapTile mapTile = MapTile.Create(array5[(int)num27], b6, (byte)(b4 >> 1 & 31));
+            //Main.Map.SetTile(x, y, ref mapTile);
+            if (b6 == 255)
+            {
+              while (n > 0)
+              {
+                x++;
+                //Main.Map.SetTile(x, y, ref mapTile);
+                tileLight[x][y] = 255;
+                n--;
+              }
+            }
+            else
+            {
+              while (n > 0)
+              {
+                x++;
+                var light = binaryReader.ReadByte();
+                tileLight[x][y] = light;
+                //mapTile = mapTile.WithLight(binaryReader.ReadByte());
+                //Main.Map.SetTile(x, y, ref mapTile);
+                n--;
+              }
+            }
+          }
+        }
+      }
+      binaryReader.Close();
+    }
+  }
 }

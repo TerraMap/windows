@@ -1485,9 +1485,16 @@ namespace TerraMap
         e.CanExecute = true;
     }
 
-    private void OnExportHighlightedTilePositionsExecuted(object sender, ExecutedRoutedEventArgs e)
+    private async void OnExportHighlightedTilePositionsExecuted(object sender, ExecutedRoutedEventArgs e)
     {
-      this.ExportHighlightedTilePositions();
+      try
+      {
+        await this.ExportHighlightedTilePositions();
+      }
+      catch(Exception ex)
+      {
+        HandleException(ex);
+      }
     }
 
     private void OnRefreshCanExecute(object sender, CanExecuteRoutedEventArgs e)
