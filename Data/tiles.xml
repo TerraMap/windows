@@ -2285,21 +2285,21 @@
   <tile num="445" name="Pixel Box" />
 
   <!-- v1.3.2 -->
-  <tile num="446" name="SillyBalloonPink" />
-  <tile num="447" name="SillyBalloonPurple" />
-  <tile num="448" name="SillyBalloonGreen" />
-  <tile num="449" name="SillyStreamerBlue" />
-  <tile num="450" name="SillyStreamerGreen" />
-  <tile num="451" name="SillyStreamerPink" />
-  <tile num="452" name="SillyBalloonMachine" />
-  <tile num="453" name="SillyBalloonTile" />
+  <tile num="446" name="Silly Balloon Pink" />
+  <tile num="447" name="Silly Balloon Purple" />
+  <tile num="448" name="Silly Balloon Green" />
+  <tile num="449" name="Silly Streamer Blue" />
+  <tile num="450" name="Silly Streamer Green" />
+  <tile num="451" name="Silly Streamer Pink" />
+  <tile num="452" name="Silly Balloon Machine" />
+  <tile num="453" name="Silly Balloon Tile" />
   <tile num="454" name="Pigronata" />
-  <tile num="455" name="PartyMonolith" />
-  <tile num="456" name="PartyBundleOfBalloonTile" />
-  <tile num="457" name="PartyPresent" />
-  <tile num="458" name="SandFallBlock" />
-  <tile num="459" name="SnowFallBlock" />
-  <tile num="460" name="SnowCloud" />
+  <tile num="455" name="Party Monolith" />
+  <tile num="456" name="Party Bundle Of Balloon Tile" />
+  <tile num="457" name="Party Present" />
+  <tile num="458" name="Sand Fall Block" />
+  <tile num="459" name="Snow Fall Block" />
+  <tile num="460" name="Snow Cloud" />
   
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
@@ -6400,7 +6400,7 @@
   <item num="3729" name="Logic Sensor Liquid" />
 
   <!-- v1.3.2 -->
-  <item num="3730" name="Party BundleOf Balloons Accessory" />
+  <item num="3730" name="Party Bundle Of Balloons Accessory" />
   <item num="3731" name="Party Balloon Animal" />
   <item num="3732" name="Party Hat" />
   <item num="3733" name="Flower Boy Hat" />
