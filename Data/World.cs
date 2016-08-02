@@ -700,6 +700,10 @@ namespace TerraMap.Data
       this.Properties.Add(new WorldProperty() { Name = "PartyGenuine", Value = reader.ReadBoolean() });
       this.Properties.Add(new WorldProperty() { Name = "PartyCooldown", Value = reader.ReadInt32() });
       int num3 = reader.ReadInt32();
+      for (int k = 0; k < num3; k++)
+      {
+        reader.ReadInt32();
+      }
     }
 
     private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
