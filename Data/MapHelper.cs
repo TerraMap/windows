@@ -12,7 +12,7 @@ namespace TerraMap.Data
   // copied from Terraria.MapHelper
   public static class MapHelper
   {
-    static Color[][] tileColors = new Color[461][];
+    static Color[][] tileColors = new Color[463][];
     static Color[] liquidColors;
     static Color[][] wallColors = new Color[231][];
 
@@ -543,6 +543,7 @@ namespace TerraMap.Data
       tileColors[373][0] = Color.FromRgb(9, 61, 191);
       tileColors[374][0] = Color.FromRgb(253, 32, 3);
       tileColors[375][0] = Color.FromRgb(255, 156, 12);
+      tileColors[461][0] = Color.FromRgb(255, 222, 100);
       tileColors[323][0] = Color.FromRgb(182, 141, 86);
       tileColors[325][0] = Color.FromRgb(129, 125, 93);
       tileColors[326][0] = Color.FromRgb(9, 61, 191);
@@ -668,6 +669,7 @@ namespace TerraMap.Data
       tileColors[458][0] = Color.FromRgb(211, 198, 111);
       tileColors[459][0] = Color.FromRgb(190, 223, 232);
       tileColors[460][0] = Color.FromRgb(141, 163, 181);
+      tileColors[462][0] = Color.FromRgb(231, 178, 28);
       liquidColors = new Color[]
       {
         Color.FromRgb(9, 61, 191),
@@ -1049,8 +1051,13 @@ namespace TerraMap.Data
 
     public static Color GetTileColor(ushort tileType, short u, short v)
     {
-      if (tileType >= tileColors.Count())
+      if (tileType >= tileColors.Length)
         return Colors.Black;
+
+      var iu = u / 34;
+
+      if (iu < tileColors[tileType].Length)
+        return tileColors[tileType][iu];
 
       return tileColors[tileType][0];
     }

@@ -309,7 +309,7 @@ namespace TerraMap.Data
         RaisePropertyChanged();
       }
     }
-    
+
     private ObservableCollection<WorldProperty> properties = new ObservableCollection<WorldProperty>();
 
     [PropertyInfo(ignore: true)]
@@ -322,7 +322,7 @@ namespace TerraMap.Data
         RaisePropertyChanged();
       }
     }
-    
+
     [PropertyInfo(ignore: true)]
     public int HellLayerY { get; set; }
 
@@ -480,7 +480,7 @@ namespace TerraMap.Data
         {
           throw new FileFormatException("Expected Re-Logic file format.");
         }
-        
+
         this.Properties.Add(new WorldProperty() { Name = "Revision", Value = reader.ReadUInt32() });
 
         ulong num2 = reader.ReadUInt64();
@@ -515,7 +515,7 @@ namespace TerraMap.Data
         }
       }
     }
-    
+
     public Task ReadHeaderAsync(string filename)
     {
       return Task.Factory.StartNew(() =>
@@ -704,6 +704,14 @@ namespace TerraMap.Data
       {
         reader.ReadInt32();
       }
+
+      if (Version < 174)
+        return;
+
+      this.Properties.Add(new WorldProperty() { Name = "Sandstorm Happening", Value = reader.ReadBoolean() });
+      this.Properties.Add(new WorldProperty() { Name = "Sandstorm TimeLeft", Value = reader.ReadInt32() });
+      this.Properties.Add(new WorldProperty() { Name = "Sandstorm Severity", Value = reader.ReadSingle() });
+      this.Properties.Add(new WorldProperty() { Name = "Sandstorm IntendedSeverity", Value = reader.ReadSingle() });
     }
 
     private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
@@ -1435,9 +1443,6 @@ namespace TerraMap.Data
 
     public bool IsTileMatch(IEnumerable<ObjectInfoViewModel> objectTypesToHighlight, int x, int y, Tile tile, TileHitTestInfo currentTile = null)
     {
-      if (x == 2090 && y == 210)
-        Debug.WriteLine("");
-
       if (objectTypesToHighlight == null)
         return true;
 

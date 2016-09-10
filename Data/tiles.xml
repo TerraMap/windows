@@ -1824,7 +1824,7 @@
   <tile num="224" name="Slush" color="#7e989d" solid="1" blend="147" />
   <tile num="225" name="Hive" color="#c86c10" solid="1" blend="59" merge="1" />
   <tile num="226" name="Lihzahrd Brick" color="#8d3800" solid="1" blend="59" merge="1" />
-  <tile num="227" name="Dye Flowers" color="#46bb93" hasExtra="1" letLight="1">
+  <tile num="227" name="Dye Flowers" hasExtra="1" letLight="1">
     <var u="0" name="Teal Mushroom" color="#46bb93" />
     <var u="34" name="Green Mushroom" color="#1a823e" />
     <var u="68" name="Sky Blue Flower" color="#1e4e8c" />
@@ -1833,10 +1833,10 @@
     <var u="170" name="Lime Kelp" color="#2d4400" />
     <var u="204" name="Pink Prickly Pear" color="#d87098" />
     <var u="238" name="Orange Bloodroot" color="#b04747" />
-    <var u="272" name="Strange Plant 1" color="#322242" />
-    <var u="326" name="Strange Plant 2" color="#EB8902" />
-    <var u="380" name="Strange Plant 3" color="#299887" />
-    <var u="434" name="Strange Plant 4" color="#9B002F" />
+    <var u="272" name="Strange Plant 1" />
+    <var u="306" name="Strange Plant 2" />
+    <var u="340" name="Strange Plant 3" />
+    <var u="374" name="Strange Plant 4" />
   </tile>
   <tile num="228" name="Dye Vat" color="#a87858" hasExtra="1" letLight="1" />
   <tile num="229" name="Honey" color="#ff9c0c" solid="1" blend="0" merge="1" />
@@ -2300,6 +2300,10 @@
   <tile num="458" name="Sand Fall Block" />
   <tile num="459" name="Snow Fall Block" />
   <tile num="460" name="Snow Cloud" />
+  
+  <!-- v1.3.3 -->
+  <tile num="461" name="Sand Drip" />
+  <tile num="462" name="Desert Spirit Lamp" />
   
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
@@ -6440,6 +6444,35 @@
   <item num="3767" name="Purple Phasesaber" />
   <item num="3768" name="White Phasesaber" />
   <item num="3769" name="Yellow Phasesaber" />
+
+  <!-- v1.3.3 -->
+  <item num="3770" name="DjinnsCurse" />
+  <item num="3771" name="AncientHorn" />
+  <item num="3772" name="AntlionClaw" />
+  <item num="3773" name="AncientArmorHat" />
+  <item num="3774" name="AncientArmorShirt" />
+  <item num="3775" name="AncientArmorPants" />
+  <item num="3776" name="AncientBattleArmorHat" />
+  <item num="3777" name="AncientBattleArmorShirt" />
+  <item num="3778" name="AncientBattleArmorPants" />
+  <item num="3779" name="SpiritFlame" />
+  <item num="3780" name="SandElementalBanner" />
+  <item num="3781" name="PocketMirror" />
+  <item num="3782" name="MagicSandDropper" />
+  <item num="3783" name="AncientBattleArmorMaterial" />
+  <item num="3784" name="LamiaPants" />
+  <item num="3785" name="LamiaShirt" />
+  <item num="3786" name="LamiaHat" />
+  <item num="3787" name="SkyFracture" />
+  <item num="3788" name="OnyxBlaster" />
+  <item num="3789" name="SandsharkBanner" />
+  <item num="3790" name="SandsharkCorruptBanner" />
+  <item num="3791" name="SandsharkCrimsonBanner" />
+  <item num="3792" name="SandsharkHallowedBanner" />
+  <item num="3793" name="TumbleweedBanner" />
+  <item num="3794" name="AncientCloth" />
+  <item num="3795" name="DjinnLamp" />
+  <item num="3796" name="MusicBoxSandstorm" />
   
   <global id="sky" color="#84AAF8" />
   <global id="earth" color="#583D2E" />
