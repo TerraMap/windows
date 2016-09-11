@@ -2300,11 +2300,11 @@
   <tile num="458" name="Sand Fall Block" />
   <tile num="459" name="Snow Fall Block" />
   <tile num="460" name="Snow Cloud" />
-  
+
   <!-- v1.3.3 -->
   <tile num="461" name="Sand Drip" />
   <tile num="462" name="Desert Spirit Lamp" />
-  
+
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
   <wall num="3" name="Stone Wall" color="#3D3A4E" />
@@ -2541,7 +2541,7 @@
   <wall num="228" name="SillyBalloonPinkWall" />
   <wall num="229" name="SillyBalloonPurpleWall" />
   <wall num="230" name="SillyBalloonGreenWall" />
-  
+
   <prefix num="1" name="Large" />
   <prefix num="2" name="Massive" />
   <prefix num="3" name="Dangerous" />
@@ -2626,54 +2626,55 @@
   <prefix num="82" name="Unreal" />
   <prefix num="83" name="Mythical" />
 
-  <item num="-48" name="Platinum Bow" />
-  <item num="-47" name="Platinum Hammer" />
-  <item num="-46" name="Platinum Axe" />
-  <item num="-45" name="Platinum Shortsword" />
-  <item num="-44" name="Platinum Broadsword" />
-  <item num="-43" name="Platinum Pickaxe" />
-  <item num="-42" name="Tungsten Bow" />
-  <item num="-41" name="Tungsten Hammer" />
-  <item num="-40" name="Tungsten Axe" />
-  <item num="-39" name="Tungsten Shortsword" />
-  <item num="-38" name="Tungsten Broadsword" />
-  <item num="-37" name="Tungsten Pickaxe" />
-  <item num="-36" name="Lead Bow" />
-  <item num="-35" name="Lead Hammer" />
-  <item num="-34" name="Lead Axe" />
-  <item num="-33" name="Lead Shortsword" />
-  <item num="-32" name="Lead Broadsword" />
-  <item num="-31" name="Lead Pickaxe" />
-  <item num="-30" name="Tin Bow" />
-  <item num="-29" name="Tin Hammer" />
-  <item num="-28" name="Tin Axe" />
-  <item num="-27" name="Tin Shortsword" />
-  <item num="-26" name="Tin Broadsword" />
-  <item num="-25" name="Tin Pickaxe" />
-  <item num="-24" name="Yellow Phasesaber (Old)" />
-  <item num="-23" name="White Phasesaber (Old)" />
-  <item num="-22" name="Purple Phasesaber (Old)" />
-  <item num="-21" name="Green Phasesaber (Old)" />
-  <item num="-20" name="Red Phasesaber (Old)" />
-  <item num="-19" name="Blue Phasesaber (Old)" />
-  <item num="-18" name="Copper Bow" />
-  <item num="-17" name="Copper Hammer" />
-  <item num="-16" name="Copper Axe" />
-  <item num="-15" name="Copper Shortsword" />
-  <item num="-14" name="Copper Broadsword" />
-  <item num="-13" name="Copper Pickaxe" />
-  <item num="-12" name="Silver Bow" />
-  <item num="-11" name="Silver Hammer" />
-  <item num="-10" name="Silver Axe" />
-  <item num="-9" name="Silver Shortsword" />
-  <item num="-8" name="Silver Broadsword" />
-  <item num="-7" name="Silver Pickaxe" />
-  <item num="-6" name="Gold Bow" />
-  <item num="-5" name="Gold Hammer" />
-  <item num="-4" name="Gold Axe" />
-  <item num="-3" name="Gold Shortsword" />
-  <item num="-2" name="Gold Broadsword" />
-  <item num="-1" name="Gold Pickaxe" />
+  <item num="-48" name="Platinum Bow Old" />
+  <item num="-47" name="Platinum Hammer Old" />
+  <item num="-46" name="Platinum Axe Old" />
+  <item num="-45" name="Platinum Shortsword Old" />
+  <item num="-44" name="Platinum Broadsword Old" />
+  <item num="-43" name="Platinum Pickaxe Old" />
+  <item num="-42" name="Tungsten Bow Old" />
+  <item num="-41" name="Tungsten Hammer Old" />
+  <item num="-40" name="Tungsten Axe Old" />
+  <item num="-39" name="Tungsten Shortsword Old" />
+  <item num="-38" name="Tungsten Broadsword Old" />
+  <item num="-37" name="Tungsten Pickaxe Old" />
+  <item num="-36" name="Lead Bow Old" />
+  <item num="-35" name="Lead Hammer Old" />
+  <item num="-34" name="Lead Axe Old" />
+  <item num="-33" name="Lead Shortsword Old" />
+  <item num="-32" name="Lead Broadsword Old" />
+  <item num="-31" name="Lead Pickaxe Old" />
+  <item num="-30" name="Tin Bow Old" />
+  <item num="-29" name="Tin Hammer Old" />
+  <item num="-28" name="Tin Axe Old" />
+  <item num="-27" name="Tin Shortsword Old" />
+  <item num="-26" name="Tin Broadsword Old" />
+  <item num="-25" name="Tin Pickaxe Old" />
+  <item num="-24" name="Yellow Phasesaber Old" />
+  <item num="-23" name="White Phasesaber Old" />
+  <item num="-22" name="Purple Phasesaber Old" />
+  <item num="-21" name="Green Phasesaber Old" />
+  <item num="-20" name="Red Phasesaber Old" />
+  <item num="-19" name="Blue Phasesaber Old" />
+  <item num="-18" name="Copper Bow Old" />
+  <item num="-17" name="Copper Hammer Old" />
+  <item num="-16" name="Copper Axe Old" />
+  <item num="-15" name="Copper Shortsword Old" />
+  <item num="-14" name="Copper Broadsword Old" />
+  <item num="-13" name="Copper Pickaxe Old" />
+  <item num="-12" name="Silver Bow Old" />
+  <item num="-11" name="Silver Hammer Old" />
+  <item num="-10" name="Silver Axe Old" />
+  <item num="-9" name="Silver Shortsword Old" />
+  <item num="-8" name="Silver Broadsword Old" />
+  <item num="-7" name="Silver Pickaxe Old" />
+  <item num="-6" name="Gold Bow Old" />
+  <item num="-5" name="Gold Hammer Old" />
+  <item num="-4" name="Gold Axe Old" />
+  <item num="-3" name="Gold Shortsword Old" />
+  <item num="-2" name="Gold Broadsword Old" />
+  <item num="-1" name="Gold Pickaxe Old" />
+  
   <item num="1" name="Iron Pickaxe" />
   <item num="2" name="Dirt Block" />
   <item num="3" name="Stone Block" />
@@ -2800,7 +2801,7 @@
   <item num="124" name="Meteor Suit" />
   <item num="125" name="Meteor Leggings" />
   <item num="126" name="Bottled Water" />
-  <item num="126" name="Space Gun" />
+  <item num="127" name="Space Gun" />
   <item num="128" name="Rocket Boots" />
   <item num="129" name="Gray Brick" />
   <item num="130" name="Gray Brick Wall" />
@@ -4294,7 +4295,7 @@
   <item num="1618" name="Antlion Banner" />
   <item num="1619" name="Arapaima Banner" />
   <item num="1620" name="Armored Skeleton Banner" />
-  <item num="1621" name="Bat Banner" />
+  <item num="1621" name="Cave Bat Banner" />
   <item num="1622" name="Bird Banner" />
   <item num="1623" name="Black Recluse Banner" />
   <item num="1624" name="Blood Feeder Banner" />
@@ -4338,7 +4339,7 @@
   <item num="1662" name="Ice Elemental Banner" />
   <item num="1663" name="Icy Merman Banner" />
   <item num="1664" name="Fire Imp Banner" />
-  <item num="1665" name="Jellyfish Banner" />
+  <item num="1665" name="Blue Jellyfish Banner" />
   <item num="1666" name="Jungle Creeper Banner" />
   <item num="1667" name="Lihzahrd Banner" />
   <item num="1668" name="Man Eater Banner" />
@@ -4349,19 +4350,19 @@
   <item num="1673" name="Parrot Banner" />
   <item num="1674" name="Pigron Banner" />
   <item num="1675" name="Piranha Banner" />
-  <item num="1676" name="Pirate Banner" />
+  <item num="1676" name="Pirate Deckhand Banner" />
   <item num="1677" name="Pixie Banner" />
   <item num="1678" name="Raincoat Zombie Banner" />
   <item num="1679" name="Reaper Banner" />
   <item num="1680" name="Shark Banner" />
   <item num="1681" name="Skeleton Banner" />
-  <item num="1682" name="Skeleton Mage Banner" />
+  <item num="1682" name="Dark Caster Banner" />
   <item num="1683" name="Blue Slime Banner" />
   <item num="1684" name="Snow Flinx Banner" />
-  <item num="1685" name="Spider Banner" />
+  <item num="1685" name="Wall Creeper Banner" />
   <item num="1686" name="Spore Zombie Banner" />
   <item num="1687" name="Swamp Thing Banner" />
-  <item num="1688" name="Tortoise Banner" />
+  <item num="1688" name="Giant Tortoise Banner" />
   <item num="1689" name="Toxic Sludge Banner" />
   <item num="1690" name="Umbrella Slime Banner" />
   <item num="1691" name="Unicorn Banner" />
@@ -6058,6 +6059,9 @@
   <item num="3382" name="Stardust Plate" />
   <item num="3383" name="Stardust Leggings" />
   <item num="3384" name="Portal Gun" />
+  <item num="3385" name="Strange Plant" />
+  <item num="3386" name="Strange Plant" />
+  <item num="3387" name="Strange Plant" />
   <item num="3388" name="Strange Plant" />
   <item num="3389" name="Terrarian" />
   <item num="3390" name="Goblin Summoner Banner" />
@@ -6090,7 +6094,7 @@
   <item num="3417" name="Desert Spirit Banner" />
   <item num="3418" name="Basilisk Banner" />
   <item num="3419" name="Ravager Scorpion Banner" />
-  <item num="3420" name="Stardust Soldier Banner" />
+  <item num="3420" name="Stargazer Banner" />
   <item num="3421" name="Milkyway Weaver Banner" />
   <item num="3422" name="Flow Invader Banner" />
   <item num="3423" name="Twinkle Popper Banner" />
@@ -6101,16 +6105,16 @@
   <item num="3428" name="Crawltipede Banner" />
   <item num="3429" name="Drakomire Rider Banner" />
   <item num="3430" name="Drakomire Banner" />
-  <item num="3431" name="Solar Solenian Banner" />
-  <item num="3432" name="Nebula Soldier Banner" />
-  <item num="3433" name="Nebula Headcrab Banner" />
+  <item num="3431" name="Selenian Banner" />
+  <item num="3432" name="Predictor Banner" />
+  <item num="3433" name="Brain Suckler Banner" />
   <item num="3434" name="Nebula Floater Banner" />
-  <item num="3435" name="Nebula Beast Banner" />
+  <item num="3435" name="Evolution Beast Banner" />
   <item num="3436" name="Alien Larva Banner" />
   <item num="3437" name="Alien Queen Banner" />
   <item num="3438" name="Alien Hornet Banner" />
-  <item num="3439" name="Vortex Soldier Banner" />
-  <item num="3440" name="Vortex Rifleman Banner" />
+  <item num="3439" name="Vortexian Banner" />
+  <item num="3440" name="Storm Diver Banner" />
   <item num="3441" name="Pirate Captain Banner" />
   <item num="3442" name="Pirate Deadeye Banner" />
   <item num="3443" name="Pirate Corsair Banner" />
@@ -6274,31 +6278,31 @@
 
   <!-- v1.3.1 -->
   <item num="3601" name="Celestial Sigil" />
-  <item num="3602" name="Logic Gate Lamp Off" />
-  <item num="3603" name="Logic Gate AND" />
-  <item num="3604" name="Logic Gate OR" />
-  <item num="3605" name="Logic Gate NAND" />
-  <item num="3606" name="Logic Gate NOR" />
-  <item num="3607" name="Logic Gate XOR" />
-  <item num="3608" name="Logic Gate XNOR" />
-  <item num="3609" name="Conveyor Belt Left" />
-  <item num="3610" name="Conveyor Belt Right" />
-  <item num="3611" name="Wire Kite" />
+  <item num="3602" name="Logic Gate Lamp (Off)" />
+  <item num="3603" name="Logic Gate (AND)" />
+  <item num="3604" name="Logic Gate (OR)" />
+  <item num="3605" name="Logic Gate (NAND)" />
+  <item num="3606" name="Logic Gate (NOR)" />
+  <item num="3607" name="Logic Gate (XOR)" />
+  <item num="3608" name="Logic Gate (NXOR)" />
+  <item num="3609" name="Conveyor Belt (Clockwise)" />
+  <item num="3610" name="Conveyor Belt (Counter Clockwise)" />
+  <item num="3611" name="The Grand Design" />
   <item num="3612" name="Yellow Wrench" />
-  <item num="3613" name="Logic Sensor Sun" />
-  <item num="3614" name="Logic Sensor Moon" />
-  <item num="3615" name="Logic Sensor Above" />
-  <item num="3616" name="Wire Pipe" />
+  <item num="3613" name="Logic Sensor (Day)" />
+  <item num="3614" name="Logic Sensor (Night)" />
+  <item num="3615" name="Logic Sensor (Player Above)" />
+  <item num="3616" name="Junction Box" />
   <item num="3617" name="Announcement Box" />
-  <item num="3618" name="Logic Gate Lamp On" />
+  <item num="3618" name="Logic Gate Lamp (On)" />
   <item num="3619" name="Mechanical Lens" />
   <item num="3620" name="Actuation Rod" />
-  <item num="3621" name="Team Block Red" />
-  <item num="3622" name="Team Block Red Platform" />
+  <item num="3621" name="Red Team Block" />
+  <item num="3622" name="Red Team Platform" />
   <item num="3623" name="Static Hook" />
-  <item num="3624" name="Actuation Accessory" />
+  <item num="3624" name="Presserator" />
   <item num="3625" name="Multicolor Wrench" />
-  <item num="3626" name="Weighted Pressure Plate Pink" />
+  <item num="3626" name="Pink Weighted Pressure Plate" />
   <item num="3627" name="Engineering Helmet" />
   <item num="3628" name="Companion Cube" />
   <item num="3629" name="Wire Bulb" />
@@ -6335,51 +6339,51 @@
   <item num="3660" name="Penguin Statue" />
   <item num="3661" name="Frog Statue" />
   <item num="3662" name="Buggy Statue" />
-  <item num="3663" name="Logic Gate Lamp Faulty" />
+  <item num="3663" name="Logic Gate Lamp (Faulty)" />
   <item num="3664" name="Portal Gun Station" />
-  <item num="3665" name="Fake Chest" />
-  <item num="3666" name="Fake Gold Chest" />
-  <item num="3667" name="Fake Shadow Chest" />
-  <item num="3668" name="Fake Ebonwood Chest" />
-  <item num="3669" name="Fake RichMahogany Chest" />
-  <item num="3670" name="Fake Pearlwood Chest" />
-  <item num="3671" name="Fake Ivy Chest" />
-  <item num="3672" name="Fake Ice Chest" />
-  <item num="3673" name="Fake Living Wood Chest" />
-  <item num="3674" name="Fake Skyware Chest" />
-  <item num="3675" name="Fake Shadewood Chest" />
-  <item num="3676" name="Fake Web Covered Chest" />
-  <item num="3677" name="Fake Lihzahrd Chest" />
-  <item num="3678" name="Fake Water Chest" />
-  <item num="3679" name="Fake JungleChest" />
-  <item num="3680" name="Fake CorruptionChest" />
-  <item num="3681" name="Fake CrimsonChest" />
-  <item num="3682" name="Fake HallowedChest" />
-  <item num="3683" name="Fake FrozenChest" />
-  <item num="3684" name="Fake DynastyChest" />
-  <item num="3685" name="Fake HoneyChest" />
-  <item num="3686" name="Fake SteampunkChest" />
-  <item num="3687" name="Fake PalmWoodChest" />
-  <item num="3688" name="Fake MushroomChest" />
-  <item num="3689" name="Fake BorealWoodChest" />
-  <item num="3690" name="Fake SlimeChest" />
-  <item num="3691" name="Fake GreenDungeonChest" />
-  <item num="3692" name="Fake PinkDungeonChest" />
-  <item num="3693" name="Fake BlueDungeonChest" />
-  <item num="3694" name="Fake BoneChest" />
-  <item num="3695" name="Fake CactusChest" />
-  <item num="3696" name="Fake FleshChest" />
-  <item num="3697" name="Fake ObsidianChest" />
-  <item num="3698" name="Fake PumpkinChest" />
-  <item num="3699" name="Fake SpookyChest" />
-  <item num="3700" name="Fake GlassChest" />
-  <item num="3701" name="Fake MartianChest" />
-  <item num="3702" name="Fake MeteoriteChest" />
-  <item num="3703" name="Fake GraniteChest" />
-  <item num="3704" name="Fake MarbleChest" />
-  <item num="3705" name="Fake newchest1" />
-  <item num="3706" name="Fake newchest2" />
-  <item num="3707" name="Projectile Pressure Pad" />
+  <item num="3665" name="Trapped Chest" />
+  <item num="3666" name="Trapped Gold Chest" />
+  <item num="3667" name="Trapped Shadow Chest" />
+  <item num="3668" name="Trapped Ebonwood Chest" />
+  <item num="3669" name="Trapped Rich Mahogany Chest" />
+  <item num="3670" name="Trapped Pearlwood Chest" />
+  <item num="3671" name="Trapped Ivy Chest" />
+  <item num="3672" name="Trapped Ice Chest" />
+  <item num="3673" name="Trapped Living Wood Chest" />
+  <item num="3674" name="Trapped Skyware Chest" />
+  <item num="3675" name="Trapped Shadewood Chest" />
+  <item num="3676" name="Trapped Web Covered Chest" />
+  <item num="3677" name="Trapped Lihzahrd Chest" />
+  <item num="3678" name="Trapped Water Chest" />
+  <item num="3679" name="Trapped Jungle Chest" />
+  <item num="3680" name="Trapped Corruption Chest" />
+  <item num="3681" name="Trapped Crimson Chest" />
+  <item num="3682" name="Trapped Hallowed Chest" />
+  <item num="3683" name="Trapped Frozen Chest" />
+  <item num="3684" name="Trapped Dynasty Chest" />
+  <item num="3685" name="Trapped Honey Chest" />
+  <item num="3686" name="Trapped Steampunk Chest" />
+  <item num="3687" name="Trapped Palm Wood Chest" />
+  <item num="3688" name="Trapped Mushroom Chest" />
+  <item num="3689" name="Trapped Boreal Wood Chest" />
+  <item num="3690" name="Trapped Slime Chest" />
+  <item num="3691" name="Trapped Green Dungeon Chest" />
+  <item num="3692" name="Trapped Pink Dungeon Chest" />
+  <item num="3693" name="Trapped Blue Dungeon Chest" />
+  <item num="3694" name="Trapped Bone Chest" />
+  <item num="3695" name="Trapped Cactus Chest" />
+  <item num="3696" name="Trapped Flesh Chest" />
+  <item num="3697" name="Trapped Obsidian Chest" />
+  <item num="3698" name="Trapped Pumpkin Chest" />
+  <item num="3699" name="Trapped Spooky Chest" />
+  <item num="3700" name="Trapped Glass Chest" />
+  <item num="3701" name="Trapped Martian Chest" />
+  <item num="3702" name="Trapped Meteroite Chest" />
+  <item num="3703" name="Trapped Granite Chest" />
+  <item num="3704" name="Trapped Marble Chest" />
+  <item num="3705" name="Trapped NewChest1" />
+  <item num="3706" name="Trapped NewChest2" />
+  <item num="3707" name="Teal Pressure Pad" />
   <item num="3708" name="Wall Creeper Statue" />
   <item num="3709" name="Unicorn Statue" />
   <item num="3710" name="Drippler Statue" />
@@ -6391,53 +6395,55 @@
   <item num="3716" name="Pigron Statue" />
   <item num="3717" name="Hoplite Statue" />
   <item num="3718" name="Granite Golem Statue" />
-  <item num="3719" name="Zombie Arm Statue" />
+  <item num="3719" name="Armed Zombie Statue" />
   <item num="3720" name="Blood Zombie Statue" />
   <item num="3721" name="Angler Tackle Bag" />
-  <item num="3722" name="Geyser Trap" />
+  <item num="3722" name="Geyser" />
   <item num="3723" name="Ultra Bright Campfire" />
   <item num="3724" name="Bone Campfire" />
   <item num="3725" name="Pixel Box" />
-  <item num="3726" name="Logic Sensor Water" />
-  <item num="3727" name="Logic Sensor Lava" />
-  <item num="3728" name="Logic Sensor Honey" />
-  <item num="3729" name="Logic Sensor Liquid" />
+  <item num="3726" name="Liquid Sensor (Water)" />
+  <item num="3727" name="Liquid Sensor (Lava)" />
+  <item num="3728" name="Liquid Sensor (Honey)" />
+  <item num="3729" name="Liquid Sensor (Any)" />
+  <item num="3730" name="Bundled Party Balloons" />
+  <item num="3731" name="Balloon Animal" />
 
   <!-- v1.3.2 -->
-  <item num="3730" name="Party Bundle Of Balloons Accessory" />
-  <item num="3731" name="Party Balloon Animal" />
+  <item num="3730" name="Bundled Party Balloons" />
+  <item num="3731" name="Balloon Animal" />
   <item num="3732" name="Party Hat" />
-  <item num="3733" name="Flower Boy Hat" />
-  <item num="3734" name="Flower Boy Shirt" />
-  <item num="3735" name="Flower Boy Pants" />
-  <item num="3736" name="Silly Balloon Pink" />
-  <item num="3737" name="Silly Balloon Purple" />
-  <item num="3738" name="Silly Balloon Green" />
-  <item num="3739" name="Silly Streamer Blue" />
-  <item num="3740" name="Silly Streamer Green" />
-  <item num="3741" name="Silly Streamer Pink" />
+  <item num="3733" name="Silly Sunflower Petals"  />
+  <item num="3734" name="Silly Sunflower Tops"  />
+  <item num="3735" name="Silly Sunflower Bottoms"  />
+  <item num="3736" name="Silly Pink Balloon" />
+  <item num="3737" name="Silly Purple Balloon" />
+  <item num="3738" name="Silly Green Balloon" />
+  <item num="3739" name="Blue Streamer" />
+  <item num="3740" name="Green Streamer" />
+  <item num="3741" name="Pink Streamer" />
   <item num="3742" name="Silly Balloon Machine" />
-  <item num="3743" name="Silly Balloon Tied Pink" />
-  <item num="3744" name="Silly Balloon Tied Purple" />
-  <item num="3745" name="Silly Balloon Tied Green" />
+  <item num="3743" name="Silly Tied Balloon (Pink)" />
+  <item num="3744" name="Silly Tied Balloon (Purple)" />
+  <item num="3745" name="Silly Tied Balloon (Green)" />
   <item num="3746" name="Pigronata" />
-  <item num="3747" name="Party Monolith" />
-  <item num="3748" name="Party Bundle Of Balloon Tile" />
+  <item num="3747" name="Party Center" />
+  <item num="3748" name="Silly Tied Bundle of Balloons" />
   <item num="3749" name="Party Present" />
-  <item num="3750" name="Slice Of Cake" />
+  <item num="3750" name="Slice of Cake" />
   <item num="3751" name="Cog Wall" />
-  <item num="3752" name="Sand Fall Wall" />
-  <item num="3753" name="Snow Fall Wall" />
-  <item num="3754" name="Sand Fall Block" />
-  <item num="3755" name="Snow Fall Block" />
-  <item num="3756" name="Snow Cloud Block" />
-  <item num="3757" name="Pedguin Hat" />
-  <item num="3758" name="Pedguin Shirt" />
-  <item num="3759" name="Pedguin Pants" />
-  <item num="3760" name="Silly Balloon Pink Wall" />
-  <item num="3761" name="Silly Balloon Purple Wall" />
-  <item num="3762" name="Silly Balloon Green Wall" />
-  <item num="3763" name="Aviator Sunglasses" />
+  <item num="3752" name="Sandfall Wall" />
+  <item num="3753" name="Snowfall Wall" />
+  <item num="3754" name="Sandfall" />
+  <item num="3755" name="Snowfall" />
+  <item num="3756" name="Snow Cloud" />
+  <item num="3757" name="Pedguin's Hood"  />
+  <item num="3758" name="Pedguin's Jacket"  />
+  <item num="3759" name="Pedguin's Trousers"  />
+  <item num="3760" name="Silly Pink Balloon Wall" />
+  <item num="3761" name="Silly Purple Balloon Wall" />
+  <item num="3762" name="Silly Green Balloon Wall" />
+  <item num="3763" name="0x33's Aviators"  />
   <item num="3764" name="Blue Phasesaber" />
   <item num="3765" name="Red Phasesaber" />
   <item num="3766" name="Green Phasesaber" />
@@ -6446,34 +6452,34 @@
   <item num="3769" name="Yellow Phasesaber" />
 
   <!-- v1.3.3 -->
-  <item num="3770" name="DjinnsCurse" />
-  <item num="3771" name="AncientHorn" />
-  <item num="3772" name="AntlionClaw" />
-  <item num="3773" name="AncientArmorHat" />
-  <item num="3774" name="AncientArmorShirt" />
-  <item num="3775" name="AncientArmorPants" />
-  <item num="3776" name="AncientBattleArmorHat" />
-  <item num="3777" name="AncientBattleArmorShirt" />
-  <item num="3778" name="AncientBattleArmorPants" />
-  <item num="3779" name="SpiritFlame" />
-  <item num="3780" name="SandElementalBanner" />
-  <item num="3781" name="PocketMirror" />
-  <item num="3782" name="MagicSandDropper" />
-  <item num="3783" name="AncientBattleArmorMaterial" />
-  <item num="3784" name="LamiaPants" />
-  <item num="3785" name="LamiaShirt" />
-  <item num="3786" name="LamiaHat" />
-  <item num="3787" name="SkyFracture" />
-  <item num="3788" name="OnyxBlaster" />
-  <item num="3789" name="SandsharkBanner" />
-  <item num="3790" name="SandsharkCorruptBanner" />
-  <item num="3791" name="SandsharkCrimsonBanner" />
-  <item num="3792" name="SandsharkHallowedBanner" />
-  <item num="3793" name="TumbleweedBanner" />
-  <item num="3794" name="AncientCloth" />
-  <item num="3795" name="DjinnLamp" />
-  <item num="3796" name="MusicBoxSandstorm" />
-  
+  <item num="3770" name="Djinn's Curse" />
+  <item num="3771" name="Ancient Horn" />
+  <item num="3772" name="Mandible Blade" />
+  <item num="3773" name="Ancient Headdress"  />
+  <item num="3774" name="Ancient Garments"  />
+  <item num="3775" name="Ancient Slacks"  />
+  <item num="3776" name="Forbidden Mask"  />
+  <item num="3777" name="Forbidden Robes"  />
+  <item num="3778" name="Forbidden Treads"  />
+  <item num="3779" name="Spirit Flame" />
+  <item num="3780" name="Sand Elemental Banner" />
+  <item num="3781" name="Pocket Mirror" />
+  <item num="3782" name="Magic Sand Dropper" />
+  <item num="3783" name="Forbidden Fragment" />
+  <item num="3784" name="Lamia Tail"  />
+  <item num="3785" name="Lamia Wraps"  />
+  <item num="3786" name="Lamia Mask"  />
+  <item num="3787" name="Sky Fracture" />
+  <item num="3788" name="Onyx Blaster" />
+  <item num="3789" name="Sand Shark Banner" />
+  <item num="3790" name="Bone Biter Banner" />
+  <item num="3791" name="Flesh Reaver Banner" />
+  <item num="3792" name="Crystal Thresher Banner" />
+  <item num="3793" name="Angry Tumbler Banner" />
+  <item num="3794" name="Ancient Cloth" />
+  <item num="3795" name="Desert Spirit Lamp" />
+  <item num="3796" name="Music Box (Sandstorm)" />
+
   <global id="sky" color="#84AAF8" />
   <global id="earth" color="#583D2E" />
   <global id="rock" color="#4A433C" />
