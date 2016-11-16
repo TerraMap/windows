@@ -2305,6 +2305,12 @@
   <tile num="461" name="Sand Drip" />
   <tile num="462" name="Desert Spirit Lamp" />
 
+  <!-- v1.3.4 -->
+  <tile num="463" name="Defenders Forge" />
+  <tile num="464" name="War Table" />
+  <tile num="465" name="War Table Banner" />
+  <tile num="466" name="Elder Crystal Stand" />
+                                             
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
   <wall num="3" name="Stone Wall" color="#3D3A4E" />
@@ -6480,6 +6486,86 @@
   <item num="3795" name="Desert Spirit Lamp" />
   <item num="3796" name="Music Box (Sandstorm)" />
 
+  <!-- v1.3.4 -->
+  <item num="3797" name="Apprentice's Hat" />
+  <item num="3798" name="Apprentice's Robe" />
+  <item num="3799" name="Apprentice's Trousers" />
+  <item num="3800" name="Squire's Great Helm" />
+  <item num="3801" name="Squire's Plating" />
+  <item num="3802" name="Squire's Greaves" />
+  <item num="3803" name="Huntress's Wig" />
+  <item num="3804" name="Huntress's Jerkin" />
+  <item num="3805" name="Huntress's Pants" />
+  <item num="3806" name="Monk's Bushy Brow Bald Cap" />
+  <item num="3807" name="Monk's Shirt" />
+  <item num="3808" name="Monk's Pants" />
+  <item num="3809" name="Apprentice's Scarf" />
+  <item num="3810" name="Squire's Shield" />
+  <item num="3811" name="Huntress's Buckler" />
+  <item num="3812" name="Monk's Belt" />
+  <item num="3813" name="Defender's Forge" />
+  <item num="3814" name="War Table" />
+  <item num="3815" name="War Table Banner" />
+  <item num="3816" name="Elder Crystal Stand" />
+  <item num="3817" name="Defender Medal" />
+  <item num="3818" name="Flameburst Rod" />
+  <item num="3819" name="Flameburst Cane" />
+  <item num="3820" name="Flameburst Staff" />
+  <item num="3821" name="Ale Tosser" />
+  <item num="3822" name="Etherian Mana" />
+  <item num="3823" name="Brand of the Inferno" />
+  <item num="3824" name="Ballista Rod" />
+  <item num="3825" name="Ballista Cane" />
+  <item num="3826" name="Ballista Staff" />
+  <item num="3827" name="Flying Dragon" />
+  <item num="3828" name="Elder Crystal" />
+  <item num="3829" name="Lightning Aura Rod" />
+  <item num="3830" name="Lightning Aura Cane" />
+  <item num="3831" name="Lightning Aura Staff" />
+  <item num="3832" name="Explosive Trap Rod" />
+  <item num="3833" name="Explosive Trap Cane" />
+  <item num="3834" name="Explosive Trap Staff" />
+  <item num="3835" name="Sleepy Octopod" />
+  <item num="3836" name="Ghastly Glaive" />
+  <item num="3837" name="Etherian Goblin Bomber Banner" />
+  <item num="3838" name="Etherian Goblin Banner" />
+  <item num="3839" name="Old One's Skeleton Banner" />
+  <item num="3840" name="Drakin Banner" />
+  <item num="3841" name="Kobold Glider Banner" />
+  <item num="3842" name="Kobold Banner" />
+  <item num="3843" name="Wither Beast Banner" />
+  <item num="3844" name="Etherian Wyvern Banner" />
+  <item num="3845" name="Etherian Javelin Thrower Banner" />
+  <item num="3846" name="Etherian Lightning Bug Banner" />
+  <item num="3852" name="Tome of Infinite Wisdom" />
+  <item num="3854" name="Phantom Phoenix" />
+  <item num="3855" name="Gato Egg" />
+  <item num="3856" name="Creeper Egg" />
+  <item num="3857" name="Dragon Egg" />
+  <item num="3858" name="Sky Dragon's Fury" />
+  <item num="3859" name="Aerial Bane" />
+  <item num="3863" name="Betsy Mask" />
+  <item num="3864" name="Dark Mage Mask" />
+  <item num="3865" name="Ogre Mask" />
+  <item num="3866" name="Betsy Trophy" />
+  <item num="3867" name="Dark Mage Trophy" />
+  <item num="3868" name="Ogre Trophy" />
+  <item num="3869" name="Music Box (Old One's Army)" />
+  <item num="3870" name="Betsy's Wrath" />
+  <item num="3871" name="Valhalla Knight's Helm" />
+  <item num="3872" name="Valhalla Knight's Breastplate" />
+  <item num="3873" name="Valhalla Knight's Greaves" />
+  <item num="3874" name="Dark Artist's Hat" />
+  <item num="3875" name="Dark Artist's Robes" />
+  <item num="3876" name="Dark Artist's Leggings" />
+  <item num="3877" name="Red Riding Hood" />
+  <item num="3878" name="Red Riding Dress" />
+  <item num="3879" name="Red Riding Leggings" />
+  <item num="3880" name="Shinobi Infiltrator's Helmet" />
+  <item num="3881" name="Shinobi Infiltrator's Torso" />
+  <item num="3882" name="Shinobi Infiltrator's Pants" />
+  <item num="3883" name="Betsy's Wings" />
+  
   <global id="sky" color="#84AAF8" />
   <global id="earth" color="#583D2E" />
   <global id="rock" color="#4A433C" />

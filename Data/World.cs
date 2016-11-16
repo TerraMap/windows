@@ -26,6 +26,16 @@ namespace TerraMap.Data
 
     public Int32 Version { get; set; }
     public String Name { get; set; }
+
+    [PropertyInfo(179)]
+    public String Seed { get; set; }
+
+    [PropertyInfo(179)]
+    public ulong WorldGeneratorVersion { get; set; }
+
+    [PropertyInfo(181)]
+    public Guid UniqueId { get; set; }
+
     public Int32 Id { get; set; }
     public Rect Bounds { get; set; }
     public Int32 WorldHeightinTiles { get; set; }
@@ -582,6 +592,10 @@ namespace TerraMap.Data
           property.SetValue(this, reader.ReadDouble(), null);
         else if (dataType == typeof(Rect))
           property.SetValue(this, ReadRectangle(reader), null);
+        else if (dataType == typeof(Guid))
+          property.SetValue(this, new Guid(reader.ReadBytes(16)), null);
+        else if (dataType == typeof(ulong))
+          property.SetValue(this, reader.ReadUInt64(), null);
         else if (dataType == typeof(Int32[]))
         {
           Int32[] array = new Int32[count];
@@ -712,6 +726,14 @@ namespace TerraMap.Data
       this.Properties.Add(new WorldProperty() { Name = "Sandstorm TimeLeft", Value = reader.ReadInt32() });
       this.Properties.Add(new WorldProperty() { Name = "Sandstorm Severity", Value = reader.ReadSingle() });
       this.Properties.Add(new WorldProperty() { Name = "Sandstorm IntendedSeverity", Value = reader.ReadSingle() });
+
+      if (Version < 178)
+        return;
+
+      this.Properties.Add(new WorldProperty() { Name = "Saved Bartender", Value = reader.ReadBoolean() });
+      this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 1", Value = reader.ReadBoolean() });
+      this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 2", Value = reader.ReadBoolean() });
+      this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 3", Value = reader.ReadBoolean() });
     }
 
     private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
