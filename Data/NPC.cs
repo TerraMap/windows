@@ -34,5 +34,6 @@ namespace TerraMap.Data
 		}
 
 		public string Name { get; set; }
-	}
+    public int SpriteId { get; set; }
+  }
 }

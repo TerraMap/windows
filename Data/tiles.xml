@@ -2209,8 +2209,8 @@
     <var v="108" name="Shiverthorn Planter Box" color="#CDE7EE" />
     <var v="126" name="Fireblossom Planter Box" color="#655A66" />
   </tile>
-  <tile num="381" name="Unknown 381" color="#FE7902" solid="1" blend="1" isGrass="1" lightr="0.25" lightg="0.1" lightb="0.0" />
-  <tile num="382" name="Unknown 382" color="#1E9648" hasExtra="1" />
+  <tile num="381" name="Lava Moss" color="#FE7902" solid="1" blend="1" isGrass="1" lightr="0.25" lightg="0.1" lightb="0.0" />
+  <tile num="382" name="Vine Flowers" color="#1E9648" hasExtra="1" />
   <tile num="383" name="Living Mahogany" color="#DD8890" solid="1" blend="384" />
   <tile num="384" name="Rich Mahogany Leaf" color="#476D0B" merge="383" />
   <tile num="385" name="Crystal Block" color="#0B377F" solid="1" />

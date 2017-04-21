@@ -1269,7 +1269,14 @@ namespace TerraMap.Data
       while (flag)
       {
         NPC nPC = new NPC();
-        nPC.Type = reader.ReadString();
+        if(Version >= 190)
+        {
+          nPC.SpriteId = reader.ReadInt32();
+        }
+        else
+        {
+          nPC.Type = reader.ReadString();
+        }
         nPC.Name = reader.ReadString();
         nPC.X = reader.ReadSingle();
         nPC.Y = reader.ReadSingle();
@@ -1503,7 +1510,7 @@ namespace TerraMap.Data
           }
         }
 
-        if (objectTypeToHighlight.ItemInfo != null)
+        if (objectTypeToHighlight.ItemInfo != null && this.StaticData.TileInfos.Count > tile.Type)
         {
           var tileInfo = this.StaticData.TileInfos[tile.Type];
 
@@ -1619,7 +1626,12 @@ namespace TerraMap.Data
           name += " (Yellow Wire)";
         }
 
-        if (!string.IsNullOrWhiteSpace(name) && name != "Nothing")
+        if (string.IsNullOrWhiteSpace(name))
+        {
+          name = "Unknown";
+        }
+
+        if (name != "Nothing")
         {
           name += string.Format(" ({0}", tile.Type);
 
