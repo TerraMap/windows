@@ -1272,6 +1272,7 @@ namespace TerraMap.Data
         if(Version >= 190)
         {
           nPC.SpriteId = reader.ReadInt32();
+          nPC.Type = this.staticData.NpcInfoList.FindType(nPC.SpriteId);
         }
         else
         {
@@ -1285,16 +1286,31 @@ namespace TerraMap.Data
         nPC.HomeY = reader.ReadInt32();
         num++;
         flag = reader.ReadBoolean();
+
+        if (nPC.Name == nPC.Type)
+          nPC.DisplayName = nPC.Name;
+        else
+          nPC.DisplayName = $"{nPC.Name} the {nPC.Type}";
+
         this.NPCs.Add(nPC);
       }
 
       if (Version < 140)
         return;
+
       flag = reader.ReadBoolean();
       while (flag)
       {
         NPC npc = new NPC();
-        npc.Type = reader.ReadString();
+        if (Version >= 190)
+        {
+          npc.SpriteId = reader.ReadInt32();
+          npc.Type = this.staticData.NpcInfoList.FindType(npc.SpriteId);
+        }
+        else
+        {
+          npc.Type = reader.ReadString();
+        }
         npc.X = reader.ReadSingle();
         npc.Y = reader.ReadSingle();
         num++;

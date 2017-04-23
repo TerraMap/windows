@@ -16,7 +16,9 @@ namespace TerraMap.Data
 		public Int32 HomeX { get; set; }
 		public Int32 HomeY { get; set; }
 
-		public static NPC Read(BinaryReader reader)
+    public string DisplayName { get; set; }
+
+    public static NPC Read(BinaryReader reader)
 		{
 			if (!reader.ReadBoolean())
 				return null;

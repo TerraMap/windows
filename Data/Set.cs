@@ -14,8 +14,9 @@ namespace TerraMap.Data
 		public TileInfos TileInfos { get; set; }
 		public List<WallInfo> WallInfos { get; set; }
 		public List<ItemInfo> ItemInfos { get; set; }
+    public List<NpcInfo> NpcInfos { get; private set; }
 
-		public static Task<List<Set>> ReadAsync(string filename)
+    public static Task<List<Set>> ReadAsync(string filename)
 		{
 			return Task.Factory.StartNew(() =>
 			{
@@ -47,6 +48,7 @@ namespace TerraMap.Data
 				set.TileInfos = new TileInfos(node.SelectNodes("tile"));
 				set.WallInfos = WallInfo.Read(node.SelectNodes("wall"));
 				set.ItemInfos = ItemInfo.ReadList(node.SelectNodes("item"));
+        set.NpcInfos = NpcInfo.Read(node.SelectNodes("Npc"));
 
 				sets.Add(set);
 			}

@@ -216,11 +216,7 @@
         <MenuItem x:Name="menuItemNpcs" Header="_NPCs" ItemsSource="{Binding NPCs}">
           <MenuItem.ItemTemplate>
             <DataTemplate>
-              <TextBlock>
-								<Run Text="{Binding Name}" />
-								<Run Text="the" />
-								<Run Text="{Binding Type}" />
-              </TextBlock>
+              <TextBlock Text="{Binding DisplayName}" />
             </DataTemplate>
           </MenuItem.ItemTemplate>
           <MenuItem.Resources>

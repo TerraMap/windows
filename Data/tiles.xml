@@ -96,6 +96,7 @@
     <var minv="108" name="Closed Rich Mahogany Door" color="#734144" />
     <var minv="54" name="Closed Ebonwood Door" color="#535064" />
     <var minv="0" name="Closed Wooden Door" color="#bf8f6f" />
+    <var minu="54" name="Crystal Door" />
   </tile>
   <tile num="11" name="Open Doors" color="#946B50" hasExtra="1" letLight="1" solid="1">
     <var minv="1890" name="Open Marble Door" color="#A8B2CC" />
@@ -134,6 +135,7 @@
     <var minv="108" name="Open Rich Mahogany Door" color="#734144" />
     <var minv="54" name="Open Ebonwood Door" color="#535064" />
     <var minv="0" name="Open Wooden Door" color="#946b50" />
+    <var minu="72" name="Crystal Door" />
   </tile>
   <tile num="12" name="Heartstone" color="#B61239" hasExtra="1" letLight="1" />
   <tile num="13" name="Bottle" color="#4EC5FC" hasExtra="1" letLight="1">
@@ -184,6 +186,7 @@
     <var minu="0" name="Wooden Table" color="#7f5c45" />
   </tile>
   <tile num="15" name="Chairs" color="#A2785C" hasExtra="1" letLight="1">
+    <var minv="1440" name="Crystal Chair" />
     <var minv="1400" name="Marble Chair" color="#B8C3CD" />
     <var minv="1360" name="Granite Chair" color="#665BA6" />
     <var minv="1320" name="Meteorite Chair" color="#5C59A1" />
@@ -226,6 +229,8 @@
   </tile>
   <tile num="17" name="Furnace" color="#636363" hasExtra="1" letLight="1" lightr="0.83" lightg="0.6" lightb="0.5" />
   <tile num="18" name="Work Bench" color="#7F5C45" hasExtra="1" letLight="1">
+    <var minu="1152" name="Golden Work Bench" />
+    <var minu="1116" name="Crystal Work Bench" />
     <var minu="1080" name="Marble Work Bench" color="#C3CEE3" />
     <var minu="1044" name="Granite Work Bench" color="#3735A6" />
     <var minu="1008" name="Meteorite Work Bench" color="#7F74C2" />
@@ -287,6 +292,12 @@
     <var v="486" name="Meteorite Platform" color="#5C59A1" />
     <var v="504" name="Granite Platform" color="#4C6FDD" />
     <var v="522" name="Marble Platform" color="#FFF9B7" />
+    <var v="540" name="Crystal Platform" />
+    <var v="558" name="Golden Platform" />
+    <var v="576" name="Dynasty Platform" />
+    <var v="592" name="Lihzahrd Platform" />
+    <var v="610" name="Flesh Platform" />
+    <var v="628" name="Frozen Platform" />
   </tile>
   <tile num="20" name="Sapling" color="#1E9648" hasExtra="1" letLight="1" />
   <tile num="21" name="Chest" color="#946B50" hasExtra="1" letLight="1">
@@ -448,6 +459,7 @@
     <var v="638" name="Marble Candle" color="#CCB548">
       <var u="0" lightr="1.0" lightg="0.95" lightb="0.65" />
     </var>
+    <var v="654" name="Crystal Candle" />
     <var u="0" lightr="1.0" lightg="0.95" lightb="0.65" />
   </tile>
   <tile num="34" name="Copper Chandelier" color="#B75819" hasExtra="1" letLight="1">
@@ -559,6 +571,7 @@
     <var minv="54" name="Silver Chandelier" color="#9EADAE">
       <var maxu="54" lightr="1.0" lightg="0.95" lightb="0.8" />
     </var>
+    <var minu="108" name="Crystal Chandelier" />
     <var maxu="54" lightr="1.0" lightg="0.95" lightb="0.8" />
   </tile>
   <tile num="35" name="Jack 'O Lantern" color="#EAAD53" hasExtra="1" letLight="1">
@@ -571,6 +584,7 @@
   <tile num="40" name="Clay" color="#925144" solid="1" blend="0" />
   <tile num="41" name="Blue Brick" color="#454E63" solid="1" blend="0" merge="1" />
   <tile num="42" name="Chain Lantern" color="#F99851" hasExtra="1" letLight="1">
+    <var minv="1332" name="Crystal Lantern" />
     <var minv="1296" name="Marble Lantern" color="#A8B2CC">
       <var u="0" lightr="1.0" lightg="1.0" lightb="1.0" />
     </var>
@@ -722,6 +736,7 @@
   <tile num="77" name="Hellforge" color="#EE6646" hasExtra="1" letLight="1" lightr="0.75" lightg="0.45" lightb="0.25" />
   <tile num="78" name="Clay Pot" color="#796E61" hasExtra="1" letLight="1" />
   <tile num="79" name="Bed" color="#5C6298" hasExtra="1" letLight="1">
+    <var minv="1116" name="Crystal Bed" />
     <var minv="1080" name="Marble Bed" color="#B8C3CD" />
     <var minv="1044" name="Granite Bed" color="#2C2479" />
     <var minv="1008" name="Meteorite Bed" color="#FCA722" />
@@ -796,6 +811,8 @@
   </tile>
   <tile num="86" name="Loom" color="#7F5C45" hasExtra="1" letLight="1" />
   <tile num="87" name="Piano" color="#584430" hasExtra="1" letLight="1">
+    <var minu="1674" name="Dynasty Piano" />
+    <var minu="1620" name="Crystal Piano" />
     <var minu="1566" name="Marble Piano" color="#A8B2CC" />
     <var minu="1512" name="Granite Piano" color="#3735A6" />
     <var minu="1458" name="Meteorite Piano" color="#5C59A1" />
@@ -827,6 +844,10 @@
     <var minu="54" name="Ebonwood Piano" color="#373245" />
   </tile>
   <tile num="88" name="Dresser" color="#906850" hasExtra="1" letLight="1">
+    <var minu="1674" name="Living Wood Dresser" />
+    <var minu="1620" name="Frozen Dresser" />
+    <var minu="1566" name="Dynasty Dresser" />
+    <var minu="1512" name="Crystal Dresser" />
     <var minu="1458" name="Marble Dresser" color="#7B8198" />
     <var minu="1404" name="Granite Dresser" color="#272245" />
     <var minu="1350" name="Meteorite Dresser" color="#7F74C2" />
@@ -856,6 +877,8 @@
     <var minu="54" name="Ebonwood Dresser" color="#68647e" />
   </tile>
   <tile num="89" name="Bench" color="#B18567" hasExtra="1" letLight="1">
+    <var minu="1826" name="Dynasty Sofa" />
+    <var minu="1782" name="Crystal Sofa" />
     <var minu="1728" name="Marble Sofa" color="#B8C3CD" />
     <var minu="1674" name="Granite Sofa" color="#2D2255" />
     <var minu="1620" name="Meteorite Sofa" color="#DB3E07" />
@@ -891,6 +914,7 @@
 
   </tile>
   <tile num="90" name="Bathtub" color="#606060" hasExtra="1" letLight="1">
+    <var minv="1116" name="Crystal Bathtub" />
     <var minv="1080" name="Marble Bathtub" color="#707392" />
     <var minv="1044" name="Granite Bathtub" color="#413B6B" />
     <var minv="1008" name="Meteorite Bathtub" color="#7F74C2" />
@@ -1200,6 +1224,7 @@
     <var u="0" maxv="18" lightr="1.0" lightg="1.0" lightb="1.0" />
   </tile>
   <tile num="93" name="Tiki Torch" color="#503B2F" hasExtra="1" letLight="1">
+    <var minv="1674" name="Crystal Lamp" />
     <var minv="1620" name="Marble Lamp" color="#707392">
       <var u="0" v="1620" lightr="1.0" lightg="0.97" lightb="0.85" />
     </var>
@@ -1305,6 +1330,7 @@
   </tile>
   <tile num="99" name="Trash Can" color="#808080" hasExtra="1" letLight="1" />
   <tile num="100" name="Candelabra" color="#CCB548" hasExtra="1" letLight="1">
+    <var minv="1116" name="Crystal Candelabra" />
     <var minv="1080" name="Marble Candelabra" color="#C3CEE3">
       <var maxu="36" lightr="1.0" lightg="0.95" lightb="0.65" />
     </var>
@@ -1398,6 +1424,7 @@
     <var maxu="36" lightr="1.0" lightg="0.95" lightb="0.65" />
   </tile>
   <tile num="101" name="Bookcase" color="#B08460" hasExtra="1" letLight="1">
+    <var minu="1728" name="Crystal Bookcase" />
     <var minu="1674" name="Marble Bookcase" color="#A93E17" />
     <var minu="1620" name="Granite Bookcase" color="#648FF6" />
     <var minu="1566" name="Meteorite Bookcase" color="#DB3E07" />
@@ -1437,6 +1464,11 @@
     <var minu="36" name="Dynasty Bowl" color="#606FA6" />
   </tile>
   <tile num="104" name="Grandfather Clock" color="#946B50" hasExtra="1" letLight="1">
+    <var minu="1152" name="Pink Dungeon Clock" />
+    <var minu="1116" name="Green Dungeon Clock" />
+    <var minu="1080" name="Blue Dungeon Clock" />
+    <var minu="1044" name="Sunplate Clock" />
+    <var minu="1008" name="Crystal Clock" />
     <var minu="972" name="Marble Clock" color="#C3CEE3" />
     <var minu="936" name="Granite Clock" color="#272245" />
     <var minu="900" name="Meteorite Clock" color="#DB3E07" />
@@ -1686,6 +1718,7 @@
   <tile num="170" name="Pine Tree Block" color="#003F2C" solid="1" letLight="1" />
   <tile num="171" name="Christmas Tree" color="#269660" hasExtra="1" letLight="1" lightr="0.05" lightg="0.05" lightb="0.05" />
   <tile num="172" name="Wooden Sink" color="#8C6850" hasExtra="1" letLight="1">
+    <var minv="1216" name="Crystal Sink" />
     <var minv="1178" name="Marble Sink" color="#C3CEE3" />
     <var minv="1140" name="Granite Sink" color="#221F47" />
     <var minv="1102" name="Meteorite Sink" color="#5C59A1" />
@@ -2310,7 +2343,19 @@
   <tile num="464" name="War Table" />
   <tile num="465" name="War Table Banner" />
   <tile num="466" name="Elder Crystal Stand" />
-                                             
+  
+  <!-- v1.3.5 -->
+  <tile num="467" name="Chest (Group 2)">
+    <var minu="36" name="Golden Chest" />
+    <var minu="0" name="Crystal Chest" />
+  </tile>
+  <tile num="468" name="Trapped Chests (Group 2)">
+    <var minu="36" name="Trapped Golden Chest" />
+    <var min="0" name="Trapped Crystal Chest" />
+  </tile>
+  <tile num="469" name="Crystal Table">
+  </tile>
+  
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
   <wall num="3" name="Stone Wall" color="#3D3A4E" />
@@ -6566,6 +6611,54 @@
   <item num="3882" name="Shinobi Infiltrator's Pants" />
   <item num="3883" name="Betsy's Wings" />
   
+  <!-- v1.3.5 -->
+  <item num="3884" name="Crystal Chest" />
+  <item num="3885" name="Golden Chest" />
+  <item num="3886" name="Trapped Crystal Chest" />
+  <item num="3887" name="Trapped Golden Chest" />
+  <item num="3888" name="Crystal Door" />
+  <item num="3889" name="Crystal Chair" />
+  <item num="3890" name="Crystal Candle" />
+  <item num="3891" name="Crystal Lantern" />
+  <item num="3892" name="Crystal Lamp" />
+  <item num="3893" name="Crystal Candelabra" />
+  <item num="3894" name="Crystal Chandelier" />
+  <item num="3895" name="Crystal Bathtub" />
+  <item num="3896" name="Crystal Sink" />
+  <item num="3897" name="Crystal Bed" />
+  <item num="3898" name="Crystal Clock" />
+  <item num="3899" name="Sunplate Clock" />
+  <item num="3900" name="Blue Dungeon Clock" />
+  <item num="3901" name="Green Dungeon Clock" />
+  <item num="3902" name="Pink Dungeon Clock" />
+  <item num="3903" name="Crystal Platform" />
+  <item num="3904" name="Golden Platform" />
+  <item num="3905" name="Dynasty Platform" />
+  <item num="3906" name="Lihzahrd Platform" />
+  <item num="3907" name="Flesh Platform" />
+  <item num="3908" name="Frozen Platform" />
+  <item num="3909" name="Crystal Work Bench" />
+  <item num="3910" name="Golden Work Bench" />
+  <item num="3911" name="Crystal Dresser" />
+  <item num="3912" name="Dynasty Dresser" />
+  <item num="3913" name="Frozen Dresser" />
+  <item num="3914" name="Living Wood Dresser" />
+  <item num="3915" name="Crystal Piano" />
+  <item num="3916" name="Dynasty Piano" />
+  <item num="3917" name="Crystal Bookcase" />
+  <item num="3918" name="Crystal Sofa" />
+  <item num="3919" name="Dynasty Sofa" />
+  <item num="3920" name="Crystal Table" />
+  <item num="3921" name="Arkhalis's Hood" />
+  <item num="3922" name="Arkhalis's Bodice" />
+  <item num="3923" name="Arkhalis's Tights" />
+  <item num="3924" name="Arkhalis's Lightwings" />
+  <item num="3925" name="Leinfors' Hair Protector" />
+  <item num="3926" name="Leinfors' Excessive Style" />
+  <item num="3927" name="Leinfors' Fancypants" />
+  <item num="3928" name="Leinfors' Prehensile Cloak" />
+  <item num="3929" name="Leinfors' Luxury Shampoo" />
+  
   <global id="sky" color="#84AAF8" />
   <global id="earth" color="#583D2E" />
   <global id="rock" color="#4A433C" />
@@ -6586,5 +6679,30 @@
   <global id="wire2" color="#0257ac" />
   <global id="wire3" color="#2fac02" />
   <global id="wire4" color="#ffff00" />
+
+  <Npc Id="17"    Name="Merchant"        />
+  <Npc Id="18"    Name="Nurse"           />
+  <Npc Id="19"    Name="Arms Dealer"     />
+  <Npc Id="20"    Name="Dryad"           />
+  <Npc Id="22"    Name="Guide"           />
+  <Npc Id="37"    Name="Old Man"         />
+  <Npc Id="38"    Name="Demolitionist"   />
+  <Npc Id="54"    Name="Clothier"        />
+  <Npc Id="107"   Name="Goblin Tinkerer" />
+  <Npc Id="108"   Name="Wizard"          />
+  <Npc Id="124"   Name="Mechanic"        />
+  <Npc Id="142"   Name="Santa Claus"     />
+  <Npc Id="160"   Name="Truffle"         />
+  <Npc Id="178"   Name="Steampunker"     />
+  <Npc Id="207"   Name="Dye Trader"      />
+  <Npc Id="208"   Name="Party Girl"      />
+  <Npc Id="209"   Name="Cyborg"          />
+  <Npc Id="227"   Name="Painter"         />
+  <Npc Id="228"   Name="Witch Doctor"    />
+  <Npc Id="229"   Name="Pirate"          />
+  <Npc Id="353"   Name="Stylist"         />
+  <Npc Id="369"   Name="Angler"          />
+  <Npc Id="441"   Name="Tax Collector"   />
+  <Npc Id="550"   Name="Tavernkeep"      />
 
 </tiles>

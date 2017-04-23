@@ -12,7 +12,7 @@ namespace TerraMap.Data
   // copied from Terraria.MapHelper
   public static class MapHelper
   {
-    static Color[][] tileColors = new Color[467][];
+    static Color[][] tileColors = new Color[470][];
     static Color[] liquidColors;
     static Color[][] wallColors = new Color[231][];
 

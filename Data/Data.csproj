@@ -95,6 +95,7 @@
     <Compile Include="TileInfos.cs" />
     <Compile Include="Set.cs" />
     <Compile Include="ViewModelBase.cs" />
+    <Compile Include="NpcInfo.cs" />
     <Compile Include="WallInfo.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

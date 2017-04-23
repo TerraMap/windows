@@ -73,7 +73,9 @@ namespace TerraMap.Data
 			}
 		}
 
-		public static Task<StaticData> ReadAsync(string filename)
+    public NpcInfoList NpcInfoList { get; private set; }
+
+    public static Task<StaticData> ReadAsync(string filename)
 		{
 			return Task.Factory.StartNew(() =>
 			{
@@ -97,8 +99,9 @@ namespace TerraMap.Data
 			staticData.GlobalColors = GlobalColors.Read(xmlDocument);
 			staticData.ItemPrefixes = ItemPrefix.Read(xmlDocument);
 			staticData.ItemInfos = ItemInfo.Read(xmlDocument);
+      staticData.NpcInfoList = NpcInfo.Read(xmlDocument);
 
-			return staticData;
+      return staticData;
 		}
 
 		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
