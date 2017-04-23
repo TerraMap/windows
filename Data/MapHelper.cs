@@ -297,6 +297,7 @@ namespace TerraMap.Data
       tileColors[10][0] = color;
       color = Color.FromRgb(191, 142, 111);
       tileColors[14][0] = color;
+      tileColors[469][0] = color;
       tileColors[15][0] = color;
       tileColors[18][0] = color;
       tileColors[19][0] = color;
@@ -436,11 +437,11 @@ namespace TerraMap.Data
       tileColors[21][2] = Color.FromRgb(137, 128, 200);
       tileColors[21][3] = Color.FromRgb(160, 160, 160);
       tileColors[21][4] = Color.FromRgb(106, 210, 255);
-      tileColors[441][0] = Color.FromRgb(174, 129, 92);
-      tileColors[441][1] = Color.FromRgb(233, 207, 94);
-      tileColors[441][2] = Color.FromRgb(137, 128, 200);
-      tileColors[441][3] = Color.FromRgb(160, 160, 160);
-      tileColors[441][4] = Color.FromRgb(106, 210, 255);
+      tileColors[441][0] = tileColors[21][0];
+      tileColors[441][1] = tileColors[21][1];
+      tileColors[441][2] = tileColors[21][2];
+      tileColors[441][3] = tileColors[21][3];
+      tileColors[441][4] = tileColors[21][4];
       tileColors[27][0] = Color.FromRgb(54, 154, 54);
       tileColors[27][1] = Color.FromRgb(226, 196, 49);
       color = Color.FromRgb(246, 197, 26);
@@ -570,10 +571,10 @@ namespace TerraMap.Data
       tileColors[352][0] = Color.FromRgb(238, 97, 94);
       tileColors[354][0] = Color.FromRgb(141, 107, 89);
       tileColors[355][0] = Color.FromRgb(141, 107, 89);
-			tileColors[463][0] = Color.FromRgb(155, 214, 240);
-			tileColors[464][0] = Color.FromRgb(233, 183, 128);
-			tileColors[465][0] = Color.FromRgb(51, 84, 195);
-			tileColors[466][0] = Color.FromRgb(205, 153, 73);
+      tileColors[463][0] = Color.FromRgb(155, 214, 240);
+      tileColors[464][0] = Color.FromRgb(233, 183, 128);
+      tileColors[465][0] = Color.FromRgb(51, 84, 195);
+      tileColors[466][0] = Color.FromRgb(205, 153, 73);
       tileColors[356][0] = Color.FromRgb(233, 203, 24);
       tileColors[357][0] = Color.FromRgb(168, 178, 204);
       tileColors[367][0] = Color.FromRgb(168, 178, 204);
@@ -674,6 +675,10 @@ namespace TerraMap.Data
       tileColors[459][0] = Color.FromRgb(190, 223, 232);
       tileColors[460][0] = Color.FromRgb(141, 163, 181);
       tileColors[462][0] = Color.FromRgb(231, 178, 28);
+      tileColors[467][0] = Color.FromRgb(129, 56, 121);
+      tileColors[467][1] = Color.FromRgb(255, 249, 59);
+      tileColors[468][0] = tileColors[467][0];
+      tileColors[468][1] = tileColors[467][1];
       liquidColors = new Color[]
       {
         Color.FromRgb(9, 61, 191),
@@ -998,9 +1003,9 @@ namespace TerraMap.Data
         }
       }
       MapHelper.wallPosition = num11;
-      MapHelper.wallLookup = new ushort[225];
+      MapHelper.wallLookup = new ushort[231];
       MapHelper.wallRangeStart = num11;
-      for (int num14 = 0; num14 < 225; num14++)
+      for (int num14 = 0; num14 < 231; num14++)
       {
         if (MapHelper.wallOptionCounts[num14] > 0)
         {
