@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,37 @@ namespace TerraMap
 		public Version Version { get; set; }
 		public string Url { get; set; }
 		public ReleaseStatus Status { get; set; }
+
+    public static List<ReleaseInfo> FromJsonStream(Stream stream)
+    {
+      var releases = new List<ReleaseInfo>();
+
+      var serializer = new JsonSerializer();
+      using(var streamReader = new StreamReader(stream))
+      {
+        using (var jsonTextReader = new JsonTextReader(streamReader))
+        {
+          dynamic data = serializer.Deserialize(jsonTextReader);
+
+          string tag_name = data.tag_name;
+          if (string.IsNullOrWhiteSpace(tag_name))
+            return releases;
+          
+          var version = new Version(tag_name);
+
+          var release = new ReleaseInfo()
+          {
+            Status = ReleaseStatus.Stable,
+            Url = "https://terramap.github.io/windows.html",
+            Version = version,
+          };
+
+          releases.Add(release);
+        }
+      }
+
+      return releases;
+    }
 
 		public static List<ReleaseInfo> FromRssStream(Stream stream)
 		{

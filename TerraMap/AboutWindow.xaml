@@ -19,7 +19,7 @@
 				<TextBlock Grid.Column="1" Text="TerraMap" FontSize="28" FontWeight="Bold" VerticalAlignment="Center" />
 			</StackPanel>
 			<TextBlock HorizontalAlignment="Center">
-				<Hyperlink NavigateUri="http://terramap.codeplex.com" Click="OnHyperLinkClicked">terramap.codeplex.com</Hyperlink>
+				<Hyperlink NavigateUri="https://terramap.github.io" Click="OnHyperLinkClicked">https://terramap.github.io</Hyperlink>
 			</TextBlock>
 			<TextBlock HorizontalAlignment="Center">
 				<Run Text="Version:" />

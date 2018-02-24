@@ -215,8 +215,10 @@ namespace TerraMap
     {
       string path = this.GetWorldsPath();
 
-      OpenFileDialog dialog = new OpenFileDialog();
-      dialog.Filter = "World Files (*.wld)|*.wld|World Backup Files (*.bak)|*.*.bak|All Files (*.*)|*.*";
+      OpenFileDialog dialog = new OpenFileDialog
+      {
+        Filter = "World Files (*.wld)|*.wld|World Backup Files (*.bak)|*.*.bak|All Files (*.*)|*.*"
+      };
 
       if (Directory.Exists(path))
         dialog.InitialDirectory = path;
@@ -245,9 +247,10 @@ namespace TerraMap
 
       this.viewModel.Filename = filename;
 
-      var world = new World();
-
-      world.StaticData = this.viewModel.StaticData;
+      var world = new World
+      {
+        StaticData = this.viewModel.StaticData
+      };
 
       this.viewModel.World = world;
 
@@ -472,9 +475,7 @@ namespace TerraMap
       this.viewModel.ProgressValue = viewModel.World.ProgressValue;
       this.viewModel.HighlightedTileCount = viewModel.World.HighlightedTileCount;
 
-      Int32Rect rect;
-
-      while (viewModel.World.UpdatedRectangles.TryDequeue(out rect))
+      while (viewModel.World.UpdatedRectangles.TryDequeue(out Int32Rect rect))
       {
         var offset = rect.Y * width * 4;
 
@@ -492,8 +493,10 @@ namespace TerraMap
 
     private void Save()
     {
-      SaveFileDialog dialog = new SaveFileDialog();
-      dialog.Filter = "PNG Images (*.png)|*.png";
+      SaveFileDialog dialog = new SaveFileDialog
+      {
+        Filter = "PNG Images (*.png)|*.png"
+      };
       var result = dialog.ShowDialog() ?? false;
       if (!result)
         return;
@@ -543,8 +546,10 @@ namespace TerraMap
 
     private async Task ExportHighlightedTilePositions()
     {
-      SaveFileDialog dialog = new SaveFileDialog();
-      dialog.Filter = "Tab-Delimited Text Files (*.txt)|*.txt|Comma Separated Values Files (*.csv)|*.csv";
+      SaveFileDialog dialog = new SaveFileDialog
+      {
+        Filter = "Tab-Delimited Text Files (*.txt)|*.txt|Comma Separated Values Files (*.csv)|*.csv"
+      };
       var result = dialog.ShowDialog() ?? false;
       if (!result)
         return;
@@ -808,11 +813,15 @@ namespace TerraMap
       {
         this.isChoosingBlocks = true;
 
-        var newViewModel = new MainWindowViewModel();
-        newViewModel.ObjectInfoViewModels = this.viewModel.ObjectInfoViewModels;
+        var newViewModel = new MainWindowViewModel
+        {
+          ObjectInfoViewModels = this.viewModel.ObjectInfoViewModels
+        };
 
-        var window = new TileSelectionWindow(this);
-        window.DataContext = newViewModel;
+        var window = new TileSelectionWindow(this)
+        {
+          DataContext = newViewModel
+        };
 
         var result = window.ShowDialog() ?? false;
         if (!result)
@@ -841,10 +850,13 @@ namespace TerraMap
         this.viewModel.UpdateVisibility = Visibility.Collapsed;
         this.viewModel.NewRelease = null;
 
-        var updatesUrl = @"https://terramap.codeplex.com/project/feeds/rss?ProjectRSSFeed=codeplex%3a%2f%2frelease%2fterramap";
+        var updatesUrl = @"https://api.github.com/repos/terramap/windows/releases/latest";
         var updatesUri = new Uri(updatesUrl);
 
+        ServicePointManager.Expect100Continue = true;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         var webClient = new WebClient();
+        webClient.Headers.Add("user-agent", "Mozilla/5.0");
         webClient.OpenReadCompleted += OnCheckForUpdatesComplete;
         webClient.OpenReadAsync(updatesUri, isUserInitiated);
       }
@@ -1031,8 +1043,7 @@ namespace TerraMap
         number++;
       }
 
-      var args = App.Current.Properties["Args"] as string[];
-      if (args != null && args.Length > 0)
+      if (App.Current.Properties["Args"] is string[] args && args.Length > 0)
       {
         string filename = args[0];
 
@@ -1292,7 +1303,7 @@ namespace TerraMap
 
         using (var stream = e.Result)
         {
-          releases = ReleaseInfo.FromRssStream(stream);
+          releases = ReleaseInfo.FromJsonStream(stream);
         }
 
         var currentVersion = Assembly.GetEntryAssembly().GetName().Version;
@@ -1430,9 +1441,11 @@ namespace TerraMap
 
     private void OnEditSets(object sender, RoutedEventArgs e)
     {
-      var window = new SetsWindow();
-      window.Owner = this;
-      window.DataContext = this.viewModel;
+      var window = new SetsWindow
+      {
+        Owner = this,
+        DataContext = this.viewModel
+      };
       window.ShowDialog();
 
       Set.Save(this.viewModel.Sets, this.viewModel.SetsFilename);
@@ -1662,9 +1675,8 @@ namespace TerraMap
       if (string.IsNullOrWhiteSpace(parameter))
         return;
 
-      int number = 0;
 
-      if (!int.TryParse(parameter, out number))
+      if (!int.TryParse(parameter, out int number))
         return;
 
       e.CanExecute = number > 0 && this.viewModel.Sets.Count >= number;
@@ -1679,9 +1691,7 @@ namespace TerraMap
       if (string.IsNullOrWhiteSpace(parameter))
         return;
 
-      int number = 0;
-
-      if (!int.TryParse(parameter, out number))
+      if (!int.TryParse(parameter, out int number))
         return;
 
       if (number < 1 || this.viewModel.Sets.Count < number)

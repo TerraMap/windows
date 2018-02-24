@@ -16,9 +16,8 @@ BuildVersionHelper.exe %version%
 SET targetDir="Releases\TerraMap-%version%\"
 mkdir %targetDir%
 copy "TerraMap\bin\Debug\CommandLine.dll" %targetDir%
-copy "TerraMap\bin\Debug\Microsoft.Threading.Tasks.dll" %targetDir%
+copy "TerraMap\bin\Debug\Newtonsoft.Json.dll" %targetDir%
 copy "TerraMap\bin\Debug\sets-default.xml" %targetDir%
-copy "TerraMap\bin\Debug\System.Threading.Tasks.dll" %targetDir%
 copy "TerraMap\bin\Debug\TerraMap.Data.dll" %targetDir%
 copy "TerraMap\bin\Debug\TerraMap.Data.pdb" %targetDir%
 copy "TerraMap\bin\Debug\TerraMap.exe" %targetDir%
