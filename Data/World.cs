@@ -1672,7 +1672,7 @@ namespace TerraMap.Data
     {
       var playerMapFiles = new List<MapFileViewModel>();
 
-      string filename = this.Id + ".map";
+      string filename = this.UniqueId + ".map";
 
       string user = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\Players");
       var directory = new DirectoryInfo(user);
