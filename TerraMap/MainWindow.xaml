@@ -443,6 +443,9 @@
         <Button Click="OnApplyBlockSelection" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}" Content="Apply" />
         <Slider Minimum="0" Maximum="1" Value="{Binding MaskOpacity, UpdateSourceTrigger=PropertyChanged}" Width="100" SmallChange=".1" LargeChange=".2"
 						  ToolTip="Highlight Opacity" />
+        <Separator />
+        <TextBlock VerticalAlignment="Center" Padding="0,0,4,0">Background Color:</TextBlock>
+        <xctk:ColorPicker x:Name="colorPicker" ColorMode="ColorCanvas" Width="48" SelectedColor="#FF222222" />
       </ToolBar>
     </ToolBarTray>
     <StatusBar DockPanel.Dock="Bottom">
@@ -487,6 +490,9 @@
 
     <Grid>
       <ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
+        <ext:ZoomControl.Background>
+            <SolidColorBrush Color="{Binding SelectedColor, ElementName=colorPicker}"/>
+        </ext:ZoomControl.Background>
         <Grid x:Name="Grid">
           <Image x:Name="Map" Source="{Binding WriteableBitmap}"
 						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
