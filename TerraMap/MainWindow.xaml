@@ -280,7 +280,7 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
         <TextBlock VerticalAlignment="Center">Players:</TextBlock>
-        <ComboBox ItemsSource="{Binding MapFiles}" SelectedItem="{Binding SelectedMapFile}" 
+        <ComboBox x:Name="playersList" ItemsSource="{Binding MapFiles}" SelectedItem="{Binding SelectedMapFile}" 
 					SelectionChanged="OnSelectedMapFileChanged" DropDownOpened="OnMapsDropDownOpened">
           <ComboBox.ItemTemplate>
             <DataTemplate>

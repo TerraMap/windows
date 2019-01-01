@@ -322,6 +322,8 @@ namespace TerraMap
         {
           this.viewModel.Instructions = "Please select a player or (All Spoilers) from the Players list.";
           this.viewModel.InstructionsVisibility = Visibility.Visible;
+          this.playersList.Focus();
+          this.playersList.IsDropDownOpen = true;
         }
 
         var elapsed = DateTime.Now - start;
@@ -1052,6 +1054,9 @@ namespace TerraMap
 
         await this.Open(filename);
       }
+
+      this.worldsList.Focus();
+      this.worldsList.IsDropDownOpen = true;
     }
 
     private void OnDispatcherTimerTick(object sender, EventArgs e)
