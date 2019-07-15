@@ -1690,7 +1690,7 @@ namespace TerraMap.Data
 	  string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
       var modDirectory = new DirectoryInfo(modUser);
 
-      foreach (var playerDirectory in modDirectory.GetDirectories())
+      foreach (var playerDirectory in modDirectory.GetDirectories().Where(d => !d.Name.Equals("Backups")))
       {
         var playerName = String.Concat(playerDirectory.Name, " (MOD)");
 

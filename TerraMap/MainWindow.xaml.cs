@@ -98,6 +98,14 @@ namespace TerraMap
           this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name });
         }
 
+        var modPath = this.GetModdedWorldsPath();
+
+        foreach (var filename in Directory.GetFiles(modPath, "*.wld"))
+        {
+            string name = World.GetWorldName(filename);
+            this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = String.Concat(name, " (MOD)") });
+        }
+
         var cloudPaths = GetCloudPaths();
 
         foreach (var cloudPath in cloudPaths)
@@ -210,8 +218,18 @@ namespace TerraMap
       path = Path.Combine(path, "Worlds");
       return path;
     }
+    private string GetModdedWorldsPath()
+    {
+        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-    private async Task Open()
+        path = Path.Combine(path, "My Games");
+        path = Path.Combine(path, "Terraria");
+        path = Path.Combine(path, "ModLoader");
+        path = Path.Combine(path, "Worlds");
+        return path;
+    }
+
+        private async Task Open()
     {
       string path = this.GetWorldsPath();
 
