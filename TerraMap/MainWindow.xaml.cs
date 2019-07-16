@@ -99,13 +99,14 @@ namespace TerraMap
         }
 
         var modPath = this.GetModdedWorldsPath();
-
-        foreach (var filename in Directory.GetFiles(modPath, "*.wld"))
+        if (Directory.Exists(modPath))
         {
-            string name = World.GetWorldName(filename);
-            this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = String.Concat(name, " (MOD)") });
+            foreach (var filename in Directory.GetFiles(modPath, "*.wld"))
+            {
+                string name = World.GetWorldName(filename);
+                this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = String.Concat(name, " (MOD)") });
+            }
         }
-
         var cloudPaths = GetCloudPaths();
 
         foreach (var cloudPath in cloudPaths)
