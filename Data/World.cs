@@ -1686,7 +1686,20 @@ namespace TerraMap.Data
         if (File.Exists(playerMapFilename))
           playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
       }
+	  
+	  string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
+        if(Directory.Exists(modUser)){
+            var modDirectory = new DirectoryInfo(modUser);
+            foreach (var moddedPlayerDirectory in modDirectory.GetDirectories().Where(d => !d.Name.Equals("Backups")))
+            {
+                var playerName = String.Concat(moddedPlayerDirectory.Name, " (MOD)");
 
+                var playerMapFilename = Path.Combine(moddedPlayerDirectory.FullName, filename);
+
+                if (File.Exists(playerMapFilename))
+                    playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
+            }
+        }
       string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
       userdataPath = Path.Combine(userdataPath, "Steam");
