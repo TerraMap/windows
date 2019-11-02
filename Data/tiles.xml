@@ -137,7 +137,7 @@
     <var minv="0" name="Open Wooden Door" color="#946b50" />
     <var minu="72" name="Crystal Door" />
   </tile>
-  <tile num="12" name="Heartstone" color="#B61239" hasExtra="1" letLight="1" />
+  <tile num="12" name="Crystal Heart" color="#B61239" hasExtra="1" letLight="1" />
   <tile num="13" name="Bottle" color="#4EC5FC" hasExtra="1" letLight="1">
     <var u="18" name="Health Potion" color="#D80A36" />
     <var u="36" name="Mana Potion" color="#4350FF" />
