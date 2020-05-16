@@ -41,8 +41,11 @@ namespace TerraMap.Data
     public Int32 WorldHeightinTiles { get; set; }
     public Int32 WorldWidthinTiles { get; set; }
 
-    [PropertyInfo(112)]
-    public Boolean ExpertMode { get; set; }
+    [PropertyInfo(209)]
+    public Int32 GameMode { get; set; }
+
+    [PropertyInfo(222)]
+    public Boolean DrunkWorld { get; set; }
 
     [PropertyInfo(141)]
     public Int64 CreationTime { get; set; }
@@ -469,8 +472,8 @@ namespace TerraMap.Data
         throw new Exception(string.Format("World file NPCs list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[4], reader.BaseStream.Position));
       this.ReadNPCsVersion2(reader);
 
-      if (reader.BaseStream.Position != (long)positions[5])
-        throw new Exception(string.Format("World file verification footer is not where it's expected to be. Expected: {0} Actual: {1}", positions[5], reader.BaseStream.Position));
+      //if (reader.BaseStream.Position != (long)positions[5])
+      //  throw new Exception(string.Format("World file verification footer is not where it's expected to be. Expected: {0} Actual: {1}", positions[5], reader.BaseStream.Position));
 
       //this.ReadVerification(reader);
     }
@@ -646,6 +649,11 @@ namespace TerraMap.Data
         this.Properties.Add(new WorldProperty() { Name = "SavedTaxCollector", Value = reader.ReadBoolean() });
       }
 
+      if (Version >= 201)
+      {
+        this.Properties.Add(new WorldProperty() { Name = "SavedGolfer", Value = reader.ReadBoolean() });
+      }
+
       if (Version < 107)
       {
       }
@@ -734,6 +742,101 @@ namespace TerraMap.Data
       this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 1", Value = reader.ReadBoolean() });
       this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 2", Value = reader.ReadBoolean() });
       this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 3", Value = reader.ReadBoolean() });
+
+      // v1.4 Journey's End new stuff
+      // world bg stuff
+      if (Version > 194)
+      {
+        reader.ReadByte();
+      }
+      if (Version >= 215)
+      {
+        reader.ReadByte();
+      }
+      // tree bg stuff
+      if (Version > 195)
+      {
+        reader.ReadByte();
+        reader.ReadByte();
+        reader.ReadByte();
+      }
+      if (Version >= 204)
+      {
+        this.Properties.Add(new WorldProperty() { Name = "CombatBookWasUsed", Value = reader.ReadBoolean() });
+      }
+      // tempLanternNight stuff
+      if (Version >= 207)
+      {
+        reader.ReadInt32();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+      }
+      // tree tops info
+      int num = reader.ReadInt32();
+      num2 = 0;
+      while (num2 < num && num2 < 13)
+      {
+        reader.ReadInt32();
+        num2++;
+      }
+      if (Version >= 212)
+      {
+        //forceHalloweenForToday
+        reader.ReadBoolean();
+        // forceXMasForToday
+        reader.ReadBoolean();
+      }
+      if (Version >= 216)
+      {
+        this.Properties.Add(new WorldProperty() { Name = "SavedOreTiers.Copper", Value = reader.ReadInt32() });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "SavedOreTiers.Iron",
+          Value = reader.ReadInt32()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "SavedOreTiers.Silver",
+          Value = reader.ReadInt32()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "SavedOreTiers.Gold",
+          Value = reader.ReadInt32()
+        });
+      }
+      if (Version >= 217)
+      {
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "boughtCat",
+          Value = reader.ReadBoolean()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "boughtDog",
+          Value = reader.ReadBoolean()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "boughtBunny",
+          Value = reader.ReadBoolean()
+        });
+      }
+      if (Version >= 223)
+      {
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "downedEmpressOfLight",
+          Value = reader.ReadBoolean()});
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "downedQueenSlime",
+          Value = reader.ReadBoolean()
+        });
+        return;
+      }
     }
 
     private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
