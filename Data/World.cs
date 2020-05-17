@@ -1387,6 +1387,10 @@ namespace TerraMap.Data
         nPC.IsHomeless = reader.ReadBoolean();
         nPC.HomeX = reader.ReadInt32();
         nPC.HomeY = reader.ReadInt32();
+        if (Version >= 213 && reader.ReadByte() != 0)
+        {
+          nPC.TownVariationIndex = reader.ReadInt32();
+        }
         num++;
         flag = reader.ReadBoolean();
 

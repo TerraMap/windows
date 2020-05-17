@@ -37,5 +37,6 @@ namespace TerraMap.Data
 
 		public string Name { get; set; }
     public int SpriteId { get; set; }
+    public int TownVariationIndex { get; internal set; }
   }
 }
