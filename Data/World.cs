@@ -988,6 +988,11 @@ namespace TerraMap.Data
             {
               tile.IsYellowWirePresent = true;
             }
+            if ((b & 64) == 64)
+            {
+              b4 = reader.ReadByte();
+              tile.WallType = (byte)((int)b4 << 8 | (int)tile.WallType);
+            }
           }
           b4 = (byte)((b3 & 192) >> 6);
           int k;
