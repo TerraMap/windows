@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -1812,10 +1813,16 @@ namespace TerraMap.Data
                     playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
             }
         }
-      string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
 
-      userdataPath = Path.Combine(userdataPath, "Steam");
-      userdataPath = Path.Combine(userdataPath, "userdata");
+        string userdataPath;
+        using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+        {
+            using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+            {
+                userdataPath = (string)steamKey.GetValue("InstallPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam"));
+            }
+        }
+        userdataPath = Path.Combine(userdataPath, "userdata");
 
       if (Directory.Exists(userdataPath))
       {
