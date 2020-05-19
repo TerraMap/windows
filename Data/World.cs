@@ -830,7 +830,8 @@ namespace TerraMap.Data
         this.Properties.Add(new WorldProperty()
         {
           Name = "downedEmpressOfLight",
-          Value = reader.ReadBoolean()});
+          Value = reader.ReadBoolean()
+        });
         this.Properties.Add(new WorldProperty()
         {
           Name = "downedQueenSlime",
@@ -1378,7 +1379,7 @@ namespace TerraMap.Data
       while (flag)
       {
         NPC nPC = new NPC();
-        if(Version >= 190)
+        if (Version >= 190)
         {
           nPC.SpriteId = reader.ReadInt32();
           nPC.Type = this.staticData.NpcInfoList.FindType(nPC.SpriteId);
@@ -1799,30 +1800,31 @@ namespace TerraMap.Data
         if (File.Exists(playerMapFilename))
           playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
       }
-	  
-	  string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
-        if(Directory.Exists(modUser)){
-            var modDirectory = new DirectoryInfo(modUser);
-            foreach (var moddedPlayerDirectory in modDirectory.GetDirectories().Where(d => !d.Name.Equals("Backups")))
-            {
-                var playerName = String.Concat(moddedPlayerDirectory.Name, " (MOD)");
 
-                var playerMapFilename = Path.Combine(moddedPlayerDirectory.FullName, filename);
-
-                if (File.Exists(playerMapFilename))
-                    playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
-            }
-        }
-
-        string userdataPath;
-        using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+      string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
+      if (Directory.Exists(modUser))
+      {
+        var modDirectory = new DirectoryInfo(modUser);
+        foreach (var moddedPlayerDirectory in modDirectory.GetDirectories().Where(d => !d.Name.Equals("Backups")))
         {
-            using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
-            {
-                userdataPath = (string)steamKey.GetValue("InstallPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam"));
-            }
+          var playerName = String.Concat(moddedPlayerDirectory.Name, " (MOD)");
+
+          var playerMapFilename = Path.Combine(moddedPlayerDirectory.FullName, filename);
+
+          if (File.Exists(playerMapFilename))
+            playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
         }
-        userdataPath = Path.Combine(userdataPath, "userdata");
+      }
+
+      string userdataPath;
+      using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+      {
+        using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+        {
+          userdataPath = (string)steamKey.GetValue("InstallPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam"));
+        }
+      }
+      userdataPath = Path.Combine(userdataPath, "userdata");
 
       if (Directory.Exists(userdataPath))
       {
@@ -1850,7 +1852,7 @@ namespace TerraMap.Data
         }
       }
 
-      return playerMapFiles;
+      return playerMapFiles.OrderBy(p => p.Name).ToList();
     }
 
     public override string ToString()

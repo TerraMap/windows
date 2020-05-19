@@ -101,11 +101,11 @@ namespace TerraMap
         var modPath = this.GetModdedWorldsPath();
         if (Directory.Exists(modPath))
         {
-            foreach (var filename in Directory.GetFiles(modPath, "*.wld"))
-            {
-                string name = World.GetWorldName(filename);
-                this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = String.Concat(name, " (MOD)") });
-            }
+          foreach (var filename in Directory.GetFiles(modPath, "*.wld"))
+          {
+            string name = World.GetWorldName(filename);
+            this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = String.Concat(name, " (MOD)") });
+          }
         }
         var cloudPaths = GetCloudPaths();
 
@@ -117,6 +117,8 @@ namespace TerraMap
             this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name, Cloud = true });
           }
         }
+
+        this.viewModel.WorldFiles = new ObservableCollection<WorldFileViewModel>(this.viewModel.WorldFiles.OrderBy(w => w.Name));
 
         if (currentWorldFile != null)
         {
@@ -138,7 +140,8 @@ namespace TerraMap
       string userdataPath;
       using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
       {
-        using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam")) {
+        using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+        {
           userdataPath = (string)steamKey.GetValue("InstallPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam"));
         }
       }
@@ -224,18 +227,19 @@ namespace TerraMap
       path = Path.Combine(path, "Worlds");
       return path;
     }
+
     private string GetModdedWorldsPath()
     {
-        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+      string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-        path = Path.Combine(path, "My Games");
-        path = Path.Combine(path, "Terraria");
-        path = Path.Combine(path, "ModLoader");
-        path = Path.Combine(path, "Worlds");
-        return path;
+      path = Path.Combine(path, "My Games");
+      path = Path.Combine(path, "Terraria");
+      path = Path.Combine(path, "ModLoader");
+      path = Path.Combine(path, "Worlds");
+      return path;
     }
 
-        private async Task Open()
+    private async Task Open()
     {
       string path = this.GetWorldsPath();
 
@@ -589,7 +593,7 @@ namespace TerraMap
         MessageBox.Show(this, "I'm sorry, Dave. I'm afraid I can't do that.\r\n\r\nYou don't want me overwriting your .wld file.  Please make sure to specify a filename that ends with txt or csv.  :)", "TerraMap");
         return;
       }
-      
+
       var start = DateTime.Now;
 
       var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
@@ -1119,7 +1123,7 @@ namespace TerraMap
 
       this.viewModel.Position = world.GetPosition(x);
       this.viewModel.Depth = world.GetDepth(y);
-      
+
       this.viewModel.Coordinates = string.Format("{0}, {1}", x, y);
     }
 
@@ -1528,7 +1532,7 @@ namespace TerraMap
       {
         await this.ExportHighlightedTilePositions();
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
         HandleException(ex);
       }
