@@ -135,11 +135,16 @@ namespace TerraMap
     {
       List<string> cloudPaths = new List<string>();
 
-      string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+      string userdataPath;
+      using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+      {
+        using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam")) {
+          userdataPath = (string)steamKey.GetValue("InstallPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam"));
+        }
+      }
 
       try
       {
-        userdataPath = Path.Combine(userdataPath, "Steam");
         userdataPath = Path.Combine(userdataPath, "userdata");
 
         if (Directory.Exists(userdataPath))
