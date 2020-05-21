@@ -48,6 +48,9 @@ namespace TerraMap.Data
     [PropertyInfo(222)]
     public Boolean DrunkWorld { get; set; }
 
+    [PropertyInfo(227)]
+    public Boolean GoodWorld { get; set; }
+
     [PropertyInfo(141)]
     public Int64 CreationTime { get; set; }
 
