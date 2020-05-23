@@ -1649,8 +1649,8 @@ namespace TerraMap.Data
 
           var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-          if (tileInfo.Name != "Chest")
-            continue;
+          //if (tileInfo.Name != "Chest")
+          //  continue;
 
           var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
           if (chest == null)
@@ -1819,15 +1819,22 @@ namespace TerraMap.Data
         }
       }
 
-      string userdataPath;
-      using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+      string userdataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam");
+
+      try
       {
-        using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+        using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
         {
-          userdataPath = (string)steamKey.GetValue("InstallPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam"));
+          using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+          {
+            userdataPath = (string)steamKey.GetValue("InstallPath", userdataPath);
+          }
         }
+        userdataPath = Path.Combine(userdataPath, "userdata");
       }
-      userdataPath = Path.Combine(userdataPath, "userdata");
+      catch (Exception)
+      {
+      }
 
       if (Directory.Exists(userdataPath))
       {

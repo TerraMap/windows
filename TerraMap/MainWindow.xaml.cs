@@ -137,13 +137,20 @@ namespace TerraMap
     {
       List<string> cloudPaths = new List<string>();
 
-      string userdataPath;
-      using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+      string userdataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam");
+
+      try
       {
-        using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+        using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
         {
-          userdataPath = (string)steamKey.GetValue("InstallPath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam"));
+          using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+          {
+            userdataPath = (string)steamKey.GetValue("InstallPath", userdataPath);
+          }
         }
+      }
+      catch (Exception)
+      {
       }
 
       try
