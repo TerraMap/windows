@@ -1713,20 +1713,15 @@ namespace TerraMap.Data
 
           name = tileInfo.Name;
 
-          if (tileInfo.Id == 21)
-          {
-            var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+          var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
 
-            if (chest != null && !string.IsNullOrEmpty(chest.Name))
-              name += ": \"" + chest.Name + "\"";
-          }
-          else if (tileInfo.Name == "Sign")
-          {
-            var sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+          if (chest != null && !string.IsNullOrEmpty(chest.Name))
+            name += ": \"" + chest.Name + "\"";
 
-            if (sign != null && !string.IsNullOrEmpty(sign.Text))
-              name += ": \"" + sign.Text + "\"";
-          }
+          var sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+
+          if (sign != null && !string.IsNullOrEmpty(sign.Text))
+            name += ": \"" + sign.Text + "\"";
         }
         else if (tile.IsLiquidPresent)
         {

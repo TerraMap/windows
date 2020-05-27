@@ -2344,6 +2344,18 @@
   
   <!-- v1.3.5 -->
   <tile num="467" name="Chest (Group 2)">
+    <var minu="468" name="Desert Chest" />
+    <var minu="432" name="Locked Desert Chest" />
+    <var minu="396" name="Bamboo Chest" />
+    <var minu="360" name="Sandstone Chest" />
+    <var minu="324" name="Golf Chest" />
+    <var minu="288" name="Stardust Chest" />
+    <var minu="252" name="Nebula Chest" />
+    <var minu="216" name="Vortex Chest" />
+    <var minu="180" name="Solar Chest" />
+    <var minu="144" name="Dead Man's Chest" />
+    <var minu="108" name="Lesion Chest" />
+    <var minu="72" name="Spider Chest" />
     <var minu="36" name="Golden Chest" />
     <var minu="0" name="Crystal Chest" />
   </tile>
@@ -2355,41 +2367,41 @@
   </tile>
   
   <!-- v1.4 -->
-  <tile name="DisplayDoll" num="470" />
-  <tile name="WeaponsRack2" num="471" />
+  <tile name="Display Doll" num="470" />
+  <tile name="Weapon Rack 2" num="471" />
   <tile name="Iron Brick" num="472" />
   <tile name="Lead Brick" num="473" />
   <tile name="Lesion Block" num="474" />
   <tile name="Hat Rack" num="475" />
-  <tile name="GolfHole" num="476" />
-  <tile name="GolfGrass" num="477" />
+  <tile name="Golf Cup" num="476" />
+  <tile name="Mowed Golf Grass" num="477" />
   <tile name="Crimstone Brick" num="478" />
   <tile name="Smooth Sandstone" num="479" />
   <tile name="Blood Moon Monolith" num="480" />
-  <tile name="CrackedBlueDungeonBrick" num="481" />
-  <tile name="CrackedGreenDungeonBrick" num="482" />
-  <tile name="CrackedPinkDungeonBrick" num="483" />
+  <tile name="Cracked Blue Dungeon Brick" num="481" />
+  <tile name="Cracked Green Dungeon Brick" num="482" />
+  <tile name="Cracked Pink Dungeon Brick" num="483" />
   <tile name="Rolling Cactus" num="484" />
-  <tile name="AntlionLarva" num="485" />
+  <tile name="Antlion Larva" num="485" />
   <tile name="Drum Set" num="486" />
   <tile name="Picnic Table" num="487" />
-  <tile name="FallenLog" num="488" />
+  <tile name="Fallen Log" num="488" />
   <tile name="Pin Wheel" num="489" />
   <tile name="Weather Vane" num="490" />
   <tile name="Void Vault" num="491" />
-  <tile name="GolfGrassHallowed" num="492" />
-  <tile name="GolfCupFlag" num="493" />
+  <tile name="Golf Grass Hallowed" num="492" />
+  <tile name="Golf Cup Flag" num="493" />
   <tile name="Golf Tee" num="494" />
-  <tile name="ShellPile" num="495" />
+  <tile name="Shell Pile" num="495" />
   <tile name="Anti-Portal Block" num="496" />
   <tile name="Toilets" num="497" />
-  <tile name="Spider" num="498" />
+  <tile name="Spider Nest Block" num="498" />
   <tile name="Decay Chamber" num="499" />
   <tile name="Solar Brick" num="500" />
   <tile name="Vortex Brick" num="501" />
   <tile name="Nebula Brick" num="502" />
   <tile name="Stardust Brick" num="503" />
-  <tile name="MysticSnakeRope" num="504" />
+  <tile name="Mystic Snake Rope" num="504" />
   <tile name="Gold Fish Bowl" num="505" />
   <tile name="Bast Statue" num="506" />
   <tile name="Gold Starry Block" num="507" />
@@ -2397,13 +2409,13 @@
   <tile name="Void Monolith" num="509" />
   <tile name="Arrow Sign" num="510" />
   <tile name="Painted Arrow Sign" num="511" />
-  <tile name="GreenMossBrick" num="512" />
-  <tile name="BrownMossBrick" num="513" />
-  <tile name="RedMossBrick" num="514" />
-  <tile name="BlueMossBrick" num="515" />
-  <tile name="PurpleMossBrick" num="516" />
-  <tile name="LavaMossBrick" num="517" />
-  <tile name="LilyPad" num="518" />
+  <tile name="Green Moss Brick" num="512" />
+  <tile name="Brown Moss Brick" num="513" />
+  <tile name="Red Moss Brick" num="514" />
+  <tile name="Blue Moss Brick" num="515" />
+  <tile name="Purple Moss Brick" num="516" />
+  <tile name="Lava Mos sBrick" num="517" />
+  <tile name="Lily Pad" num="518" />
   <tile name="Cattail" num="519" />
   <tile name="Plate" num="520" />
   <tile name="Black Dragonfly Jar" num="521" />
@@ -2414,26 +2426,26 @@
   <tile name="Yellow Dragonfly Jar" num="526" />
   <tile name="Gold Dragonfly Jar" num="527" />
   <tile name="MushroomVines" num="528" />
-  <tile name="SeaOats" num="529" />
-  <tile name="OasisPlants" num="530" />
+  <tile name="Sea Oats" num="529" />
+  <tile name="Oasis Plants" num="530" />
   <tile name="Boulder Statue" num="531" />
   <tile name="Maggot Cage" num="532" />
   <tile name="Rat Cage" num="533" />
   <tile name="Krypton Moss" num="534" />
-  <tile name="KryptonMossBrick" num="535" />
+  <tile name="Krypton Moss Brick" num="535" />
   <tile name="Xenon Moss" num="536" />
-  <tile name="XenonMossBrick" num="537" />
+  <tile name="Xenon Moss Brick" num="537" />
   <tile name="Ladybug Cage" num="538" />
   <tile name="Argon Moss" num="539" />
-  <tile name="ArgonMossBrick" num="540" />
+  <tile name="Argon Moss Brick" num="540" />
   <tile name="Echo Block" num="541" />
   <tile name="Owl Cage" num="542" />
   <tile name="Pupfish Bowl" num="543" />
   <tile name="Gold Ladybug Cage" num="544" />
   <tile name="Lawn Flamingo" num="545" />
   <tile name="Grate" num="546" />
-  <tile name="PottedPlants1" num="547" />
-  <tile name="PottedPlants2" num="548" />
+  <tile name="Potted Plants 1" num="547" />
+  <tile name="Potted Plants 2" num="548" />
   <tile name="Seaweed" num="549" />
   <tile name="Turtle Cage" num="550" />
   <tile name="Jungle Turtle Cage" num="551" />
@@ -2442,10 +2454,10 @@
   <tile name="Seagull Cage" num="554" />
   <tile name="Water Strider Cage" num="555" />
   <tile name="Gold Water Strider Cage" num="556" />
-  <tile name="GrateClosed" num="557" />
+  <tile name="Grate Closed" num="557" />
   <tile name="Seahorse Cage" num="558" />
   <tile name="Gold Seahorse Cage" num="559" />
-  <tile name="GolfTrophies" num="560" />
+  <tile name="Golf Trophies" num="560" />
   <tile name="Marble Column" num="561" />
   <tile name="Bamboo" num="562" />
   <tile name="Large Bamboo" num="563" />
@@ -2457,7 +2469,7 @@
   <tile name="Green Fairy Jar" num="569" />
   <tile name="Blue Fairy Jar" num="570" />
   <tile name="Bamboo" num="571" />
-  <tile name="SoulBottles" num="572" />
+  <tile name="Soul Bottles" num="572" />
   <tile name="Tattered Wood Sign" num="573" />
   <tile name="Boreal Beam" num="574" />
   <tile name="Rich Mahogany Beam" num="575" />
@@ -2468,22 +2480,32 @@
   <tile name="Hell Butterfly Jar" num="580" />
   <tile name="Lavafly in a Bottle" num="581" />
   <tile name="Magma Snail Cage" num="582" />
-  <tile name="TreeTopaz" num="583" />
-  <tile name="TreeAmethyst" num="584" />
-  <tile name="TreeSapphire" num="585" />
-  <tile name="TreeEmerald" num="586" />
-  <tile name="TreeRuby" num="587" />
-  <tile name="TreeDiamond" num="588" />
-  <tile name="TreeAmber" num="589" />
-  <tile name="GemSaplings" num="590" />
-  <tile name="PotsSuspended" num="591" />
+  <tile name="Tree Topaz" num="583" />
+  <tile name="Tree Amethyst" num="584" />
+  <tile name="Tree Sapphire" num="585" />
+  <tile name="Tree Emerald" num="586" />
+  <tile name="Tree Ruby" num="587" />
+  <tile name="Tree Diamond" num="588" />
+  <tile name="Tree Amber" num="589" />
+  <tile name="Gem Saplings" num="590" />
+  <tile name="Pots Suspended" num="591" />
   <tile name="Hanging Brazier" num="592" />
   <tile name="Mini Volcano" num="593" />
   <tile name="Large Volcano" num="594" />
-  <tile name="VanityTreeSakuraSaplings" num="595" />
-  <tile name="VanityTreeSakura" num="596" />
-  <tile name="TeleportationPylon" num="597" />
-  <tile name="LavafishBowl" num="598" />
+  <tile name="Vanity Tree Sakura Saplings" num="595" />
+  <tile name="Vanity Tree Sakura" num="596" />
+  <tile name="Teleportation Pylon" num="597">
+    <var minu="432" name="Universal Pylon" />
+    <var minu="378" name="Mushroom Pylon" />
+    <var minu="324" name="Snow Pylon" />
+    <var minu="270" name="Desert Pylon" />
+    <var minu="216" name="Ocean Pylon" />
+    <var minu="162" name="Cavern Pylon" />
+    <var minu="108" name="Hallow Pylon" />
+    <var minu="54" name="Jungle Pylon" />
+    <var minu="0" name="Forest Pylon" />
+  </tile>
+  <tile name="Lavafish Bowl" num="598" />
   <tile name="Amethyst Bunny Cage" num="599" />
   <tile name="Topaz Bunny Cage" num="600" />
   <tile name="Sapphire Bunny Cage" num="601" />
@@ -2500,9 +2522,9 @@
   <tile name="Amber Squirrel Cage" num="612" />
   <tile name="PottedLavaPlants" num="613" />
   <tile name="Potted Ember Tendrils" num="614" />
-  <tile name="VanityTreeWillowSaplings" num="615" />
-  <tile name="VanityTreeYellowWillow" num="616" />
-  <tile name="MasterTrophyBase" num="617" />
+  <tile name="Vanity Tree Willow Saplings" num="615" />
+  <tile name="Vanity Tree Yellow Willow" num="616" />
+  <tile name="Master Trophy Base" num="617" />
   <tile name="Stone Accent Slab" num="618" />
   <tile name="Truffle Worm Cage" num="619" />
   <tile name="Prismatic Lacewing Jar" num="620" />
@@ -8062,4 +8084,7 @@
   <Npc Id="550" Name="Tavernkeep" />
   <Npc Id="588" Name="Golfer" />
   <Npc Id="633" Name="Zoologist" />
+  <Npc Id="637" Name="Town Cat" />
+  <Npc Id="638" Name="Town Dog" />
+  <Npc Id="656" Name="Town Bunny" />
 </tiles>
