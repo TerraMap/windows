@@ -49,11 +49,10 @@ namespace TerraMap
 		{
 			e.Accepted = false;
 
-			var tileInfo = e.Item as ObjectInfoViewModel;
-			if (tileInfo == null)
-				return;
+      if (!(e.Item is ObjectInfoViewModel tileInfo))
+        return;
 
-			e.Accepted = tileInfo.Name.ToLower().Contains(this.searchBox.Text.ToLower());
+      e.Accepted = tileInfo.Name.ToLower().Contains(this.searchBox.Text.ToLower());
 		}
 
 		private void OnAccept(object sender, RoutedEventArgs e)

@@ -35,11 +35,10 @@ namespace TerraMap
 		{
 			e.Accepted = false;
 
-			var item = e.Item as WorldProperty;
-			if (item == null)
-				return;
+      if (!(e.Item is WorldProperty item))
+        return;
 
-			e.Accepted = item.Name.ToLower().Contains(this.searchBox.Text.ToLower());
+      e.Accepted = item.Name.ToLower().Contains(this.searchBox.Text.ToLower());
 		}
 
 		private void OnSearchTextChanged(object sender, TextChangedEventArgs e)

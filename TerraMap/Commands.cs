@@ -16,6 +16,7 @@ namespace TerraMap
       NavigateToSpawn = new RoutedUICommand();
       NavigateToDungeon = new RoutedUICommand();
       HighlightSet = new RoutedUICommand();
+      OpenPlayerMapFile = new RoutedUICommand();
       ExportHighlightedTilePositions = new RoutedUICommand();
     }
 
@@ -28,5 +29,7 @@ namespace TerraMap
     public static RoutedUICommand HighlightSet { get; private set; }
 
     public static RoutedUICommand ExportHighlightedTilePositions { get; private set; }
+
+    public static RoutedUICommand OpenPlayerMapFile { get; private set; }
   }
 }

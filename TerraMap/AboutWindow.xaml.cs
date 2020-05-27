@@ -15,25 +15,24 @@ using System.Windows.Shapes;
 
 namespace TerraMap
 {
-	public partial class AboutWindow : OwnedWindow
-	{
-		public AboutWindow()
-		{
-			InitializeComponent();
-		}
+  public partial class AboutWindow : OwnedWindow
+  {
+    public AboutWindow()
+    {
+      InitializeComponent();
+    }
 
-		private void OnCloseClicked(object sender, RoutedEventArgs e)
-		{
-			this.Close();
-		}
+    private void OnCloseClicked(object sender, RoutedEventArgs e)
+    {
+      this.Close();
+    }
 
-		private void OnHyperLinkClicked(object sender, RoutedEventArgs e)
-		{
-			var hyperlink = sender as Hyperlink;
-			if (hyperlink == null)
-				return;
+    private void OnHyperLinkClicked(object sender, RoutedEventArgs e)
+    {
+      if (!(sender is Hyperlink hyperlink))
+        return;
 
-			Process.Start(hyperlink.NavigateUri.ToString());
-		}
-	}
+      Process.Start(hyperlink.NavigateUri.ToString());
+    }
+  }
 }

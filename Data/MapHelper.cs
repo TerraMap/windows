@@ -13,8 +13,7 @@ namespace TerraMap.Data
   public static class MapHelper
   {
     static Color[][] tileColors = new Color[623][];
-    static Color[] liquidColors;
-    static Color[][] wallColors = new Color[316][];
+    static readonly Color[][] wallColors = new Color[316][];
 
     public static int[] tileOptionCounts;
     public static int[] wallOptionCounts;
@@ -1389,10 +1388,12 @@ namespace TerraMap.Data
 
     public static Color GetLiquidColor(ushort liquidType)
     {
-      return liquidColors[liquidType];
+      return LiquidColors[liquidType];
     }
 
     private static byte[][] tileLight;
+
+    public static Color[] LiquidColors { get; }
 
     public static bool IsTileLit(int x, int y)
     {

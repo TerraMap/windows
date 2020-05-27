@@ -445,10 +445,7 @@ namespace TerraMap.Data
 
     private void ReadWorldVersion2(BinaryReader reader)
     {
-      bool[] importance;
-      int[] positions;
-
-      this.LoadFileFormatHeader(reader, out importance, out positions);
+      this.LoadFileFormatHeader(reader, out bool[] importance, out int[] positions);
 
       if (reader.BaseStream.Position != (long)positions[0])
         throw new Exception(string.Format("World file header is not where it's expected to be. Expected: {0} Actual: {1}", positions[0], reader.BaseStream.Position));
@@ -1047,8 +1044,10 @@ namespace TerraMap.Data
             var color = GetTileColor(y, tile);
             if (color != tile.Color)
             {
-              var newTile = new Tile(tile);
-              newTile.Color = color;
+              var newTile = new Tile(tile)
+              {
+                Color = color
+              };
               this.Tiles[x, y] = newTile;
             }
             k--;
@@ -1243,10 +1242,12 @@ namespace TerraMap.Data
       int i;
       for (i = 0; i < num; i++)
       {
-        Chest chest = new Chest();
-        chest.X = reader.ReadInt32();
-        chest.Y = reader.ReadInt32();
-        chest.Name = reader.ReadString();
+        Chest chest = new Chest
+        {
+          X = reader.ReadInt32(),
+          Y = reader.ReadInt32(),
+          Name = reader.ReadString()
+        };
         for (int j = 0; j < num3; j++)
         {
           short num5 = reader.ReadInt16();
@@ -1319,10 +1320,12 @@ namespace TerraMap.Data
         Tile tile = this.Tiles[x, y];
         if (tile.IsActive && (tile.Type == 55 || tile.Type == 85))
         {
-          Sign sign = new Sign();
-          sign.Text = text;
-          sign.X = x;
-          sign.Y = y;
+          Sign sign = new Sign
+          {
+            Text = text,
+            X = x,
+            Y = y
+          };
           this.Signs.Add(sign);
         }
       }
