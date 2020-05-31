@@ -464,8 +464,32 @@
       <StatusBarItem DockPanel.Dock="Left" ToolTip="XY Coordinates (from upper-left)">
         <TextBlock Text="{Binding Coordinates}" />
       </StatusBarItem>
-      <StatusBarItem DockPanel.Dock="Left">
-        <TextBlock Text="{Binding TileName}" />
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Tile Name">
+        <TextBlock Text="{Binding HoverInfo.Name}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Tile Type">
+        <TextBlock Text="{Binding HoverInfo.TileUV}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Actuator">
+        <TextBlock Text="{Binding HoverInfo.Actuator}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Wall Name">
+        <TextBlock Text="{Binding HoverInfo.WallName}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Wall Type">
+        <TextBlock Text="{Binding HoverInfo.WallType}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Liquid">
+        <TextBlock Text="{Binding HoverInfo.Liquid}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Wires">
+        <TextBlock Text="{Binding HoverInfo.WireColors}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Chest Name">
+        <TextBlock Text="{Binding HoverInfo.ChestName}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Sign Text">
+        <TextBlock Text="{Binding HoverInfo.SignText}" />
       </StatusBarItem>
       <StatusBarItem DockPanel.Dock="Right">
         <TextBlock Text="{Binding World.Status}" HorizontalAlignment="Right" />

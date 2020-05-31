@@ -1162,6 +1162,7 @@ namespace TerraMap
         return;
 
       string name = world.GetTileName(x, y);
+      this.viewModel.HoverInfo = world.GetTileHitTestInfo(x, y);
 
       if (!allSpoilers && !MapHelper.IsTileLit(x, y))
         name = "(No spoilers)";

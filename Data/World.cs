@@ -858,9 +858,6 @@ namespace TerraMap.Data
       {
         for (int y = 0; y < this.WorldHeightinTiles; y++)
         {
-          //if (x == 100 && y == 440)
-          //	Debug.Write("");
-
           int num2 = -1;
           byte b2;
           byte b = b2 = 0;
@@ -890,10 +887,7 @@ namespace TerraMap.Data
             }
 
             tile.Type = (ushort)num2;
-
-            //if (tile.Type > 254 && tile.Type != 280)
-            //	Debug.Write("");
-
+            
             if (importance[num2])
             {
               tile.TextureU = reader.ReadInt16();
@@ -902,20 +896,11 @@ namespace TerraMap.Data
               {
                 tile.TextureV = 0;
               }
-              if (tile.Type == 26)
-              {
-                Debug.WriteLine("");
-              }
             }
             else
             {
               tile.TextureU = -1;
               tile.TextureV = -1;
-
-              if (tile.Type == 105)
-              {
-                Debug.WriteLine("");
-              }
             }
             if ((b & 8) == 8)
             {
@@ -1108,7 +1093,7 @@ namespace TerraMap.Data
 
       var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-      if (tile.IsActive)
+      if (tile.IsActive || tile.IsActuatorPresent)
       {
         if (string.IsNullOrEmpty(tileInfo.ColorName))
         {
@@ -1469,9 +1454,6 @@ namespace TerraMap.Data
       {
         for (int x = 0; x < this.WorldWidthinTiles; x++)
         {
-          //if (x == 47 && y == 715)
-          //	Debug.Write("");
-
           var tile = this.Tiles[x, y];
 
           Color color = tile.Color;
@@ -1710,7 +1692,7 @@ namespace TerraMap.Data
       {
         var tile = this.Tiles[x, y];
 
-        if (tile.IsActive)
+        if (tile.IsActive || tile.IsActuatorPresent)
         {
           var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
@@ -1725,17 +1707,22 @@ namespace TerraMap.Data
 
           if (sign != null && !string.IsNullOrEmpty(sign.Text))
             name += ": \"" + sign.Text + "\"";
+
+          if (tile.IsActuatorPresent)
+            name += " (Actuator)";
         }
-        else if (tile.IsLiquidPresent)
+
+        if (tile.IsLiquidPresent)
         {
           if (tile.IsLiquidLava)
-            name = "Lava";
+            name += " Lava";
           else if (tile.IsLiquidHoney)
-            name = "Honey";
+            name += " Honey";
           else
-            name = "Water";
+            name += " Water";
         }
-        else if (tile.IsWallPresent)
+
+        if (tile.IsWallPresent)
         {
           name = this.staticData.WallInfos[tile.WallType - 1].Name;
         }
@@ -1781,6 +1768,85 @@ namespace TerraMap.Data
       }
 
       return name;
+    }
+
+    public TileHitTestInfo GetTileHitTestInfo(int x, int y)
+    {
+      var tileHitTestInfo = new TileHitTestInfo(x, y);
+
+      tileHitTestInfo.Name = "Nothing";
+
+      if (x >= 0 && x < this.WorldWidthinTiles &&
+        y >= 0 && y < this.WorldHeightinTiles)
+      {
+        tileHitTestInfo.Tile = this.Tiles[x, y];
+      }
+      else
+      {
+        return tileHitTestInfo;
+      }
+
+      var tile = tileHitTestInfo.Tile;
+
+      var uv = new List<int>();
+      if (tile.TextureU > 0 || tile.TextureV > 0) uv.Add(tile.TextureU);
+      if (tile.TextureV > 0) uv.Add(tile.TextureV);
+      tileHitTestInfo.TileUV = string.Join(",", uv);
+      if (!string.IsNullOrWhiteSpace(tileHitTestInfo.TileUV)) tileHitTestInfo.TileUV = $"({tileHitTestInfo.TileUV})";
+
+      if (tile.IsActive || tile.IsActuatorPresent)
+      {
+        tileHitTestInfo.TileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+        tileHitTestInfo.Name = tileHitTestInfo.TileInfo.Name;
+        tileHitTestInfo.Chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+        tileHitTestInfo.Sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+        tileHitTestInfo.Actuator = tile.IsActuatorPresent ? "Actuator": null;
+      }
+
+      if (tile.IsLiquidPresent)
+      {
+        if (tile.IsLiquidLava)
+          tileHitTestInfo.Liquid = "Lava";
+        else if (tile.IsLiquidHoney)
+          tileHitTestInfo.Liquid = "Honey";
+        else
+          tileHitTestInfo.Liquid = "Water";
+      }
+
+      if (tile.IsWallPresent)
+      {
+        tileHitTestInfo.WallInfo = this.staticData.WallInfos[tile.WallType - 1];
+        tileHitTestInfo.WallName = tileHitTestInfo.WallInfo.Name;
+        tileHitTestInfo.WallType = $"({tileHitTestInfo.WallInfo.Id})";
+      }
+
+      var wireColors = new List<string>();
+
+      if (tile.IsBlueWirePresent)
+      {
+        wireColors.Add("Blue");
+      }
+      if (tile.IsGreenWirePresent)
+      {
+        wireColors.Add("Green");
+      }
+      if (tile.IsRedWirePresent)
+      {
+        wireColors.Add("Red");
+      }
+      if (tile.IsYellowWirePresent)
+      {
+        wireColors.Add("Yellow");
+      }
+      tileHitTestInfo.WireColors = string.Join(",", wireColors);
+      if (!string.IsNullOrWhiteSpace(tileHitTestInfo.WireColors)) tileHitTestInfo.WireColors = $"{tileHitTestInfo.WireColors} Wire";
+
+      if (string.IsNullOrWhiteSpace(tileHitTestInfo.Name))
+      {
+        tileHitTestInfo.Name = "Unknown";
+      }
+
+      return tileHitTestInfo;
     }
 
     public List<MapFileViewModel> GetPlayerMapFiles()
