@@ -2530,6 +2530,7 @@
   <tile name="Prismatic Lacewing Jar" num="620" />
   <tile name="Slice of Cake" num="621" />
   <tile name="Teapot" num="622" />
+  <tile name="Potted Crystal Plants" num="623" />
   
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
@@ -8037,6 +8038,53 @@
   <item name="Carton of Milk" num="5041" />
   <item name="Coffee" num="5042" />
 
+  <!-- v1.4.1 -->
+  <item name="Torch God's Favor" num="5043" />
+  <item name="Music Box (Journey's End)" num="5044" />
+  <item name="Plaguebringer's Skull" num="5045" />
+  <item name="Plaguebringer's Cloak" num="5046" />
+  <item name="Plaguebringer's Treads" num="5047" />
+  <item name="Wandering Jingasa" num="5048" />
+  <item name="Wandering Yukata" num="5049" />
+  <item name="Wandering Geta" num="5050" />
+  <item name="Timeless Traveler's Hood" num="5051" />
+  <item name="Timeless Traveler's Cloak" num="5052" />
+  <item name="Timeless Traveler's Footwear" num="5053" />
+  <item name="Floret Protector Helmet" num="5054" />
+  <item name="Floret Protector Shirt" num="5055" />
+  <item name="Floret Protector Pants" num="5056" />
+  <item name="Capricorn Helmet" num="5057" />
+  <item name="Capricorn Chestplate" num="5058" />
+  <item name="Capricorn Hooves" num="5059" />
+  <item name="Capricorn Tail" num="5060" />
+  <item name="Video Visage" num="5061" />
+  <item name="Lazer Blazer" num="5062" />
+  <item name="Pinstripe Pants" num="5063" />
+  <item name="Lavaproof Tackle Bag" num="5064" />
+  <item name="Resonance Scepter" num="5065" />
+  <item name="Bee Hive" num="5066" />
+  <item name="Antlion Eggs" num="5067" />
+  <item name="Flinx Fur Coat" num="5068" />
+  <item name="Flinx Staff" num="5069" />
+  <item name="Flinx Fur" num="5070" />
+  <item name="Royal Tiara" num="5071" />
+  <item name="Royal Blouse" num="5072" />
+  <item name="Royal Dress" num="5073" />
+  <item name="Spinal Tap" num="5074" />
+  <item name="Rainbow Cursor" num="5075" />
+  <item name="Royal Scepter" num="5076" />
+  <item name="Glass Slipper" num="5077" />
+  <item name="Prince Uniform" num="5078" />
+  <item name="Prince Pants" num="5079" />
+  <item name="Prince Cape" num="5080" />
+  <item name="Potted Crystal Fern" num="5081" />
+  <item name="Potted Crystal Spiral" num="5082" />
+  <item name="Potted Crystal Teardrop" num="5083" />
+  <item name="Potted Crystal Tree" num="5084" />
+  <item name="Princess 64" num="5085" />
+  <item name="Painting of a Lass" num="5086" />
+  <item name="Dark Side of the Hallow" num="5087" />
+
   <global id="sky" color="#84AAF8" />
   <global id="earth" color="#583D2E" />
   <global id="rock" color="#4A433C" />
@@ -8087,4 +8135,5 @@
   <Npc Id="637" Name="Town Cat" />
   <Npc Id="638" Name="Town Dog" />
   <Npc Id="656" Name="Town Bunny" />
+  <Npc Id="663" Name="Princess" />
 </tiles>

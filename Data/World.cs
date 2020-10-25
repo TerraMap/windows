@@ -887,7 +887,7 @@ namespace TerraMap.Data
             }
 
             tile.Type = (ushort)num2;
-            
+
             if (importance[num2])
             {
               tile.TextureU = reader.ReadInt16();
@@ -1634,8 +1634,8 @@ namespace TerraMap.Data
 
           var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-          //if (tileInfo.Name != "Chest")
-          //  continue;
+          if (!tileInfo.Name.Contains("Chest"))
+            continue;
 
           var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
           if (chest == null)
@@ -1800,7 +1800,7 @@ namespace TerraMap.Data
         tileHitTestInfo.Name = tileHitTestInfo.TileInfo.Name;
         tileHitTestInfo.Chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
         tileHitTestInfo.Sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
-        tileHitTestInfo.Actuator = tile.IsActuatorPresent ? "Actuator": null;
+        tileHitTestInfo.Actuator = tile.IsActuatorPresent ? "Actuator" : null;
       }
 
       if (tile.IsLiquidPresent)
@@ -1853,7 +1853,7 @@ namespace TerraMap.Data
     {
       var playerMapFiles = new List<MapFileViewModel>();
 
-      string filename = this.UniqueId + ".map";
+      var worldMapFileNames = new string[] { this.UniqueId + ".map", this.Id + ".map" };
 
       string user = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\Players");
       var directory = new DirectoryInfo(user);
@@ -1862,42 +1862,71 @@ namespace TerraMap.Data
       {
         var playerName = playerDirectory.Name;
 
-        var playerMapFilename = Path.Combine(playerDirectory.FullName, filename);
-
-        if (File.Exists(playerMapFilename))
-          playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
-      }
-
-      string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
-      if (Directory.Exists(modUser))
-      {
-        var modDirectory = new DirectoryInfo(modUser);
-        foreach (var moddedPlayerDirectory in modDirectory.GetDirectories().Where(d => !d.Name.Equals("Backups")))
+        foreach (var worldMapFileName in worldMapFileNames)
         {
-          var playerName = String.Concat(moddedPlayerDirectory.Name, " (MOD)");
-
-          var playerMapFilename = Path.Combine(moddedPlayerDirectory.FullName, filename);
+          var playerMapFilename = Path.Combine(playerDirectory.FullName, worldMapFileName);
 
           if (File.Exists(playerMapFilename))
             playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
         }
       }
 
-      string userdataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam");
-
-      try
+      string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
+      if (Directory.Exists(modUser))
       {
-        using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+        var modDirectory = new DirectoryInfo(modUser);
+        foreach (var playerDirectory in modDirectory.GetDirectories().Where(d => !d.Name.Equals("Backups")))
         {
-          using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+          var playerName = String.Concat(playerDirectory.Name, " (MOD)");
+
+          foreach (var worldMapFileName in worldMapFileNames)
           {
-            userdataPath = (string)steamKey.GetValue("InstallPath", userdataPath);
+            var playerMapFilename = Path.Combine(playerDirectory.FullName, worldMapFileName);
+
+            if (File.Exists(playerMapFilename))
+              playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
           }
         }
-        userdataPath = Path.Combine(userdataPath, "userdata");
       }
-      catch (Exception)
+
+      string userdataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam", "userdata");
+
+      if (!Directory.Exists(userdataPath))
       {
+        // try registry hklm
+        try
+        {
+          using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+          {
+            using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+            {
+              userdataPath = (string)steamKey.GetValue("InstallPath", userdataPath);
+            }
+          }
+          userdataPath = Path.Combine(userdataPath, "userdata");
+        }
+        catch (Exception)
+        {
+        }
+      }
+
+      if (!Directory.Exists(userdataPath))
+      {
+        // try registry hklu
+        try
+        {
+          using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32))
+          {
+            using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+            {
+              userdataPath = (string)steamKey.GetValue("SteamPath", userdataPath);
+            }
+          }
+          userdataPath = Path.Combine(userdataPath, "userdata");
+        }
+        catch (Exception)
+        {
+        }
       }
 
       if (Directory.Exists(userdataPath))
@@ -1918,10 +1947,13 @@ namespace TerraMap.Data
           {
             var playerName = playerDirectory.Name;
 
-            var playerMapFilename = Path.Combine(playerDirectory.FullName, filename);
+            foreach (var worldMapFileName in worldMapFileNames)
+            {
+              var playerMapFilename = Path.Combine(playerDirectory.FullName, worldMapFileName);
 
-            if (File.Exists(playerMapFilename))
-              playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename), Cloud = true });
+              if (File.Exists(playerMapFilename))
+                playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename), Cloud = true });
+            }
           }
         }
       }

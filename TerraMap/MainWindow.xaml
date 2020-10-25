@@ -297,10 +297,10 @@
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
-        <Button Command="Open" ToolTip="Open">
+        <Button Command="Open" ToolTip="Open World">
           <local:AutoGreyableImage Source="Resources/OpenFolder_16x.png" Width="16" />
         </Button>
-        <Button Command="local:Commands.OpenPlayerMapFile" ToolTip="Open">
+        <Button Command="local:Commands.OpenPlayerMapFile" ToolTip="Open Player Map">
           <local:AutoGreyableImage Source="Resources/OpenFile_16x.png" Width="16" />
         </Button>
         <Button Command="Save" ToolTip="Save Image">
