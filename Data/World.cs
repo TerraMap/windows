@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -50,6 +50,9 @@ namespace TerraMap.Data
 
     [PropertyInfo(227)]
     public Boolean GoodWorld { get; set; }
+
+    [PropertyInfo(238)]
+    public Boolean TenthAnniversaryWorld { get; set; }
 
     [PropertyInfo(141)]
     public Int64 CreationTime { get; set; }
