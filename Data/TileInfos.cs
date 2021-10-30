@@ -134,24 +134,26 @@ namespace TerraMap.Data
 
     private TileInfo NewVariant(TileInfo parent, XmlNode node)
     {
-      TileInfo info = new TileInfo();
-      info.Id = parent.Id;
-      info.Name = (node.Attributes["name"] == null) ? parent.Name : node.Attributes["name"].Value;
-      info.ColorValue = (node.Attributes["color"] == null) ? parent.ColorValue : ParseColor(node.Attributes["color"].Value);
-      info.ColorName = (node.Attributes["color"] == null) ? parent.ColorName : node.Attributes["color"].Value;
-      info.IsTransparent = (node.Attributes["letLight"] == null) ? parent.IsTransparent : true;
-      info.IsSolid = (node.Attributes["solid"] == null) ? parent.IsSolid : true;
-      info.Light = (node.Attributes["light"] == null) ? parent.Light : ParseDouble(node.Attributes["light"].Value);
-      info.LightR = (node.Attributes["lightr"] == null) ? parent.LightR : ParseDouble(node.Attributes["lightr"].Value);
-      info.LightG = (node.Attributes["lightg"] == null) ? parent.LightG : ParseDouble(node.Attributes["lightg"].Value);
-      info.LightB = (node.Attributes["lightb"] == null) ? parent.LightB : ParseDouble(node.Attributes["lightb"].Value);
-      info.U = (node.Attributes["u"] == null) ? -1 : ParseInt(node.Attributes["u"].Value);
-      info.V = (node.Attributes["v"] == null) ? -1 : ParseInt(node.Attributes["v"].Value);
-      info.MinU = (node.Attributes["minu"] == null) ? -1 : ParseInt(node.Attributes["minu"].Value);
-      info.MaxU = (node.Attributes["maxu"] == null) ? -1 : ParseInt(node.Attributes["maxu"].Value);
-      info.MinV = (node.Attributes["minv"] == null) ? -1 : ParseInt(node.Attributes["minv"].Value);
-      info.MaxV = (node.Attributes["maxv"] == null) ? -1 : ParseInt(node.Attributes["maxv"].Value);
-      info.Variants = new List<TileInfo>();
+      TileInfo info = new TileInfo
+      {
+        Id = parent.Id,
+        Name = (node.Attributes["name"] == null) ? parent.Name : node.Attributes["name"].Value,
+        ColorValue = (node.Attributes["color"] == null) ? parent.ColorValue : ParseColor(node.Attributes["color"].Value),
+        ColorName = (node.Attributes["color"] == null) ? parent.ColorName : node.Attributes["color"].Value,
+        IsTransparent = (node.Attributes["letLight"] == null) ? parent.IsTransparent : true,
+        IsSolid = (node.Attributes["solid"] == null) ? parent.IsSolid : true,
+        Light = (node.Attributes["light"] == null) ? parent.Light : ParseDouble(node.Attributes["light"].Value),
+        LightR = (node.Attributes["lightr"] == null) ? parent.LightR : ParseDouble(node.Attributes["lightr"].Value),
+        LightG = (node.Attributes["lightg"] == null) ? parent.LightG : ParseDouble(node.Attributes["lightg"].Value),
+        LightB = (node.Attributes["lightb"] == null) ? parent.LightB : ParseDouble(node.Attributes["lightb"].Value),
+        U = (node.Attributes["u"] == null) ? -1 : ParseInt(node.Attributes["u"].Value),
+        V = (node.Attributes["v"] == null) ? -1 : ParseInt(node.Attributes["v"].Value),
+        MinU = (node.Attributes["minu"] == null) ? -1 : ParseInt(node.Attributes["minu"].Value),
+        MaxU = (node.Attributes["maxu"] == null) ? -1 : ParseInt(node.Attributes["maxu"].Value),
+        MinV = (node.Attributes["minv"] == null) ? -1 : ParseInt(node.Attributes["minv"].Value),
+        MaxV = (node.Attributes["maxv"] == null) ? -1 : ParseInt(node.Attributes["maxv"].Value),
+        Variants = new List<TileInfo>()
+      };
       if (node.HasChildNodes)
         for (int i = 0; i < node.ChildNodes.Count; i++)
           info.Variants.Add(NewVariant(info, node.ChildNodes[i]));

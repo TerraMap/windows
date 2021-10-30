@@ -31,12 +31,13 @@ namespace TerraMap.Data
 				if (node.Attributes["Id"] != null)
 					id = Convert.ToInt32(node.Attributes["Id"].Value);
 
-				var info = new NpcInfo();
+        var info = new NpcInfo
+        {
+          Id = id,
+          Name = node.Attributes["Name"].Value
+        };
 
-				info.Id = id;
-				info.Name = node.Attributes["Name"].Value;
-        
-				list.Add(info);
+        list.Add(info);
 			}
 
 			return list;

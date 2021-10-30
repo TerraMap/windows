@@ -5,60 +5,61 @@ using System.Xml;
 
 namespace TerraMap.Data
 {
-	public struct WallInfo
-	{
-		public int Id;
-		public string Name;
-		public UInt32 ColorValue;
-		public Int16 Blend;
-		public Color Color;
-		public string ColorName;
+  public struct WallInfo
+  {
+    public int Id;
+    public string Name;
+    public UInt32 ColorValue;
+    public Int16 Blend;
+    public Color Color;
+    public string ColorName;
 
-		public static List<WallInfo> Read(XmlDocument xml)
-		{
-			var wallNodeList = xml.GetElementsByTagName("wall");
+    public static List<WallInfo> Read(XmlDocument xml)
+    {
+      var wallNodeList = xml.GetElementsByTagName("wall");
 
-			return Read(wallNodeList);
-		}
+      return Read(wallNodeList);
+    }
 
-		public static List<WallInfo> Read(XmlNodeList wallNodeList)
-		{
-			var wallInfoList = new List<WallInfo>();
+    public static List<WallInfo> Read(XmlNodeList wallNodeList)
+    {
+      var wallInfoList = new List<WallInfo>();
 
-			for (int i = 0; i < wallNodeList.Count; i++)
-			{
-				var wallNode = wallNodeList[i];
+      for (int i = 0; i < wallNodeList.Count; i++)
+      {
+        var wallNode = wallNodeList[i];
 
-				int id = 0;
+        int id = 0;
 
-				if (wallNode.Attributes["num"] != null)
-					id = Convert.ToInt32(wallNode.Attributes["num"].Value);
+        if (wallNode.Attributes["num"] != null)
+          id = Convert.ToInt32(wallNode.Attributes["num"].Value);
 
-				var wallInfo = new WallInfo();
+        var wallInfo = new WallInfo
+        {
+          Id = id,
+          Name = wallNode.Attributes["name"].Value
+        };
 
-				wallInfo.Id = id;
-				wallInfo.Name = wallNode.Attributes["name"].Value;
+        if (wallNode.Attributes["color"] != null)
+        {
+          wallInfo.ColorName = wallNode.Attributes["color"].Value;
+          wallInfo.ColorValue = TileInfos.ParseColor(wallInfo.ColorName);
+          wallInfo.Color = (Color)ColorConverter.ConvertFromString(wallInfo.ColorName);
+        }
+        else
+        {
+          wallInfo.Color = MapHelper.GetWallColor((ushort)id);
+        }
 
-				if (wallNode.Attributes["color"] != null)
-				{
-					wallInfo.ColorName = wallNode.Attributes["color"].Value;
-					wallInfo.ColorValue = TileInfos.ParseColor(wallInfo.ColorName);
-					wallInfo.Color = (Color)ColorConverter.ConvertFromString(wallInfo.ColorName);
-				}
-				else
-				{
-					wallInfo.Color = MapHelper.GetWallColor((ushort)id);
-				}
+        if (wallNode.Attributes["blend"] != null)
+          wallInfo.Blend = Convert.ToInt16(wallNodeList[i].Attributes["blend"].Value);
+        else
+          wallInfo.Blend = (Int16)id;
 
-				if (wallNode.Attributes["blend"] != null)
-					wallInfo.Blend = Convert.ToInt16(wallNodeList[i].Attributes["blend"].Value);
-				else
-					wallInfo.Blend = (Int16)id;
+        wallInfoList.Add(wallInfo);
+      }
 
-				wallInfoList.Add(wallInfo);
-			}
-
-			return wallInfoList;
-		}
-	}
+      return wallInfoList;
+    }
+  }
 }

@@ -8,81 +8,82 @@ using System.Xml;
 
 namespace TerraMap.Data
 {
-	public class Set
-	{
-		public string Name { get; set; }
-		public TileInfos TileInfos { get; set; }
-		public List<WallInfo> WallInfos { get; set; }
-		public List<ItemInfo> ItemInfos { get; set; }
+  public class Set
+  {
+    public string Name { get; set; }
+    public TileInfos TileInfos { get; set; }
+    public List<WallInfo> WallInfos { get; set; }
+    public List<ItemInfo> ItemInfos { get; set; }
     public List<NpcInfo> NpcInfos { get; private set; }
 
     public static Task<List<Set>> ReadAsync(string filename)
-		{
-			return Task.Factory.StartNew(() =>
-			{
-				return Read(filename);
-			});
-		}
+    {
+      return Task.Factory.StartNew(() =>
+      {
+        return Read(filename);
+      });
+    }
 
-		public static List<Set> Read(string filename)
-		{
-			List<Set> sets = new List<Set>();
+    public static List<Set> Read(string filename)
+    {
+      List<Set> sets = new List<Set>();
 
-			var xmlDocument = new XmlDocument();
+      var xmlDocument = new XmlDocument();
 
-			using (var stream = File.OpenRead(filename))
-			{
-				xmlDocument.Load(stream);
-			}
+      using (var stream = File.OpenRead(filename))
+      {
+        xmlDocument.Load(stream);
+      }
 
-			var nodes = xmlDocument.GetElementsByTagName("set");
+      var nodes = xmlDocument.GetElementsByTagName("set");
 
-			for (int i = 0; i < nodes.Count; i++)
-			{
-				var node = nodes[i];
+      for (int i = 0; i < nodes.Count; i++)
+      {
+        var node = nodes[i];
 
-				var set = new Set();
+        var set = new Set
+        {
+          Name = node.Attributes["name"].Value,
 
-				set.Name = node.Attributes["name"].Value;
+          TileInfos = new TileInfos(node.SelectNodes("tile")),
+          WallInfos = WallInfo.Read(node.SelectNodes("wall")),
+          ItemInfos = ItemInfo.ReadList(node.SelectNodes("item")),
+          NpcInfos = NpcInfo.Read(node.SelectNodes("Npc"))
+        };
 
-				set.TileInfos = new TileInfos(node.SelectNodes("tile"));
-				set.WallInfos = WallInfo.Read(node.SelectNodes("wall"));
-				set.ItemInfos = ItemInfo.ReadList(node.SelectNodes("item"));
-        set.NpcInfos = NpcInfo.Read(node.SelectNodes("Npc"));
+        sets.Add(set);
+      }
 
-				sets.Add(set);
-			}
+      return sets;
+    }
 
-			return sets;
-		}
+    public static void Save(IEnumerable<ObjectInfoSetViewModel> sets, string filename)
+    {
+      var xmlDocument = new XmlDocument();
 
-		public static void Save(IEnumerable<ObjectInfoSetViewModel> sets, string filename)
-		{
-			var xmlDocument = new XmlDocument();
+      var setsNode = xmlDocument.CreateElement("sets");
+      xmlDocument.AppendChild(setsNode);
 
-			var setsNode = xmlDocument.CreateElement("sets");
-			xmlDocument.AppendChild(setsNode);
+      foreach (var set in sets)
+      {
+        var setNode = xmlDocument.CreateElement("set");
+        var attribute = xmlDocument.CreateAttribute("name");
+        attribute.Value = set.Name;
+        setNode.Attributes.Append(attribute);
 
-			foreach (var set in sets)
-			{
-				var setNode = xmlDocument.CreateElement("set");
-				var attribute = xmlDocument.CreateAttribute("name");
-				attribute.Value = set.Name;
-				setNode.Attributes.Append(attribute);
+        foreach (var item in set.ObjectInfoViewModels)
+        {
+          var itemNode = xmlDocument.CreateElement(item.Type.ToLower());
+          attribute = xmlDocument.CreateAttribute("name");
+          attribute.Value = item.ItemName;
+          itemNode.Attributes.Append(attribute);
+          setNode.AppendChild(itemNode);
+        }
 
-				foreach (var item in set.ObjectInfoViewModels)
-				{
-					var itemNode = xmlDocument.CreateElement(item.Type.ToLower());
-					attribute = xmlDocument.CreateAttribute("name");
-					attribute.Value = item.ItemName;
-					itemNode.Attributes.Append(attribute);
-					setNode.AppendChild(itemNode);
-				}
+        setsNode.AppendChild(setNode);
+      }
 
-				setsNode.AppendChild(setNode);
-			}
-
-			xmlDocument.Save(filename);
-		}
-	}
+      xmlDocument.Save(filename);
+    }
+  }
 }

@@ -433,7 +433,18 @@ namespace TerraMap
       }
     }
 
+    private TileHitTestInfo hoverInfo;
 
+    public TileHitTestInfo HoverInfo
+    {
+      get { return hoverInfo; }
+      set
+      {
+        hoverInfo = value;
+        RaisePropertyChanged();
+      }
+    }
+    
     public void BeginLoading(string status, bool isProgressIndeterminate = false)
     {
       this.Status = status;

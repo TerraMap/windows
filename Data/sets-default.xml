@@ -32,6 +32,22 @@
   </set>
   <set name="Chests (Set)">
     <tile num="21" />
+    <tile num="467" />
+    <tile num="468" />
+  </set>
+  <set name="Biome Chests (Set)">
+    <tile name="Locked Jungle Chest" />
+    <tile name="Jungle Chest" />
+    <tile name="Locked Corruption Chest" />
+    <tile name="Corruption Chest" />
+    <tile name="Locked Crimson Chest" />
+    <tile name="Crimson Chest" />
+    <tile name="Locked Hallowed Chest" />
+    <tile name="Hallowed Chest" />
+    <tile name="Locked Frozen Chest" />
+    <tile name="Frozen Chest" />
+    <tile name="Locked Desert Chest" />
+    <tile name="Desert Chest" />
   </set>
   <set name="Spider Caves (Set)">
     <wall name="Spider Cave Wall" />

@@ -57,6 +57,7 @@
   <Window.CommandBindings>
     <CommandBinding Command="Open" CanExecute="OnOpenCanExecute" Executed="OnOpenExecuted" />
     <CommandBinding Command="Save" CanExecute="OnSaveCanExecute" Executed="OnSaveExecuted" />
+    <CommandBinding Command="local:Commands.OpenPlayerMapFile" CanExecute="OnOpenPlayerMapFileCanExecute" Executed="OnOpenPlayerMapFileExecuted" />
     <CommandBinding Command="local:Commands.ExportHighlightedTilePositions" CanExecute="OnExportHighlightedTilePositionsCanExecute" Executed="OnExportHighlightedTilePositionsExecuted" />
     <CommandBinding Command="Refresh" CanExecute="OnRefreshCanExecute" Executed="OnRefreshExecuted" />
     <CommandBinding Command="Properties" CanExecute="OnPropertiesCanExecute" Executed="OnPropertiesExecuted" />
@@ -142,9 +143,14 @@
             </Style>
           </MenuItem.Resources>
         </MenuItem>
-        <MenuItem Command="Open" Header="_Open...">
+        <MenuItem Command="Open" Header="_Open World...">
           <MenuItem.Icon>
-            <local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
+            <local:AutoGreyableImage Source="Resources/OpenFolder_16x.png" Width="16" />
+          </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Command="local:Commands.OpenPlayerMapFile" Header="Open Player Map...">
+          <MenuItem.Icon>
+            <local:AutoGreyableImage Source="Resources/OpenFile_16x.png" Width="16" />
           </MenuItem.Icon>
         </MenuItem>
         <MenuItem Command="Save" Header="_Save...">
@@ -291,8 +297,11 @@
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
-        <Button Command="Open" ToolTip="Open">
-          <local:AutoGreyableImage Source="Resources/openfolderHS.png" Width="16" />
+        <Button Command="Open" ToolTip="Open World">
+          <local:AutoGreyableImage Source="Resources/OpenFolder_16x.png" Width="16" />
+        </Button>
+        <Button Command="local:Commands.OpenPlayerMapFile" ToolTip="Open Player Map">
+          <local:AutoGreyableImage Source="Resources/OpenFile_16x.png" Width="16" />
         </Button>
         <Button Command="Save" ToolTip="Save Image">
           <local:AutoGreyableImage Source="Resources/Save.png" Width="16" />
@@ -459,8 +468,32 @@
       <StatusBarItem DockPanel.Dock="Left" ToolTip="XY Coordinates (from upper-left)">
         <TextBlock Text="{Binding Coordinates}" />
       </StatusBarItem>
-      <StatusBarItem DockPanel.Dock="Left">
-        <TextBlock Text="{Binding TileName}" />
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Tile Name">
+        <TextBlock Text="{Binding HoverInfo.Name}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Tile Type">
+        <TextBlock Text="{Binding HoverInfo.TileUV}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Actuator">
+        <TextBlock Text="{Binding HoverInfo.Actuator}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Wall Name">
+        <TextBlock Text="{Binding HoverInfo.WallName}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Wall Type">
+        <TextBlock Text="{Binding HoverInfo.WallType}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Liquid">
+        <TextBlock Text="{Binding HoverInfo.Liquid}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Wires">
+        <TextBlock Text="{Binding HoverInfo.WireColors}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Chest Name">
+        <TextBlock Text="{Binding HoverInfo.ChestName}" />
+      </StatusBarItem>
+      <StatusBarItem DockPanel.Dock="Left" ToolTip="Sign Text">
+        <TextBlock Text="{Binding HoverInfo.SignText}" />
       </StatusBarItem>
       <StatusBarItem DockPanel.Dock="Right">
         <TextBlock Text="{Binding World.Status}" HorizontalAlignment="Right" />

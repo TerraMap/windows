@@ -72,9 +72,10 @@ namespace TerraMap.Data
 
     public static Tile Read(BinaryReader reader, World world)
     {
-      var tile = new Tile();
-
-      tile.IsActive = reader.ReadBoolean();
+      var tile = new Tile
+      {
+        IsActive = reader.ReadBoolean()
+      };
       if (tile.IsActive)
       {
         tile.Type = reader.ReadByte();

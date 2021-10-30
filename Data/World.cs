@@ -1,4 +1,5 @@
-﻿using System;
+using Microsoft.Win32;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,8 +42,17 @@ namespace TerraMap.Data
     public Int32 WorldHeightinTiles { get; set; }
     public Int32 WorldWidthinTiles { get; set; }
 
-    [PropertyInfo(112)]
-    public Boolean ExpertMode { get; set; }
+    [PropertyInfo(209)]
+    public Int32 GameMode { get; set; }
+
+    [PropertyInfo(222)]
+    public Boolean DrunkWorld { get; set; }
+
+    [PropertyInfo(227)]
+    public Boolean GoodWorld { get; set; }
+
+    [PropertyInfo(238)]
+    public Boolean TenthAnniversaryWorld { get; set; }
 
     [PropertyInfo(141)]
     public Int64 CreationTime { get; set; }
@@ -438,10 +448,7 @@ namespace TerraMap.Data
 
     private void ReadWorldVersion2(BinaryReader reader)
     {
-      bool[] importance;
-      int[] positions;
-
-      this.LoadFileFormatHeader(reader, out importance, out positions);
+      this.LoadFileFormatHeader(reader, out bool[] importance, out int[] positions);
 
       if (reader.BaseStream.Position != (long)positions[0])
         throw new Exception(string.Format("World file header is not where it's expected to be. Expected: {0} Actual: {1}", positions[0], reader.BaseStream.Position));
@@ -469,8 +476,8 @@ namespace TerraMap.Data
         throw new Exception(string.Format("World file NPCs list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[4], reader.BaseStream.Position));
       this.ReadNPCsVersion2(reader);
 
-      if (reader.BaseStream.Position != (long)positions[5])
-        throw new Exception(string.Format("World file verification footer is not where it's expected to be. Expected: {0} Actual: {1}", positions[5], reader.BaseStream.Position));
+      //if (reader.BaseStream.Position != (long)positions[5])
+      //  throw new Exception(string.Format("World file verification footer is not where it's expected to be. Expected: {0} Actual: {1}", positions[5], reader.BaseStream.Position));
 
       //this.ReadVerification(reader);
     }
@@ -646,6 +653,11 @@ namespace TerraMap.Data
         this.Properties.Add(new WorldProperty() { Name = "SavedTaxCollector", Value = reader.ReadBoolean() });
       }
 
+      if (Version >= 201)
+      {
+        this.Properties.Add(new WorldProperty() { Name = "SavedGolfer", Value = reader.ReadBoolean() });
+      }
+
       if (Version < 107)
       {
       }
@@ -734,6 +746,102 @@ namespace TerraMap.Data
       this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 1", Value = reader.ReadBoolean() });
       this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 2", Value = reader.ReadBoolean() });
       this.Properties.Add(new WorldProperty() { Name = "Downed Invasion Tier 3", Value = reader.ReadBoolean() });
+
+      // v1.4 Journey's End new stuff
+      // world bg stuff
+      if (Version > 194)
+      {
+        reader.ReadByte();
+      }
+      if (Version >= 215)
+      {
+        reader.ReadByte();
+      }
+      // tree bg stuff
+      if (Version > 195)
+      {
+        reader.ReadByte();
+        reader.ReadByte();
+        reader.ReadByte();
+      }
+      if (Version >= 204)
+      {
+        this.Properties.Add(new WorldProperty() { Name = "CombatBookWasUsed", Value = reader.ReadBoolean() });
+      }
+      // tempLanternNight stuff
+      if (Version >= 207)
+      {
+        reader.ReadInt32();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+      }
+      // tree tops info
+      int num = reader.ReadInt32();
+      num2 = 0;
+      while (num2 < num && num2 < 13)
+      {
+        reader.ReadInt32();
+        num2++;
+      }
+      if (Version >= 212)
+      {
+        //forceHalloweenForToday
+        reader.ReadBoolean();
+        // forceXMasForToday
+        reader.ReadBoolean();
+      }
+      if (Version >= 216)
+      {
+        this.Properties.Add(new WorldProperty() { Name = "SavedOreTiers.Copper", Value = reader.ReadInt32() });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "SavedOreTiers.Iron",
+          Value = reader.ReadInt32()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "SavedOreTiers.Silver",
+          Value = reader.ReadInt32()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "SavedOreTiers.Gold",
+          Value = reader.ReadInt32()
+        });
+      }
+      if (Version >= 217)
+      {
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "boughtCat",
+          Value = reader.ReadBoolean()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "boughtDog",
+          Value = reader.ReadBoolean()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "boughtBunny",
+          Value = reader.ReadBoolean()
+        });
+      }
+      if (Version >= 223)
+      {
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "downedEmpressOfLight",
+          Value = reader.ReadBoolean()
+        });
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "downedQueenSlime",
+          Value = reader.ReadBoolean()
+        });
+        return;
+      }
     }
 
     private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
@@ -753,9 +861,6 @@ namespace TerraMap.Data
       {
         for (int y = 0; y < this.WorldHeightinTiles; y++)
         {
-          //if (x == 100 && y == 440)
-          //	Debug.Write("");
-
           int num2 = -1;
           byte b2;
           byte b = b2 = 0;
@@ -786,9 +891,6 @@ namespace TerraMap.Data
 
             tile.Type = (ushort)num2;
 
-            //if (tile.Type > 254 && tile.Type != 280)
-            //	Debug.Write("");
-
             if (importance[num2])
             {
               tile.TextureU = reader.ReadInt16();
@@ -797,20 +899,11 @@ namespace TerraMap.Data
               {
                 tile.TextureV = 0;
               }
-              if (tile.Type == 26)
-              {
-                Debug.WriteLine("");
-              }
             }
             else
             {
               tile.TextureU = -1;
               tile.TextureV = -1;
-
-              if (tile.Type == 105)
-              {
-                Debug.WriteLine("");
-              }
             }
             if ((b & 8) == 8)
             {
@@ -885,6 +978,11 @@ namespace TerraMap.Data
             {
               tile.IsYellowWirePresent = true;
             }
+            if ((b & 64) == 64)
+            {
+              b4 = reader.ReadByte();
+              tile.WallType = (byte)((int)b4 << 8 | (int)tile.WallType);
+            }
           }
           b4 = (byte)((b3 & 192) >> 6);
           int k;
@@ -934,8 +1032,10 @@ namespace TerraMap.Data
             var color = GetTileColor(y, tile);
             if (color != tile.Color)
             {
-              var newTile = new Tile(tile);
-              newTile.Color = color;
+              var newTile = new Tile(tile)
+              {
+                Color = color
+              };
               this.Tiles[x, y] = newTile;
             }
             k--;
@@ -996,7 +1096,7 @@ namespace TerraMap.Data
 
       var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-      if (tile.IsActive)
+      if (tile.IsActive || tile.IsActuatorPresent)
       {
         if (string.IsNullOrEmpty(tileInfo.ColorName))
         {
@@ -1130,10 +1230,12 @@ namespace TerraMap.Data
       int i;
       for (i = 0; i < num; i++)
       {
-        Chest chest = new Chest();
-        chest.X = reader.ReadInt32();
-        chest.Y = reader.ReadInt32();
-        chest.Name = reader.ReadString();
+        Chest chest = new Chest
+        {
+          X = reader.ReadInt32(),
+          Y = reader.ReadInt32(),
+          Name = reader.ReadString()
+        };
         for (int j = 0; j < num3; j++)
         {
           short num5 = reader.ReadInt16();
@@ -1206,10 +1308,12 @@ namespace TerraMap.Data
         Tile tile = this.Tiles[x, y];
         if (tile.IsActive && (tile.Type == 55 || tile.Type == 85))
         {
-          Sign sign = new Sign();
-          sign.Text = text;
-          sign.X = x;
-          sign.Y = y;
+          Sign sign = new Sign
+          {
+            Text = text,
+            X = x,
+            Y = y
+          };
           this.Signs.Add(sign);
         }
       }
@@ -1269,7 +1373,7 @@ namespace TerraMap.Data
       while (flag)
       {
         NPC nPC = new NPC();
-        if(Version >= 190)
+        if (Version >= 190)
         {
           nPC.SpriteId = reader.ReadInt32();
           nPC.Type = this.staticData.NpcInfoList.FindType(nPC.SpriteId);
@@ -1284,6 +1388,10 @@ namespace TerraMap.Data
         nPC.IsHomeless = reader.ReadBoolean();
         nPC.HomeX = reader.ReadInt32();
         nPC.HomeY = reader.ReadInt32();
+        if (Version >= 213 && reader.ReadByte() != 0)
+        {
+          nPC.TownVariationIndex = reader.ReadInt32();
+        }
         num++;
         flag = reader.ReadBoolean();
 
@@ -1349,9 +1457,6 @@ namespace TerraMap.Data
       {
         for (int x = 0; x < this.WorldWidthinTiles; x++)
         {
-          //if (x == 47 && y == 715)
-          //	Debug.Write("");
-
           var tile = this.Tiles[x, y];
 
           Color color = tile.Color;
@@ -1532,7 +1637,7 @@ namespace TerraMap.Data
 
           var variantTileInfo = this.StaticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
-          if (tileInfo.Name != "Chest")
+          if (!tileInfo.Name.Contains("Chest"))
             continue;
 
           var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
@@ -1590,37 +1695,37 @@ namespace TerraMap.Data
       {
         var tile = this.Tiles[x, y];
 
-        if (tile.IsActive)
+        if (tile.IsActive || tile.IsActuatorPresent)
         {
           var tileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
 
           name = tileInfo.Name;
 
-          if (tileInfo.Id == 21)
-          {
-            var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+          var chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
 
-            if (chest != null && !string.IsNullOrEmpty(chest.Name))
-              name += ": \"" + chest.Name + "\"";
-          }
-          else if (tileInfo.Name == "Sign")
-          {
-            var sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+          if (chest != null && !string.IsNullOrEmpty(chest.Name))
+            name += ": \"" + chest.Name + "\"";
 
-            if (sign != null && !string.IsNullOrEmpty(sign.Text))
-              name += ": \"" + sign.Text + "\"";
-          }
+          var sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+
+          if (sign != null && !string.IsNullOrEmpty(sign.Text))
+            name += ": \"" + sign.Text + "\"";
+
+          if (tile.IsActuatorPresent)
+            name += " (Actuator)";
         }
-        else if (tile.IsLiquidPresent)
+
+        if (tile.IsLiquidPresent)
         {
           if (tile.IsLiquidLava)
-            name = "Lava";
+            name += " Lava";
           else if (tile.IsLiquidHoney)
-            name = "Honey";
+            name += " Honey";
           else
-            name = "Water";
+            name += " Water";
         }
-        else if (tile.IsWallPresent)
+
+        if (tile.IsWallPresent)
         {
           name = this.staticData.WallInfos[tile.WallType - 1].Name;
         }
@@ -1668,11 +1773,90 @@ namespace TerraMap.Data
       return name;
     }
 
+    public TileHitTestInfo GetTileHitTestInfo(int x, int y)
+    {
+      var tileHitTestInfo = new TileHitTestInfo(x, y);
+
+      tileHitTestInfo.Name = "Nothing";
+
+      if (x >= 0 && x < this.WorldWidthinTiles &&
+        y >= 0 && y < this.WorldHeightinTiles)
+      {
+        tileHitTestInfo.Tile = this.Tiles[x, y];
+      }
+      else
+      {
+        return tileHitTestInfo;
+      }
+
+      var tile = tileHitTestInfo.Tile;
+
+      var uv = new List<int>();
+      if (tile.TextureU > 0 || tile.TextureV > 0) uv.Add(tile.TextureU);
+      if (tile.TextureV > 0) uv.Add(tile.TextureV);
+      tileHitTestInfo.TileUV = string.Join(",", uv);
+      if (!string.IsNullOrWhiteSpace(tileHitTestInfo.TileUV)) tileHitTestInfo.TileUV = $"({tileHitTestInfo.TileUV})";
+
+      if (tile.IsActive || tile.IsActuatorPresent)
+      {
+        tileHitTestInfo.TileInfo = this.staticData.TileInfos[tile.Type, tile.TextureU, tile.TextureV];
+        tileHitTestInfo.Name = tileHitTestInfo.TileInfo.Name;
+        tileHitTestInfo.Chest = this.Chests.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+        tileHitTestInfo.Sign = this.Signs.FirstOrDefault(c => (c.X == x || c.X + 1 == x) && (c.Y == y || c.Y + 1 == y));
+        tileHitTestInfo.Actuator = tile.IsActuatorPresent ? "Actuator" : null;
+      }
+
+      if (tile.IsLiquidPresent)
+      {
+        if (tile.IsLiquidLava)
+          tileHitTestInfo.Liquid = "Lava";
+        else if (tile.IsLiquidHoney)
+          tileHitTestInfo.Liquid = "Honey";
+        else
+          tileHitTestInfo.Liquid = "Water";
+      }
+
+      if (tile.IsWallPresent)
+      {
+        tileHitTestInfo.WallInfo = this.staticData.WallInfos[tile.WallType - 1];
+        tileHitTestInfo.WallName = tileHitTestInfo.WallInfo.Name;
+        tileHitTestInfo.WallType = $"({tileHitTestInfo.WallInfo.Id})";
+      }
+
+      var wireColors = new List<string>();
+
+      if (tile.IsBlueWirePresent)
+      {
+        wireColors.Add("Blue");
+      }
+      if (tile.IsGreenWirePresent)
+      {
+        wireColors.Add("Green");
+      }
+      if (tile.IsRedWirePresent)
+      {
+        wireColors.Add("Red");
+      }
+      if (tile.IsYellowWirePresent)
+      {
+        wireColors.Add("Yellow");
+      }
+      tileHitTestInfo.WireColors = string.Join(",", wireColors);
+      if (!string.IsNullOrWhiteSpace(tileHitTestInfo.WireColors)) tileHitTestInfo.WireColors = $"{tileHitTestInfo.WireColors} Wire";
+
+      if (string.IsNullOrWhiteSpace(tileHitTestInfo.Name))
+      {
+        tileHitTestInfo.Name = "Unknown";
+      }
+
+      return tileHitTestInfo;
+    }
+
     public List<MapFileViewModel> GetPlayerMapFiles()
     {
       var playerMapFiles = new List<MapFileViewModel>();
 
-      string filename = this.UniqueId + ".map";
+      var worldMapFileNames = new string[] { this.UniqueId + ".map", this.Id + ".map" };
 
       string user = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\Players");
       var directory = new DirectoryInfo(user);
@@ -1681,16 +1865,72 @@ namespace TerraMap.Data
       {
         var playerName = playerDirectory.Name;
 
-        var playerMapFilename = Path.Combine(playerDirectory.FullName, filename);
+        foreach (var worldMapFileName in worldMapFileNames)
+        {
+          var playerMapFilename = Path.Combine(playerDirectory.FullName, worldMapFileName);
 
-        if (File.Exists(playerMapFilename))
-          playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
+          if (File.Exists(playerMapFilename))
+            playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
+        }
       }
 
-      string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+      string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
+      if (Directory.Exists(modUser))
+      {
+        var modDirectory = new DirectoryInfo(modUser);
+        foreach (var playerDirectory in modDirectory.GetDirectories().Where(d => !d.Name.Equals("Backups")))
+        {
+          var playerName = String.Concat(playerDirectory.Name, " (MOD)");
 
-      userdataPath = Path.Combine(userdataPath, "Steam");
-      userdataPath = Path.Combine(userdataPath, "userdata");
+          foreach (var worldMapFileName in worldMapFileNames)
+          {
+            var playerMapFilename = Path.Combine(playerDirectory.FullName, worldMapFileName);
+
+            if (File.Exists(playerMapFilename))
+              playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename) });
+          }
+        }
+      }
+
+      string userdataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam", "userdata");
+
+      if (!Directory.Exists(userdataPath))
+      {
+        // try registry hklm
+        try
+        {
+          using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+          {
+            using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+            {
+              userdataPath = (string)steamKey.GetValue("InstallPath", userdataPath);
+            }
+          }
+          userdataPath = Path.Combine(userdataPath, "userdata");
+        }
+        catch (Exception)
+        {
+        }
+      }
+
+      if (!Directory.Exists(userdataPath))
+      {
+        // try registry hklu
+        try
+        {
+          using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32))
+          {
+            using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+            {
+              userdataPath = (string)steamKey.GetValue("SteamPath", userdataPath);
+            }
+          }
+          userdataPath = Path.Combine(userdataPath, "userdata");
+        }
+        catch (Exception)
+        {
+        }
+      }
 
       if (Directory.Exists(userdataPath))
       {
@@ -1710,15 +1950,18 @@ namespace TerraMap.Data
           {
             var playerName = playerDirectory.Name;
 
-            var playerMapFilename = Path.Combine(playerDirectory.FullName, filename);
+            foreach (var worldMapFileName in worldMapFileNames)
+            {
+              var playerMapFilename = Path.Combine(playerDirectory.FullName, worldMapFileName);
 
-            if (File.Exists(playerMapFilename))
-              playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename), Cloud = true });
+              if (File.Exists(playerMapFilename))
+                playerMapFiles.Add(new MapFileViewModel() { Name = playerName, FileInfo = new FileInfo(playerMapFilename), Cloud = true });
+            }
           }
         }
       }
 
-      return playerMapFiles;
+      return playerMapFiles.OrderBy(p => p.Name).ToList();
     }
 
     public override string ToString()

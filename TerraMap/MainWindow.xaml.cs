@@ -91,23 +91,39 @@ namespace TerraMap
         this.viewModel.WorldFiles.Clear();
 
         var path = this.GetWorldsPath();
-
-        foreach (var filename in Directory.GetFiles(path, "*.wld"))
+        if (Directory.Exists(path))
         {
-          string name = World.GetWorldName(filename);
-          this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name });
+          foreach (var filename in Directory.GetFiles(path, "*.wld"))
+          {
+            string name = World.GetWorldName(filename);
+            this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name });
+          }
+        }
+
+        var modPath = this.GetModdedWorldsPath();
+        if (Directory.Exists(modPath))
+        {
+          foreach (var filename in Directory.GetFiles(modPath, "*.wld"))
+          {
+            string name = World.GetWorldName(filename);
+            this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = String.Concat(name, " (MOD)") });
+          }
         }
 
         var cloudPaths = GetCloudPaths();
-
-        foreach (var cloudPath in cloudPaths)
+        if (Directory.Exists(path))
         {
-          foreach (var filename in Directory.GetFiles(cloudPath, "*.wld"))
+          foreach (var cloudPath in cloudPaths)
           {
-            string name = World.GetWorldName(filename);
-            this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name, Cloud = true });
+            foreach (var filename in Directory.GetFiles(cloudPath, "*.wld"))
+            {
+              string name = World.GetWorldName(filename);
+              this.viewModel.WorldFiles.Add(new WorldFileViewModel() { FileInfo = new FileInfo(filename), Name = name, Cloud = true });
+            }
           }
         }
+
+        this.viewModel.WorldFiles = new ObservableCollection<WorldFileViewModel>(this.viewModel.WorldFiles.OrderBy(w => w.Name));
 
         if (currentWorldFile != null)
         {
@@ -126,11 +142,24 @@ namespace TerraMap
     {
       List<string> cloudPaths = new List<string>();
 
-      string userdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+      string userdataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Steam");
 
       try
       {
-        userdataPath = Path.Combine(userdataPath, "Steam");
+        using (var HKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+        {
+          using (var steamKey = HKLM.OpenSubKey("SOFTWARE\\Valve\\Steam"))
+          {
+            userdataPath = (string)steamKey.GetValue("InstallPath", userdataPath);
+          }
+        }
+      }
+      catch (Exception)
+      {
+      }
+
+      try
+      {
         userdataPath = Path.Combine(userdataPath, "userdata");
 
         if (Directory.Exists(userdataPath))
@@ -207,6 +236,17 @@ namespace TerraMap
 
       path = Path.Combine(path, "My Games");
       path = Path.Combine(path, "Terraria");
+      path = Path.Combine(path, "Worlds");
+      return path;
+    }
+
+    private string GetModdedWorldsPath()
+    {
+      string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+      path = Path.Combine(path, "My Games");
+      path = Path.Combine(path, "Terraria");
+      path = Path.Combine(path, "ModLoader");
       path = Path.Combine(path, "Worlds");
       return path;
     }
@@ -342,6 +382,37 @@ namespace TerraMap
       {
         this.viewModel.EndLoading();
       }
+    }
+
+    private async Task OpenPlayerMapFile()
+    {
+      OpenFileDialog dialog = new OpenFileDialog
+      {
+        Filter = "Player Map Files (*.map)|*.map|All Files (*.*)|*.*"
+      };
+
+      string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\Players");
+
+      if (Directory.Exists(path))
+        dialog.InitialDirectory = path;
+
+      var result = dialog.ShowDialog() ?? false;
+      if (!result)
+        return;
+
+      await this.OpenPlayerMapFile(dialog.FileName);
+    }
+
+    private async Task OpenPlayerMapFile(string filename)
+    {
+      await this.OpenPlayerMapFile(new FileInfo(filename));
+    }
+
+    private async Task OpenPlayerMapFile(FileInfo fileInfo)
+    {
+      this.viewModel.SelectedMapFile = new MapFileViewModel() { FileInfo = fileInfo, Name = fileInfo.Name };
+      this.LoadMapFile();
+      await this.UpdateFog();
     }
 
     private void LoadMapFile()
@@ -497,7 +568,8 @@ namespace TerraMap
     {
       SaveFileDialog dialog = new SaveFileDialog
       {
-        Filter = "PNG Images (*.png)|*.png"
+        Filter = "PNG Images (*.png)|*.png",
+        Title = this.viewModel.World.Name
       };
       var result = dialog.ShowDialog() ?? false;
       if (!result)
@@ -517,6 +589,7 @@ namespace TerraMap
 
       var bitmap = this.viewModel.WriteableBitmap;
       var mask = this.viewModel.WriteableBitmapMask;
+      var fog = this.viewModel.WriteableBitmapFog;
 
       var output = BitmapFactory.New(bitmap.PixelWidth, bitmap.PixelHeight);
 
@@ -536,6 +609,8 @@ namespace TerraMap
       });
 
       output.Blit(rect, mask, rect, WriteableBitmapExtensions.BlendMode.Alpha);
+
+      output.Blit(rect, fog, rect, WriteableBitmapExtensions.BlendMode.Alpha);
 
       using (var stream = new FileStream(filename, FileMode.Create))
       {
@@ -567,7 +642,7 @@ namespace TerraMap
         MessageBox.Show(this, "I'm sorry, Dave. I'm afraid I can't do that.\r\n\r\nYou don't want me overwriting your .wld file.  Please make sure to specify a filename that ends with txt or csv.  :)", "TerraMap");
         return;
       }
-      
+
       var start = DateTime.Now;
 
       var selectedObjectInfoViewModels = this.viewModel.ObjectInfoViewModels.Where(v => v.IsSelected).ToArray();
@@ -1092,6 +1167,7 @@ namespace TerraMap
         return;
 
       string name = world.GetTileName(x, y);
+      this.viewModel.HoverInfo = world.GetTileHitTestInfo(x, y);
 
       if (!allSpoilers && !MapHelper.IsTileLit(x, y))
         name = "(No spoilers)";
@@ -1100,7 +1176,7 @@ namespace TerraMap
 
       this.viewModel.Position = world.GetPosition(x);
       this.viewModel.Depth = world.GetDepth(y);
-      
+
       this.viewModel.Coordinates = string.Format("{0}, {1}", x, y);
     }
 
@@ -1164,12 +1240,10 @@ namespace TerraMap
       if (this.viewModel.IsLoading)
         return;
 
-      var element = sender as FrameworkElement;
-      if (element == null)
+      if (!(sender is FrameworkElement element))
         return;
 
-      var worldFile = element.DataContext as WorldFileViewModel;
-      if (worldFile == null)
+      if (!(element.DataContext is WorldFileViewModel worldFile))
         return;
 
       await this.Open(worldFile.FileInfo);
@@ -1180,12 +1254,10 @@ namespace TerraMap
       if (this.viewModel.IsLoading)
         return;
 
-      var element = sender as FrameworkElement;
-      if (element == null)
+      if (!(sender is FrameworkElement element))
         return;
 
-      var mapFile = element.DataContext as MapFileViewModel;
-      if (mapFile == null)
+      if (!(element.DataContext is MapFileViewModel mapFile))
         return;
 
       this.viewModel.SelectedMapFile = mapFile;
@@ -1249,12 +1321,10 @@ namespace TerraMap
       if (this.viewModel.IsLoading)
         return;
 
-      var element = sender as FrameworkElement;
-      if (element == null)
+      if (!(sender is FrameworkElement element))
         return;
 
-      var npc = element.DataContext as NPC;
-      if (npc == null)
+      if (!(element.DataContext is NPC npc))
         return;
 
       this.NavigateToNpc(npc);
@@ -1360,8 +1430,7 @@ namespace TerraMap
     {
       e.Accepted = false;
 
-      var tileInfo = e.Item as ObjectInfoViewModel;
-      if (tileInfo == null)
+      if (!(e.Item is ObjectInfoViewModel tileInfo))
         return;
 
       var searchText = this.searchBox.Text.ToLower();
@@ -1397,12 +1466,10 @@ namespace TerraMap
 
     private void OnItemChecked(object sender, RoutedEventArgs e)
     {
-      var checkBox = sender as CheckBox;
-      if (checkBox == null)
+      if (!(sender is CheckBox checkBox))
         return;
 
-      var objectInfoSetViewModel = checkBox.DataContext as ObjectInfoSetViewModel;
-      if (objectInfoSetViewModel == null)
+      if (!(checkBox.DataContext is ObjectInfoSetViewModel objectInfoSetViewModel))
         return;
 
       this.CheckObjectInfoSet(objectInfoSetViewModel);
@@ -1433,12 +1500,10 @@ namespace TerraMap
 
     private async void OnSetClicked(object sender, EventArgs e)
     {
-      var menuItem = sender as MenuItem;
-      if (menuItem == null)
+      if (!(sender is MenuItem menuItem))
         return;
 
-      var objectInfoSetViewModel = menuItem.DataContext as ObjectInfoSetViewModel;
-      if (objectInfoSetViewModel == null)
+      if (!(menuItem.DataContext is ObjectInfoSetViewModel objectInfoSetViewModel))
         return;
 
       await HighlightSet(objectInfoSetViewModel);
@@ -1486,6 +1551,18 @@ namespace TerraMap
     }
 
 
+    private void OnOpenPlayerMapFileCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+      if (!this.viewModel.IsLoading && this.viewModel.World != null)
+        e.CanExecute = true;
+    }
+
+    private async void OnOpenPlayerMapFileExecuted(object sender, ExecutedRoutedEventArgs e)
+    {
+      await this.OpenPlayerMapFile();
+    }
+
+
     private void OnSaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
     {
       if (this.viewModel.IsLoaded)
@@ -1509,7 +1586,7 @@ namespace TerraMap
       {
         await this.ExportHighlightedTilePositions();
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
         HandleException(ex);
       }
