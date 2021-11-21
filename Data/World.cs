@@ -54,6 +54,12 @@ namespace TerraMap.Data
     [PropertyInfo(238)]
     public Boolean TenthAnniversaryWorld { get; set; }
 
+    [PropertyInfo(239)]
+    public Boolean DontStarveWorld { get; set; }
+
+    [PropertyInfo(241)]
+    public Boolean NotTheBeesWorld { get; set; }
+
     [PropertyInfo(141)]
     public Int64 CreationTime { get; set; }
 
@@ -458,6 +464,8 @@ namespace TerraMap.Data
       hellLevel = hellLevel * 6 + (int)WorldSurfaceY - 5;
       this.HellLayerY = hellLevel;
 
+      reader.ReadByte();
+
       if (reader.BaseStream.Position != (long)positions[1])
         throw new Exception(string.Format("World file tiles list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[1], reader.BaseStream.Position));
       this.ReadTilesVersion2(reader, importance);
@@ -680,7 +688,7 @@ namespace TerraMap.Data
       int num2 = (int)reader.ReadInt16();
       for (int j = 0; j < num2; j++)
       {
-        if (j < 541)
+        if (j < 670)
         {
           //this.NpcKillCount[j] = reader.ReadInt32();
           reader.ReadInt32();
@@ -841,6 +849,14 @@ namespace TerraMap.Data
           Value = reader.ReadBoolean()
         });
         return;
+      }
+      if (Version >= 240)
+      {
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "downedDeerclops",
+          Value = reader.ReadBoolean()
+        });
       }
     }
 
