@@ -920,18 +920,26 @@ namespace TerraMap.Data
         {
           int num2 = -1;
           byte b2;
+          byte b4;
           byte b = b2 = 0;
           Tile tile = new Tile();
           byte b3 = reader.ReadByte();
+          bool flag = false;
           if ((b3 & 1) == 1)
           {
+            flag = true;
             b2 = reader.ReadByte();
-            if ((b2 & 1) == 1)
-            {
-              b = reader.ReadByte();
-            }
           }
-          byte b4;
+          bool flag2 = false;
+          if ((b2 & 1) == 1)
+          {
+            flag2 = true;
+            b = reader.ReadByte();
+          }
+          if (flag2 && (b & 1) == 1)
+          {
+            b4 = reader.ReadByte();
+          }
           if ((b3 & 2) == 2)
           {
             tile.IsActive = true;
@@ -982,6 +990,10 @@ namespace TerraMap.Data
           {
             tile.IsLiquidPresent = true;
             tile.LiquidAmount = reader.ReadByte();
+            if ((b & 128) == 128)
+            {
+              tile.Shimmer = true;
+            }
             if (b4 > 1)
             {
               if (b4 == 2)
@@ -1778,6 +1790,8 @@ namespace TerraMap.Data
             name += " Lava";
           else if (tile.IsLiquidHoney)
             name += " Honey";
+          else if (tile.Shimmer)
+            name += " Shimmer";
           else
             name += " Water";
         }

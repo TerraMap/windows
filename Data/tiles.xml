@@ -2533,7 +2533,76 @@
   <tile name="Potted Crystal Plants" num="623" />
   <tile name="Abigail's Flower" num="624" />
   
-  <!-- v1.4.4-->  <tile name="VioletMoss" num="625" />  <tile name="VioletMossBrick" num="626" />  <tile name="RainbowMoss" num="627" />  <tile name="RainbowMossBrick" num="628" />  <tile name="StinkbugCage" num="629" />  <tile name="StinkbugHousingBlocker" num="630" />  <tile name="StinkbugHousingBlockerEcho" num="631" />  <tile name="ScarletMacawCage" num="632" />  <tile name="AshGrass" num="633" />  <tile name="TreeAsh" num="634" />  <tile name="AshWood" num="635" />  <tile name="CorruptVines" num="636" />  <tile name="AshPlants" num="637" />  <tile name="AshVines" num="638" />  <tile name="ManaCrystal" num="639" />  <tile name="BlueMacawCage" num="640" />  <tile name="ReefBlock" num="641" />  <tile name="ChlorophyteExtractinator" num="642" />  <tile name="ToucanCage" num="643" />  <tile name="YellowCockatielCage" num="644" />  <tile name="GrayCockatielCage" num="645" />  <tile name="ShadowCandle" num="646" />  <tile name="LargePilesEcho" num="647" />  <tile name="LargePiles2Echo" num="648" />  <tile name="SmallPiles2x1Echo" num="649" />  <tile name="SmallPiles1x1Echo" num="650" />  <tile name="PlantDetritus3x2Echo" num="651" />  <tile name="PlantDetritus2x2Echo" num="652" />  <tile name="PotsEcho" num="653" />  <tile name="TNTBarrel" num="654" />  <tile name="PlanteraThorns" num="655" />  <tile name="GlowTulip" num="656" />  <tile name="EchoMonolith" num="657" />  <tile name="ShimmerMonolith" num="658" />  <tile name="ShimmerBlock" num="659" />  <tile name="ShimmerflyinaBottle" num="660" />  <tile name="CorruptJungleGrass" num="661" />  <tile name="CrimsonJungleGrass" num="662" />  <tile name="Moondial" num="663" />  <tile name="BouncyBoulder" num="664" />  <tile name="LifeCrystalBoulder" num="665" />  <tile name="PoopBlock" num="666" />  <tile name="ShimmerBrick" num="667" />  <tile name="DirtiestBlock" num="668" />  <tile name="LunarRustBrick" num="669" />  <tile name="DarkCelestialBrick" num="670" />  <tile name="AstraBrick" num="671" />  <tile name="CosmicEmberBrick" num="672" />  <tile name="CryocoreBrick" num="673" />  <tile name="MercuryBrick" num="674" />  <tile name="StarRoyaleBrick" num="675" />  <tile name="HeavenforgeBrick" num="676" />  <tile name="AncientBlueBrick" num="677" />  <tile name="AncientGreenBrick" num="678" />  <tile name="AncientPinkBrick" num="679" />  <tile name="AncientGoldBrick" num="680" />  <tile name="AncientSilverBrick" num="681" />  <tile name="AncientCopperBrick" num="682" />  <tile name="AncientObsidianBrick" num="683" />  <tile name="AncientHellstoneBrick" num="684" />  <tile name="AncientCobaltBrick" num="685" />  <tile name="AncientMythrilBrick" num="686" />  <tile name="LavaMossBlock" num="687" />  <tile name="ArgonMossBlock" num="688" />  <tile name="KryptonMossBlock" num="689" />  <tile name="XenonMossBlock" num="690" />  <tile name="VioletMossBlock" num="691" />  <tile name="RainbowMossBlock" num="692" />
+  <!-- v1.4.4-->
+  <tile name="VioletMoss" num="625" />
+  <tile name="VioletMossBrick" num="626" />
+  <tile name="RainbowMoss" num="627" />
+  <tile name="RainbowMossBrick" num="628" />
+  <tile name="StinkbugCage" num="629" />
+  <tile name="StinkbugHousingBlocker" num="630" />
+  <tile name="StinkbugHousingBlockerEcho" num="631" />
+  <tile name="ScarletMacawCage" num="632" />
+  <tile name="AshGrass" num="633" />
+  <tile name="TreeAsh" num="634" />
+  <tile name="AshWood" num="635" />
+  <tile name="CorruptVines" num="636" />
+  <tile name="AshPlants" num="637" />
+  <tile name="AshVines" num="638" />
+  <tile name="ManaCrystal" num="639" />
+  <tile name="BlueMacawCage" num="640" />
+  <tile name="ReefBlock" num="641" />
+  <tile name="ChlorophyteExtractinator" num="642" />
+  <tile name="ToucanCage" num="643" />
+  <tile name="YellowCockatielCage" num="644" />
+  <tile name="GrayCockatielCage" num="645" />
+  <tile name="ShadowCandle" num="646" />
+  <tile name="LargePilesEcho" num="647" />
+  <tile name="LargePiles2Echo" num="648" />
+  <tile name="SmallPiles2x1Echo" num="649" />
+  <tile name="SmallPiles1x1Echo" num="650" />
+  <tile name="PlantDetritus3x2Echo" num="651" />
+  <tile name="PlantDetritus2x2Echo" num="652" />
+  <tile name="PotsEcho" num="653" />
+  <tile name="TNTBarrel" num="654" />
+  <tile name="PlanteraThorns" num="655" />
+  <tile name="GlowTulip" num="656" />
+  <tile name="EchoMonolith" num="657" />
+  <tile name="ShimmerMonolith" num="658" />
+  <tile name="ShimmerBlock" num="659" />
+  <tile name="ShimmerflyinaBottle" num="660" />
+  <tile name="CorruptJungleGrass" num="661" />
+  <tile name="CrimsonJungleGrass" num="662" />
+  <tile name="Moondial" num="663" />
+  <tile name="BouncyBoulder" num="664" />
+  <tile name="LifeCrystalBoulder" num="665" />
+  <tile name="PoopBlock" num="666" />
+  <tile name="ShimmerBrick" num="667" />
+  <tile name="DirtiestBlock" num="668" />
+  <tile name="LunarRustBrick" num="669" />
+  <tile name="DarkCelestialBrick" num="670" />
+  <tile name="AstraBrick" num="671" />
+  <tile name="CosmicEmberBrick" num="672" />
+  <tile name="CryocoreBrick" num="673" />
+  <tile name="MercuryBrick" num="674" />
+  <tile name="StarRoyaleBrick" num="675" />
+  <tile name="HeavenforgeBrick" num="676" />
+  <tile name="AncientBlueBrick" num="677" />
+  <tile name="AncientGreenBrick" num="678" />
+  <tile name="AncientPinkBrick" num="679" />
+  <tile name="AncientGoldBrick" num="680" />
+  <tile name="AncientSilverBrick" num="681" />
+  <tile name="AncientCopperBrick" num="682" />
+  <tile name="AncientObsidianBrick" num="683" />
+  <tile name="AncientHellstoneBrick" num="684" />
+  <tile name="AncientCobaltBrick" num="685" />
+  <tile name="AncientMythrilBrick" num="686" />
+  <tile name="LavaMossBlock" num="687" />
+  <tile name="ArgonMossBlock" num="688" />
+  <tile name="KryptonMossBlock" num="689" />
+  <tile name="XenonMossBlock" num="690" />
+  <tile name="VioletMossBlock" num="691" />
+  <tile name="RainbowMossBlock" num="692" />
+  
   <wall num="1" name="Stone Wall" color="#343434" />
   <wall num="2" name="Dirt Wall" color="#583D2E" />
   <wall num="3" name="Stone Wall" color="#3D3A4E" />
