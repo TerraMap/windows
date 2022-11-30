@@ -924,10 +924,10 @@ namespace TerraMap.Data
           byte b = b2 = 0;
           Tile tile = new Tile();
           byte b3 = reader.ReadByte();
-          bool flag = false;
+          // bool flag = false;
           if ((b3 & 1) == 1)
           {
-            flag = true;
+            //flag = true;
             b2 = reader.ReadByte();
           }
           bool flag2 = false;
