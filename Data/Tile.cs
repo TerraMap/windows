@@ -26,6 +26,7 @@ namespace TerraMap.Data
     public byte LiquidAmount { get; set; }
     public bool IsLiquidLava { get; set; }
     public bool IsLiquidHoney { get; set; }
+    public bool Shimmer { get; set; }
     public bool IsRedWirePresent { get; set; }
     public bool IsGreenWirePresent { get; set; }
     public bool IsBlueWirePresent { get; set; }

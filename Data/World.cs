@@ -60,6 +60,15 @@ namespace TerraMap.Data
     [PropertyInfo(241)]
     public Boolean NotTheBeesWorld { get; set; }
 
+    [PropertyInfo(249)]
+    public Boolean RemixWorld { get; set; }
+
+    [PropertyInfo(266)]
+    public Boolean NoTrapsWorld { get; set; }
+
+    [PropertyInfo(267)]
+    public Boolean ZenithWorld { get; set; }
+
     [PropertyInfo(141)]
     public Int64 CreationTime { get; set; }
 
@@ -148,6 +157,9 @@ namespace TerraMap.Data
     public Int32 AltarsSmashed { get; set; }
     [PropertyInfo(23)]
     public Boolean HardMode { get; set; }
+
+    [PropertyInfo(257)]
+    public Boolean AfterPartyOfDoom { get; set; }
 
     public Int32 GoblinInvasionDelay { get; set; }
     public Int32 GoblinInvasionSize { get; set; }
@@ -464,7 +476,7 @@ namespace TerraMap.Data
       hellLevel = hellLevel * 6 + (int)WorldSurfaceY - 5;
       this.HellLayerY = hellLevel;
 
-      reader.ReadByte();
+      //reader.ReadByte();
 
       if (reader.BaseStream.Position != (long)positions[1])
         throw new Exception(string.Format("World file tiles list start is not where it's expected to be. Expected: {0} Actual: {1}", positions[1], reader.BaseStream.Position));
@@ -688,15 +700,7 @@ namespace TerraMap.Data
       int num2 = (int)reader.ReadInt16();
       for (int j = 0; j < num2; j++)
       {
-        if (j < 670)
-        {
-          //this.NpcKillCount[j] = reader.ReadInt32();
           reader.ReadInt32();
-        }
-        else
-        {
-          reader.ReadInt32();
-        }
       }
 
       if (Version < 128)
@@ -848,7 +852,6 @@ namespace TerraMap.Data
           Name = "downedQueenSlime",
           Value = reader.ReadBoolean()
         });
-        return;
       }
       if (Version >= 240)
       {
@@ -858,6 +861,44 @@ namespace TerraMap.Data
           Value = reader.ReadBoolean()
         });
       }
+      if (Version >= 250)
+      {
+        this.Properties.Add(new WorldProperty()
+        {
+          Name = "unlockedSlimeBlueSpawn",
+          Value = reader.ReadBoolean()
+        });
+      }
+      if (Version >= 251)
+      {
+        this.Properties.Add(new WorldProperty() { Name = "unlockedMerchantSpawn", Value = reader.ReadBoolean() });
+        this.Properties.Add(new WorldProperty() { Name = "unlockedDemolitionistSpawn", Value = reader.ReadBoolean() });
+        this.Properties.Add(new WorldProperty() { Name = "unlockedPartyGirlSpawn", Value = reader.ReadBoolean() });
+        this.Properties.Add(new WorldProperty() { Name = "unlockedDyeTraderSpawn", Value = reader.ReadBoolean() });
+        this.Properties.Add(new WorldProperty() { Name = "unlockedTruffleSpawn", Value = reader.ReadBoolean() });
+        this.Properties.Add(new WorldProperty() { Name = "unlockedArmsDealerSpawn", Value = reader.ReadBoolean() });
+        this.Properties.Add(new WorldProperty() { Name = "unlockedNurseSpawn", Value = reader.ReadBoolean() });
+        this.Properties.Add(new WorldProperty() { Name = "unlockedPrincessSpawn", Value = reader.ReadBoolean() });
+      }
+      if (Version >= 259) this.Properties.Add(new WorldProperty() { Name = "combatBookVolumeTwoWasUsed", Value = reader.ReadBoolean() });
+      if (Version >= 260) this.Properties.Add(new WorldProperty() { Name = "peddlersSatchelWasUsed", Value = reader.ReadBoolean() });
+      if (Version >= 261)
+      {
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+      }
+      if (Version >= 264)
+      {
+        reader.ReadBoolean();
+        reader.ReadByte();
+      }
+
+      //for (int p = 0; p < 41; p++) reader.ReadByte();
     }
 
     private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
@@ -879,18 +920,26 @@ namespace TerraMap.Data
         {
           int num2 = -1;
           byte b2;
+          byte b4;
           byte b = b2 = 0;
           Tile tile = new Tile();
           byte b3 = reader.ReadByte();
+          // bool flag = false;
           if ((b3 & 1) == 1)
           {
+            //flag = true;
             b2 = reader.ReadByte();
-            if ((b2 & 1) == 1)
-            {
-              b = reader.ReadByte();
-            }
           }
-          byte b4;
+          bool flag2 = false;
+          if ((b2 & 1) == 1)
+          {
+            flag2 = true;
+            b = reader.ReadByte();
+          }
+          if (flag2 && (b & 1) == 1)
+          {
+            b4 = reader.ReadByte();
+          }
           if ((b3 & 2) == 2)
           {
             tile.IsActive = true;
@@ -941,6 +990,10 @@ namespace TerraMap.Data
           {
             tile.IsLiquidPresent = true;
             tile.LiquidAmount = reader.ReadByte();
+            if ((b & 128) == 128)
+            {
+              tile.Shimmer = true;
+            }
             if (b4 > 1)
             {
               if (b4 == 2)
@@ -1737,6 +1790,8 @@ namespace TerraMap.Data
             name += " Lava";
           else if (tile.IsLiquidHoney)
             name += " Honey";
+          else if (tile.Shimmer)
+            name += " Shimmer";
           else
             name += " Water";
         }
