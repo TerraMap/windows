@@ -10,6 +10,7 @@
     <tile name="Crimson Sandstone" />
     <tile name="Crimson Hardened Sand" />
     <tile name="CrimsonJungleGrass" />
+    <tile name="Roots" />
   </set>
   <set name="Corruption Blocks (Set)">
     <tile name="Ebonstone" />
@@ -21,6 +22,7 @@
     <tile name="Corrupt Sandstone" />
     <tile name="Corrupt Hardened Sand" />
     <tile name="CorruptJungleGrass" />
+    <tile name="CorruptVines" />
   </set>
   <set name="Hallow Blocks (Set)">
     <tile name="Pearlstone" />
