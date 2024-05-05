@@ -1437,6 +1437,15 @@ namespace TerraMap.Data
     {
       this.NPCs = new ObservableCollection<NPC>();
 
+      if (Version >= 268)
+      {
+        int num1 = reader.ReadInt32();
+        while(num1-- > 0)
+        {
+          reader.ReadInt32();
+        }
+      }
+
       int num = 0;
       bool flag = reader.ReadBoolean();
       while (flag)
