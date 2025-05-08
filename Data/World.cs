@@ -1954,7 +1954,7 @@ namespace TerraMap.Data
         }
       }
 
-      string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\ModLoader\\Players");
+      string modUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "My Games\\Terraria\\tModLoader\\Players");
       if (Directory.Exists(modUser))
       {
         var modDirectory = new DirectoryInfo(modUser);
