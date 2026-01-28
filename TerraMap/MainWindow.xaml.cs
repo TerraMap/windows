@@ -246,7 +246,7 @@ namespace TerraMap
 
       path = Path.Combine(path, "My Games");
       path = Path.Combine(path, "Terraria");
-      path = Path.Combine(path, "ModLoader");
+      path = Path.Combine(path, "tModLoader");
       path = Path.Combine(path, "Worlds");
       return path;
     }

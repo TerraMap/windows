@@ -9,6 +9,8 @@
     <tile name="Crimstone Vines" />
     <tile name="Crimson Sandstone" />
     <tile name="Crimson Hardened Sand" />
+    <tile name="CrimsonJungleGrass" />
+    <tile name="Roots" />
   </set>
   <set name="Corruption Blocks (Set)">
     <tile name="Ebonstone" />
@@ -19,6 +21,8 @@
     <tile name="Corrupted Vines" />
     <tile name="Corrupt Sandstone" />
     <tile name="Corrupt Hardened Sand" />
+    <tile name="CorruptJungleGrass" />
+    <tile name="CorruptVines" />
   </set>
   <set name="Hallow Blocks (Set)">
     <tile name="Pearlstone" />
@@ -29,6 +33,7 @@
     <tile name="Hallowed Vines" />
     <tile name="Hallow Sandstone" />
     <tile name="Hallow Hardened Sand" />
+    <tile name="Golf Grass Hallowed" />
   </set>
   <set name="Chests (Set)">
     <tile num="21" />
