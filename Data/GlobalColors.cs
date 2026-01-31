@@ -16,9 +16,10 @@ namespace TerraMap.Data
 		public Color HellColor { get; set; }
 		public Color LavaColor { get; set; }
 		public Color WaterColor { get; set; }
-		public Color HoneyColor { get; set; }
+    public Color HoneyColor { get; set; }
+		public Color ShimmerColor { get; set; }
 
-		public static GlobalColors Read(XmlDocument xml)
+    public static GlobalColors Read(XmlDocument xml)
 		{
 			var globalColors = new GlobalColors();
 
@@ -48,10 +49,13 @@ namespace TerraMap.Data
 					case "lava":
 						globalColors.LavaColor = (Color)ColorConverter.ConvertFromString(color);
 						break;
-					case "honey":
-						globalColors.HoneyColor = (Color)ColorConverter.ConvertFromString(color);
-						break;
-				}
+          case "honey":
+            globalColors.HoneyColor = (Color)ColorConverter.ConvertFromString(color);
+            break;
+          case "shimmer":
+            globalColors.ShimmerColor = (Color)ColorConverter.ConvertFromString(color);
+            break;
+        }
 			}
 
 			return globalColors;
