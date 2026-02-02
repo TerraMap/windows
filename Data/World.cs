@@ -69,8 +69,14 @@ namespace TerraMap.Data
     [PropertyInfo(267)]
     public Boolean ZenithWorld { get; set; }
 
+    [PropertyInfo(302)]
+    public Boolean SkyBlockWorld { get; set; }
+
     [PropertyInfo(141)]
     public Int64 CreationTime { get; set; }
+
+    [PropertyInfo(141)]
+    public Int64 LastPlayedTime { get; set; }
 
     [PropertyInfo(63)]
     public Byte MoonType { get; set; }
@@ -706,6 +712,12 @@ namespace TerraMap.Data
       if (Version < 128)
         return;
 
+      num2 = (int)reader.ReadInt16();
+      for (int j = 0; j < num2; j++)
+      {
+        reader.ReadInt16();
+      }
+
       this.Properties.Add(new WorldProperty() { Name = "FastForwardTime", Value = reader.ReadBoolean() });
       if (Version < 131)
         return;
@@ -898,7 +910,41 @@ namespace TerraMap.Data
         reader.ReadByte();
       }
 
-      //for (int p = 0; p < 41; p++) reader.ReadByte();
+      if (Version >= 287)
+      {
+        reader.ReadBoolean();
+        reader.ReadBoolean();
+      }
+      if (Version >= 288)
+      {
+        reader.ReadBoolean();
+      }
+      if (Version >= 296)
+      {
+        reader.ReadBoolean();
+      }
+      if (Version >= 291)
+      {
+        reader.ReadInt32();
+        reader.ReadInt32();
+      }
+      if (Version >= 297)
+      {
+        reader.ReadBoolean();
+        Byte b = reader.ReadByte();
+        for (int i = 0; i < b; i++)
+        {
+          reader.ReadInt16();
+          reader.ReadInt16();
+        }
+      }
+      if (Version >= 304) { reader.ReadBoolean(); };
+      if (Version >= 299 && Version < 313)
+      {
+        reader.ReadUInt32();
+      }
+      // manifest
+      if (Version >= 299) reader.ReadString();
     }
 
     private void ReadTilesVersion2(BinaryReader reader, bool[] importance)
@@ -1188,6 +1234,8 @@ namespace TerraMap.Data
           color = this.staticData.GlobalColors.LavaColor; // Terraria.MapHelper.GetLiquidColor(1);
         else if (tile.IsLiquidHoney)
           color = this.staticData.GlobalColors.HoneyColor; // Terraria.MapHelper.GetLiquidColor(2);
+        else if (tile.Shimmer)
+          color = this.staticData.GlobalColors.ShimmerColor;
         else
           color = this.staticData.GlobalColors.WaterColor; // Terraria.MapHelper.GetLiquidColor(0);
       }
@@ -1280,41 +1328,41 @@ namespace TerraMap.Data
       this.Chests = new List<Chest>();
 
       int num = (int)reader.ReadInt16();
-      int num2 = (int)reader.ReadInt16();
-      int num3;
-      int num4;
-
-      int maxItems = 40;
-
-      if (num2 < maxItems)
-      {
-        num3 = num2;
-        num4 = 0;
-      }
-      else
-      {
-        num3 = maxItems;
-        num4 = num2 - maxItems;
-      }
-      int i;
-      for (i = 0; i < num; i++)
+      int num2 = 0;
+      
+      for (int i = 0; i < num; i++)
       {
         Chest chest = new Chest
         {
           X = reader.ReadInt32(),
           Y = reader.ReadInt32(),
-          Name = reader.ReadString()
+          Name = reader.ReadString(),
+          MaxItems = 40,
         };
-        for (int j = 0; j < num3; j++)
+
+        int num3 = reader.ReadInt32();
+        num2 = num3;
+
+        int num4, num5;
+        if (num2 < num3)
         {
-          short num5 = reader.ReadInt16();
+          num4 = num2;
+          num5 = 0;
+        } else
+        {
+          num4 = chest.MaxItems;
+          num5 = num2 - chest.MaxItems;
+        }
+
+        for (int j = 0; j < num4; j++)
+        {
+          short num6 = reader.ReadInt16();
           Item item = new Item();
-          if (num5 > 0)
+          if (num6 > 0)
           {
             item.Id = reader.ReadInt32();
-            item.Count = (int)num5;
+            item.Count = (int)num6;
             item.PrefixId = reader.ReadByte();
-            chest.Items.Add(item);
 
             if (item.Id != 0 && this.StaticData.ItemInfos.ContainsKey(item.Id))
             {
@@ -1324,12 +1372,21 @@ namespace TerraMap.Data
 
             if (item.PrefixId > 0 && this.StaticData.ItemPrefixes.Count > item.PrefixId)
               item.Name = this.StaticData.ItemPrefixes[item.PrefixId].Name + " " + item.Name;
+          } else if (num6 < 0)
+          {
+            item.Id = reader.ReadInt32();
+            item.PrefixId = reader.ReadByte();
+            item.Count = 1;
+          }
+          if (item.Count > 0)
+          {
+            chest.Items.Add(item);
           }
         }
-        for (int j = 0; j < num4; j++)
+        for (int j = 0; j < num5; j++)
         {
-          short num5 = reader.ReadInt16();
-          if (num5 > 0)
+          short num6 = reader.ReadInt16();
+          if (num6 > 0)
           {
             reader.ReadInt32();
             reader.ReadByte();
@@ -1470,6 +1527,7 @@ namespace TerraMap.Data
         {
           nPC.TownVariationIndex = reader.ReadInt32();
         }
+        reader.ReadByte();
         num++;
         flag = reader.ReadBoolean();
 
@@ -1892,6 +1950,8 @@ namespace TerraMap.Data
           tileHitTestInfo.Liquid = "Lava";
         else if (tile.IsLiquidHoney)
           tileHitTestInfo.Liquid = "Honey";
+        else if (tile.Shimmer)
+          tileHitTestInfo.Liquid = "Shimmer";
         else
           tileHitTestInfo.Liquid = "Water";
       }
