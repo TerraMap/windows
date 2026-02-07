@@ -33,12 +33,12 @@
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
       <TextBlock Grid.Column="0" Margin="2">Name:</TextBlock>
-      <TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
-      <Button Grid.Column="2" Click="OnSearchBoxClear" ToolTip="Clear">
+      <TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" TabIndex="0" />
+      <Button Grid.Column="2" Click="OnSearchBoxClear" ToolTip="Clear" TabIndex="1">
         <local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
       </Button>
-      <Button Grid.Column="3" Click="OnCheckAll">Check All</Button>
-      <Button Grid.Column="4" Click="OnUncheckAll">Uncheck All</Button>
+      <Button Grid.Column="3" Click="OnCheckAll" TabIndex="2">Check All</Button>
+      <Button Grid.Column="4" Click="OnUncheckAll" TabIndex="3">Uncheck All</Button>
     </Grid>
     <Grid DockPanel.Dock="Bottom">
       <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -46,14 +46,15 @@
 				<Button IsDefault="True" Click="OnCustomize" HorizontalAlignment="Left">_Customize...</Button>
 			</StackPanel>-->
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button IsDefault="True" Click="OnAccept" MinWidth="75">_OK</Button>
-        <Button IsCancel="True" Click="OnCancel" Visibility="Collapsed">_Cancel</Button>
+        <Button IsDefault="True" Click="OnAccept" MinWidth="75" TabIndex="5">_OK</Button>
+        <Button IsCancel="True" Click="OnCancel" Visibility="Collapsed" IsTabStop="False" TabIndex="6">_Cancel</Button>
       </StackPanel>
     </Grid>
     <ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name" 
 						  local:ItemActivation.ActivationMode="Mouse,Keyboard" local:ItemActivation.ItemActivate="OnItemActivate"
 						  VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
-						  BorderThickness="1" Margin="2" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
+						  BorderThickness="1" Margin="2" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+              KeyboardNavigation.TabNavigation="Once" TabIndex="4">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
           <CheckBox IsChecked="{Binding IsSelected}" Margin="2">
