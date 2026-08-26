@@ -939,6 +939,7 @@ namespace TerraMap.Data
         }
       }
       if (Version >= 304) { reader.ReadBoolean(); };
+      if (Version >= 323) { reader.ReadBoolean(); reader.ReadBoolean(); };
       if (Version >= 299 && Version < 313)
       {
         reader.ReadUInt32();
