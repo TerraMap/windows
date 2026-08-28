@@ -3129,7 +3129,22 @@
   <prefix num="82" name="Unreal" />
   <prefix num="83" name="Mythical" />
   <prefix num="84" name="Legendary 2" />
-  
+
+  <!-- v1.4.5.3 -->
+  <prefix num="85" name="Fabled" />
+  <prefix num="86" name="Loyal" />
+  <prefix num="87" name="Worthy" />
+  <prefix num="88" name="Focused" />
+  <prefix num="89" name="Patient" />
+  <prefix num="90" name="Rabid" />
+  <prefix num="91" name="Ill-Tempered" />
+  <prefix num="92" name="Petty" />
+  <prefix num="93" name="Feeble" />
+  <prefix num="94" name="Skittish" />
+  <prefix num="95" name="Eager" />
+  <prefix num="96" name="Ballistic" />
+  <prefix num="97" name="Scraggling" />
+
   <item num="-48" name="Platinum Bow Old" />
   <item num="-47" name="Platinum Hammer Old" />
   <item num="-46" name="Platinum Axe Old" />
