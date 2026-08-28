@@ -274,7 +274,7 @@
       <ToolBar Band="0" BandIndex="0" Name="File"
 						IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}">
         <TextBlock VerticalAlignment="Center">Worlds:</TextBlock>
-        <ComboBox ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
+        <ComboBox x:Name="worldsList" ItemsSource="{Binding WorldFiles}" SelectedItem="{Binding SelectedWorldFile}" 
 					SelectionChanged="OnSelectedWorldFileChanged" DropDownOpened="OnWorldsDropDownOpened">
           <ComboBox.ItemTemplate>
             <DataTemplate>
@@ -286,7 +286,7 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
         <TextBlock VerticalAlignment="Center">Players:</TextBlock>
-        <ComboBox ItemsSource="{Binding MapFiles}" SelectedItem="{Binding SelectedMapFile}" 
+        <ComboBox x:Name="playersList" ItemsSource="{Binding MapFiles}" SelectedItem="{Binding SelectedMapFile}" 
 					SelectionChanged="OnSelectedMapFileChanged" DropDownOpened="OnMapsDropDownOpened">
           <ComboBox.ItemTemplate>
             <DataTemplate>
@@ -363,25 +363,26 @@
                   <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Margin="2" VerticalAlignment="Center">Name:</TextBlock>
-                <TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" />
-                <Button Grid.Column="2" Margin="2" Padding="2" Click="OnSearchBoxClear" ToolTip="Clear">
+                <TextBox Grid.Column="1" x:Name="searchBox" Margin="2" TextChanged="OnSearchTextChanged" TabIndex="0" />
+                <Button Grid.Column="2" Margin="2" Padding="2" Click="OnSearchBoxClear" ToolTip="Clear" TabIndex="1">
                   <local:AutoGreyableImage Source="Resources/Cancel.png" Width="16" />
                 </Button>
                 <Button Grid.Column="3" Margin="2" Padding="2" Click="OnCheckAll"
 										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
-										  Content="Check All" />
+										  Content="Check All" TabIndex="2" />
                 <Button Grid.Column="4" Margin="2" Padding="2" Click="OnUncheckAll"
 										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
-										  Content="Uncheck All" />
+										  Content="Uncheck All" TabIndex="3" />
               </Grid>
               <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Margin="2" Padding="10,2" Click="OnApplyBlockSelection"
 										  IsEnabled="{Binding ElementName=checkBoxBlocksDropDown, Path=DataContext.IsLoading, Converter={StaticResource InvertedBooleanConverter}}"
-										  Content="Apply" />
+										  Content="Apply" TabIndex="5" />
               </StackPanel>
               <ItemsControl ItemsSource="{Binding Source={StaticResource tileInfoViewSource}}" TextSearch.TextPath="Name"
 											  VirtualizingStackPanel.IsVirtualizing="True" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
-											  BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Margin="2">
+											  BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Margin="2"
+                        KeyboardNavigation.TabNavigation="Once" TabIndex="4">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <CheckBox IsChecked="{Binding IsSelected}" Margin="2" Checked="OnItemChecked" Unchecked="OnItemChecked"
@@ -452,6 +453,9 @@
         <Button Click="OnApplyBlockSelection" IsEnabled="{Binding IsLoading, Converter={StaticResource InvertedBooleanConverter}}" Content="Apply" />
         <Slider Minimum="0" Maximum="1" Value="{Binding MaskOpacity, UpdateSourceTrigger=PropertyChanged}" Width="100" SmallChange=".1" LargeChange=".2"
 						  ToolTip="Highlight Opacity" />
+        <Separator />
+        <TextBlock VerticalAlignment="Center" Padding="0,0,4,0">Background Color:</TextBlock>
+        <xctk:ColorPicker x:Name="colorPicker" ColorMode="ColorCanvas" Width="48" SelectedColor="#FF222222" />
       </ToolBar>
     </ToolBarTray>
     <StatusBar DockPanel.Dock="Bottom">
@@ -520,6 +524,9 @@
 
     <Grid>
       <ext:ZoomControl x:Name="zoomControl" ZoomControlsVisibility="Collapsed" MouseMove="OnZoomControlMouseMove" MouseRightButtonUp="OnZoomControlMouseRightButtonUp">
+        <ext:ZoomControl.Background>
+            <SolidColorBrush Color="{Binding SelectedColor, ElementName=colorPicker}"/>
+        </ext:ZoomControl.Background>
         <Grid x:Name="Grid">
           <Image x:Name="Map" Source="{Binding WriteableBitmap}"
 						 Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.EdgeMode="Aliased" />
